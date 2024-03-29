@@ -1,0 +1,12 @@
+[
+    {"nombre": "Player 1", "valor": 25},
+    {"nombre": "Player 2", "valor": 20},
+    {"nombre": "Player 3", "valor": 30},
+    {"nombre": "Player 4", "valor": 40},
+    {"nombre": "Player 5", "valor": 100},
+    {"nombre": "Player 6", "valor": 16},
+    {"nombre": "Player 7", "valor": 55},
+    {"nombre": "Player 8", "valor": 20},
+    {"nombre": "Player 9", "valor": 100},
+    {"nombre": "Player 10", "valor": 30}
+]
