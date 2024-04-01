@@ -5,21 +5,9 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import BarChart from './components/BarChart.vue';
 import jsonData from './data/data.json';
-
-export default {
-  name: 'App',
-  components: {
-    BarChart
-  },
-  data(){
-    return {
-      jsonData
-    };
-  }
-}
 </script>
 
 <style>

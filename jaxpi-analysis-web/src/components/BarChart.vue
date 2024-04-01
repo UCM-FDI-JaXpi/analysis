@@ -2,53 +2,55 @@
   <div id="bar-chart"></div>
 </template>
 
-<script>
+<script setup>
 import c3 from 'c3';
 import 'c3/c3.css';
+import { ref, defineProps, onMounted, onUnmounted} from 'vue';
 
-export default {
-  props: {
-    data: {
-      type: Array,
-      required: true
-    }
-  },
-  mounted() {
-    this.drawBarChart(this.data);
-  },
-  methods: {
-    drawBarChart(data) {
-      const names = data.map(item => item.nombre);
-      const values = data.map(item => item.valor);
-
-      c3.generate({
-        bindto: '#bar-chart',
-        data: {
-          columns: [
-            ['Player Score'].concat(values)
-          ],
-          type: 'bar'
-        },
-        axis: {
-          x: {
-            type: 'category',
-            categories: names // X axis: name of the players
-          },
-          y: {
-            label: {
-              text: 'Score',
-              position: 'outer-middle'
-            }
-          }
-        }
-      });
-    }
-  },
-  unmounted() {
-    // Destruye el gráfico cuando el componente es desmontado para evitar fugas de memoria
-    if (this.chart)
-      this.chart.destroy();
+const props = defineProps({
+  data: {
+    type: Array,
+    required: true
   }
+});
+
+const chart = ref(null); // Reactive variable
+
+onMounted(() => {
+  drawBarChart(props.data);
+});
+
+onUnmounted(() => {
+  if (chart.value) {
+    chart.value.destroy();
+  }
+});
+
+function drawBarChart(data) {
+  const names = data.map(item => item.nombre);
+  const values = data.map(item => item.valor);
+
+  chart.value = c3.generate({
+    bindto: '#bar-chart',
+    data: {
+      columns: [
+        ['Player Score'].concat(values) // Chart Columns
+      ],
+      type: 'bar'
+    },
+    axis: {
+      x: {
+        type: 'category',
+        categories: names // X axis: player names
+      },
+      y: {
+        label: {
+          text: 'Score',
+          position: 'outer-middle'
+        }
+      }
+    }
+  });
 }
 </script>
 
