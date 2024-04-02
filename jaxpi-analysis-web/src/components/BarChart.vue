@@ -5,7 +5,7 @@
 <script setup>
 import c3 from 'c3';
 import 'c3/c3.css';
-import { ref, defineProps, onMounted, onUnmounted} from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   data: {
@@ -26,7 +26,7 @@ onUnmounted(() => {
   }
 });
 
-function drawBarChart(data) {
+const drawBarChart = (data) => { 
   const names = data.map(item => item.nombre);
   const values = data.map(item => item.valor);
 
@@ -34,7 +34,7 @@ function drawBarChart(data) {
     bindto: '#bar-chart',
     data: {
       columns: [
-        ['Player Score'].concat(values) // Chart Columns
+        ['Player Score'].concat(values) // Chart columns
       ],
       type: 'bar'
     },

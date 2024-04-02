@@ -9,6 +9,7 @@ module.exports = defineConfig({
       new webpack.DefinePlugin({
         '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': true
       })
-    ]
+    ],
+    devtool: 'source-map'
   }
 })
