@@ -1,5 +1,8 @@
 <template>
-  <div :id="chartId"></div>
+  <div>
+    <h2>{{ title }}</h2>
+    <div :id="chartId"></div>
+  </div>
 </template>
 
 <script setup>
@@ -15,13 +18,17 @@ const props = defineProps({
   chartId: {
     type: String,
     required: true
+  },
+  title: {
+    type: String,
+    required: true
   }
 });
 
 const chart = ref(null);
 
 onMounted(() => {
-  drawBarChart(props.data);
+  drawBarChart(props.data, props.chartId);
 });
 
 onUnmounted(() => {
@@ -30,17 +37,22 @@ onUnmounted(() => {
   }
 });
 
-const drawBarChart = (data) => { 
+const drawBarChart = (data, chartId) => { 
   const xAxisData = data.map(item => item.name || item.level);
   const yAxisData = data.map(item => item.value || item.time);
 
+  const names = { // Names of legends
+    'bar-chart1': 'Score',
+    'bar-chart2': 'Time'
+  };
+
   const chartData = [
     ['x'].concat(xAxisData),
-    ['data'].concat(yAxisData)
+    [names[chartId]].concat(yAxisData)
   ];
 
   chart.value = c3.generate({
-    bindto: `#${props.chartId}`,
+    bindto: `#${chartId}`,
     data: {
       x: 'x',
       columns: chartData,
@@ -64,5 +76,8 @@ const drawBarChart = (data) => {
 }
 </script>
 
-<style>
+<style scoped>
+h2 {
+  text-align: center;
+}
 </style>

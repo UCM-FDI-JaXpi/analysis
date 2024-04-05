@@ -1,8 +1,10 @@
 <template>
   <h1>Bar Charts</h1>
   <div class="chart-container"> <!-- Pass the same data structure for both .json -->
-    <BarChart :data="jsonData" chartId="bar-chart1"/> <!-- Pass the complete JSON object -->
-    <BarChart :data="jsonDataTimeLevelPlayer.levels" chartId="bar-chart2" /> <!-- Passing only the 'levels' property of the JSON object -->
+    <BarChart :data="jsonData" chartId="bar-chart1"
+              title="Players score"/> <!-- Pass the complete JSON object -->
+    <BarChart :data="jsonDataTimeLevelPlayer.levels" chartId="bar-chart2"
+              :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" /> <!-- Passing only the 'levels' property of the JSON object -->
   </div>
 </template>
 
