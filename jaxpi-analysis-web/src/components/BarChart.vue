@@ -1,5 +1,5 @@
 <template>
-  <div id="bar-chart"></div>
+  <div :id="chartId"></div>
 </template>
 
 <script setup>
@@ -11,10 +11,14 @@ const props = defineProps({
   data: {
     type: Array,
     required: true
+  },
+  chartId: {
+    type: String,
+    required: true
   }
 });
 
-const chart = ref(null); // Reactive variable
+const chart = ref(null);
 
 onMounted(() => {
   drawBarChart(props.data);
@@ -27,25 +31,31 @@ onUnmounted(() => {
 });
 
 const drawBarChart = (data) => { 
-  const names = data.map(item => item.nombre);
-  const values = data.map(item => item.valor);
+  const xAxisData = data.map(item => item.name || item.level);
+  const yAxisData = data.map(item => item.value || item.time);
+
+  const chartData = [
+    ['x'].concat(xAxisData),
+    ['data'].concat(yAxisData)
+  ];
 
   chart.value = c3.generate({
-    bindto: '#bar-chart',
+    bindto: `#${props.chartId}`,
     data: {
-      columns: [
-        ['Player Score'].concat(values) // Chart columns
-      ],
+      x: 'x',
+      columns: chartData,
       type: 'bar'
     },
     axis: {
       x: {
         type: 'category',
-        categories: names // X axis: player names
+        tick: {
+          centered: true
+        }
       },
       y: {
         label: {
-          text: 'Score',
+          text: 'Value',
           position: 'outer-middle'
         }
       }
