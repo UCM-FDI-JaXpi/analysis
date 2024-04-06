@@ -37,11 +37,11 @@ onUnmounted(() => {
   }
 });
 
-const drawBarChart = (data, chartId) => { 
+const drawBarChart = (data, chartId) => {
   const xAxisData = data.map(item => item.name || item.level);
   const yAxisData = data.map(item => item.value || item.time);
 
-  const names = { // Names of legends
+  const names = {
     'bar-chart1': 'Score',
     'bar-chart2': 'Time'
   };
@@ -72,13 +72,13 @@ const drawBarChart = (data, chartId) => {
         }
       }
     },
-    grid:{
+    grid: {
       y: {
         show: true
       }
     },
     legend: {
-        show: false
+      show: false
     }
   });
 }
