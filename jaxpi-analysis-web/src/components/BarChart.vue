@@ -67,10 +67,18 @@ const drawBarChart = (data, chartId) => {
       },
       y: {
         label: {
-          text: 'Value',
+          text: names[chartId],
           position: 'outer-middle'
         }
       }
+    },
+    grid:{
+      y: {
+        show: true
+      }
+    },
+    legend: {
+        show: false
     }
   });
 }
