@@ -5,6 +5,8 @@
               title="Players score"/> <!-- Pass the complete JSON object -->
     <BarChart :data="jsonDataTimeLevelPlayer.levels" chartId="bar-chart2"
               :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" /> <!-- Passing only the 'levels' property of the JSON object -->
+
+    
     <LineChart :data="jsonDataScoreSessionPlayer" chartId="line-chart1"
                title="Score progression per session"/>
   </div>
@@ -17,6 +19,17 @@ import LineChart from './components/LineChart.vue';
 import jsonData from './data/data.json';
 import jsonDataTimeLevelPlayer from './data/time-level-player.json';
 import jsonDataScoreSessionPlayer from './data/score-session-player.json';
+import jsonDataExample from './data/example.json';
+
+import { calculateLevelCompletionTimes } from './utils/utilities.js';
+
+const levelCompletionTimes = calculateLevelCompletionTimes(jsonDataExample);
+console.log(levelCompletionTimes);
+
+
+
+
+
 
 </script>
 
