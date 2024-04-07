@@ -26,7 +26,7 @@ import { calculateLevelCompletionTimes } from './utils/utilities.js';
 const levelCompletionTimes = calculateLevelCompletionTimes(jsonDataExample);
 console.log(levelCompletionTimes);
 
-
+//nueva rama c3
 
 
 
