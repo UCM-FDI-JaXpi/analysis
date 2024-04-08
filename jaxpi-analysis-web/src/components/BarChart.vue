@@ -40,8 +40,8 @@ onMounted(() => {
     .then(response => {
       // Guardar los datos en el ref
       dataFromServer.value = response.data;
-      console.log(response)
-      console.log(dataFromServer.value)
+      //console.log(response)
+      //console.log(dataFromServer.value)
     })
     .catch(error => {
       console.error('Error al obtener datos del servidor:', error);

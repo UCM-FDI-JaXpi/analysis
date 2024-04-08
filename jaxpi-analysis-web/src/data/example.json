@@ -50,10 +50,68 @@
             }
         },
         "timestamp": {
-            "$date": "2024-04-06T15:22:33.124Z"
+            "$date": "2024-04-06T15:00:00.124Z"
         },
         "stored": {
-            "$date": "2024-04-06T15:22:43.132Z"
+            "$date": "2024-04-06T15:01:01.132Z"
+        },
+        "__v": 0
+    },
+    {
+        "actor": {
+            "name": "Jugador1",
+            "mbox": "mail@test.com"
+        },
+        "verb": {
+            "id": "https://github.com/UCM-FDI-JaXpi/lib/completed",
+            "display": {
+                "en-us": "completed",
+                "es": "completado"
+            }
+        },
+        "object": {
+            "id": "http://example.com/achievements/level",
+            "definition": {
+                "type": "Level",
+                "name": {
+                    "en-us": "Level 2",
+                    "es": "Nivel 2"
+                },
+                "description": {
+                    "en-us": "level 2!",
+                    "es": "¡Nivel 2!"
+                },
+                "extensions": {
+                  "https://example.com/game/achieved_difficulty": "Medium",
+                  "https://example.com/game/achieved_score": 700,
+                  "https://example.com/game/completed_score": 10000
+                }
+            }
+        },
+        "context": {
+            "instructor": {
+                "name": "Maria",
+                "mbox": "mmaria@bro.com"
+            },
+            "contextActivities": {
+                "parent": {
+                    "id": "http://example.com/activities/class_A"
+                },
+                "grouping": {
+                    "id": "http://example.com/activities/UCM"
+                }
+            },
+            "extensions": {
+                "http://example.com/activities/patatas": 2,
+                "http://example.com/activities/coches": true,
+                "http://example.com/activities/algo": "a"
+            }
+        },
+        "timestamp": {
+            "$date": "2024-04-06T15:15:33.124Z"
+        },
+        "stored": {
+            "$date": "2024-04-06T15:15:43.132Z"
         },
         "__v": 0
     },
@@ -108,10 +166,10 @@
             }
         },
         "timestamp": {
-            "$date": "2024-04-06T15:23:33.124Z"
+            "$date": "2024-04-06T15:03:33.124Z"
         },
         "stored": {
-            "$date": "2024-04-06T15:22:43.132Z"
+            "$date": "2024-04-06T15:03:43.132Z"
         },
         "__v": 0
     },
@@ -166,68 +224,10 @@
             }
         },
         "timestamp": {
-            "$date": "2024-04-06T15:10:33.124Z"
+            "$date": "2024-04-06T15:10:22.124Z"
         },
         "stored": {
-            "$date": "2024-04-06T15:22:43.132Z"
-        },
-        "__v": 0
-    },
-    {
-        "actor": {
-            "name": "Jugador1",
-            "mbox": "mail@test.com"
-        },
-        "verb": {
-            "id": "https://github.com/UCM-FDI-JaXpi/lib/completed",
-            "display": {
-                "en-us": "completed",
-                "es": "completado"
-            }
-        },
-        "object": {
-            "id": "http://example.com/achievements/level",
-            "definition": {
-                "type": "Level",
-                "name": {
-                    "en-us": "Level 2",
-                    "es": "Nivel 2"
-                },
-                "description": {
-                    "en-us": "level 2!",
-                    "es": "¡Nivel 2!"
-                },
-                "extensions": {
-                  "https://example.com/game/achieved_difficulty": "Medium",
-                  "https://example.com/game/achieved_score": 700,
-                  "https://example.com/game/completed_score": 10000
-                }
-            }
-        },
-        "context": {
-            "instructor": {
-                "name": "Maria",
-                "mbox": "mmaria@bro.com"
-            },
-            "contextActivities": {
-                "parent": {
-                    "id": "http://example.com/activities/class_A"
-                },
-                "grouping": {
-                    "id": "http://example.com/activities/UCM"
-                }
-            },
-            "extensions": {
-                "http://example.com/activities/patatas": 2,
-                "http://example.com/activities/coches": true,
-                "http://example.com/activities/algo": "a"
-            }
-        },
-        "timestamp": {
-            "$date": "2024-04-06T15:12:22.124Z"
-        },
-        "stored": {
-            "$date": "2024-04-06T15:22:43.132Z"
+            "$date": "2024-04-06T15:10:43.132Z"
         },
         "__v": 0
     },
@@ -286,10 +286,10 @@
             }
         },
         "timestamp": {
-            "$date": "2024-04-06T15:01:33.124Z"
+            "$date": "2024-04-06T15:50:33.124Z"
         },
         "stored": {
-            "$date": "2024-04-06T15:22:43.132Z"
+            "$date": "2024-04-06T15:50:43.132Z"
         },
         "__v": 0
     }
