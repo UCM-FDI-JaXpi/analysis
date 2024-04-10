@@ -12,37 +12,37 @@ export function calculateLevelCompletionTimes(jsonData) {
 
     sortedEvents.forEach(event => {
         const verbId = event.verb.id;
-        const objectDefinitionName = event.object.definition.name["en-us"];
+        const objectName = event.object.definition.name["en-us"];
 
         if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/started") {
-            arrayFlagsStarted[objectDefinitionName] = true;
-            arrayFlagsCompleted[objectDefinitionName] = false;
+            arrayFlagsStarted[objectName] = true;
+            arrayFlagsCompleted[objectName] = false;
             timestamp = new Date(event.timestamp.$date);
-            arrayTimes[objectDefinitionName] = 0;
+            arrayTimes[objectName] = 0;
         } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/exited") {
-            if (arrayFlagsStarted[objectDefinitionName])
-                arrayTimes[objectDefinitionName] += new Date(event.timestamp.$date) - timestamp;
+            if (arrayFlagsStarted[objectName])
+                arrayTimes[objectName] += new Date(event.timestamp.$date) - timestamp;
         } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/loaded") {
-            if (arrayFlagsStarted[objectDefinitionName]) {
+            if (arrayFlagsStarted[objectName]) {
                 timestamp = new Date(event.timestamp.$date);
-                arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/id_load"]] = arrayTimes[objectDefinitionName]
-            } else if (arrayFlagsCompleted[objectDefinitionName]) {
-                arrayTimes[objectDefinitionName] = arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/id_load"]];
-                arrayFlagsCompleted[objectDefinitionName] = false;
+                arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/id_load"]] = arrayTimes[objectName]
+            } else if (arrayFlagsCompleted[objectName]) {
+                arrayTimes[objectName] = arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/id_load"]];
+                arrayFlagsCompleted[objectName] = false;
             }
         } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/completed") {
-            if (arrayFlagsStarted[objectDefinitionName]) {
-                arrayTimes[objectDefinitionName] += new Date(event.timestamp.$date) - timestamp;
-                arrayFlagsCompleted[objectDefinitionName] = true;
-                arrayFlagsStarted[objectDefinitionName] = false;
+            if (arrayFlagsStarted[objectName]) {
+                arrayTimes[objectName] += new Date(event.timestamp.$date) - timestamp;
+                arrayFlagsCompleted[objectName] = true;
+                arrayFlagsStarted[objectName] = false;
 
-                if (arrayFinalTimes[objectDefinitionName]) {
-                    if (arrayTimes[objectDefinitionName] < arrayFinalTimes[objectDefinitionName])
-                        arrayFinalTimes[objectDefinitionName] = arrayTimes[objectDefinitionName];
+                if (arrayFinalTimes[objectName]) {
+                    if (arrayTimes[objectName] < arrayFinalTimes[objectName])
+                        arrayFinalTimes[objectName] = arrayTimes[objectName];
                 } else {
-                    arrayFinalTimes[objectDefinitionName] = arrayTimes[objectDefinitionName];
+                    arrayFinalTimes[objectName] = arrayTimes[objectName];
                 }
-                arrayTimes[objectDefinitionName] = 0;
+                arrayTimes[objectName] = 0;
             }
         }
     });

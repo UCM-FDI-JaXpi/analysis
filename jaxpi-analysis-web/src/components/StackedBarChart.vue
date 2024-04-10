@@ -75,6 +75,11 @@ const drawBarChart = (data, chartId) => {
         axis: {
             x: {
                 type: 'category'
+            },
+            y: {
+                tick: {
+                    format: d => Number.isInteger(d) ? d : null // Format without decimals
+                }
             }
         }
     });

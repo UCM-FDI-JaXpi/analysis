@@ -23,6 +23,10 @@ const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  colorPalette: {
+    type: Array,
+    required: true
   }
 });
 
@@ -59,10 +63,6 @@ const drawBarChart = (data, chartId) => {
   const xAxisData = data.map(item => item.nameObject);
   const yAxisData = data.map(item => item.completionTime || item.value);
 
- /* console.log(data)
-  console.log(xAxisData)
-  console.log(yAxisData)*/
-
   const names = {
     'bar-chart1': 'Score',
     'bar-chart2': 'Time',
@@ -80,7 +80,10 @@ const drawBarChart = (data, chartId) => {
     data: {
       x: 'x',
       columns: chartData,
-      type: 'bar'
+      type: 'bar',
+      colors: {
+        [names[chartId]]: props.colorPalette
+      }
     },
     axis: {
       x: {

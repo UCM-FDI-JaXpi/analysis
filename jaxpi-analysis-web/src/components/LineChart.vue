@@ -38,8 +38,8 @@ onUnmounted(() => {
 });
 
 const drawLineChart = (data, chartId) => {
-    const xAxisData = data.map(item => item.date);
-    const yAxisData = data.map(item => item.score);
+    const xAxisData = data.map(item => item.nameObject);
+    const yAxisData = data.map(item => item.value);
 
     const names = {
         'line-chart1': 'Score'

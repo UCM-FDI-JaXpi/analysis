@@ -1,45 +1,46 @@
 <template>
-  <h1>Bar Charts</h1>
+  <h1>Charts</h1>
   <div class="chart-container">
     <BarChart :data="dataJson" chartId="bar-chart1"
-              title="Players score"/>
+              title="Players score" />
     <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart2"
               :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
     <BarChart :data="dataLevelCompletionTimes" chartId="bar-chart3"
-              title="Completion time per level" />
+              title="Completion time per level" :colorPalette="colorPalettes[0]"/>
     <BarChart :data="dataLevelCompletionTimesMongo" chartId="bar-chart4"
-              title="Completion time per level MONGO" />
+              title="Completion time per level MONGO" :colorPalette="colorPalettes[1]"/>
     <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart1"
               title="Number of attempts per level MONGO" />
-    <LineChart :data="jsonDataScoreSessionPlayer" chartId="line-chart1"
+    <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1"
                title="Score progression per session"/>
   </div>
 </template>
 
 <script setup>
 import BarChart from './components/BarChart.vue';
-import LineChart from './components/LineChart.vue';
 import StackedBarChart from './components/StackedBarChart.vue';
+import LineChart from './components/LineChart.vue';
 
 import jsonData from './data/data.json';
 import jsonDataTimeLevelPlayer from './data/time-level-player.json';
-import jsonDataScoreSessionPlayer from './data/score-session-player.json';
 import jsonDataExample from './data/example.json';
 import jsonDataRecordsMongo from './data/recordsMongo.json';
 import jsonDataRecordsMongoAttemptsPerLevel from './data/recordsMongoAttemptsPerLevel.json';
+import jsonDataScoreSessionPlayer from './data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from './utils/utilities.js';
 
 
 /**************************************************** For BarChart *******************************************************/
-function prepareBarChartData(jsonData) {
+const colorPalettes = [['#65DB1C'], ['#6B8CFF']];
+function prepareDataForCharts(jsonData) {
   return jsonData.map(entry => ({
-    nameObject: entry.name || entry.level,
-    value: entry.value || entry.time
+    nameObject: entry.name || entry.level || entry.date,
+    value: entry.value || entry.time || entry.score
   }));
 }
-const dataJson = prepareBarChartData(jsonData) //For data.json - the data in the correct format to paint on the bar chart
-const dataTimeLevelPlayer = prepareBarChartData(jsonDataTimeLevelPlayer.levels) //For time-level-player.json
+const dataJson = prepareDataForCharts(jsonData) //For data.json - the data in the correct format to paint on the bar chart
+const dataTimeLevelPlayer = prepareDataForCharts(jsonDataTimeLevelPlayer.levels) //For time-level-player.json
 
 const dataLevelCompletionTimes = calculateLevelCompletionTimes(jsonDataExample); //For example.json - the data in the correct format to paint on the bar chart
 const dataLevelCompletionTimesMongo = calculateLevelCompletionTimes(jsonDataRecordsMongo); //For recordsMongo.json
@@ -47,10 +48,10 @@ const dataLevelCompletionTimesMongo = calculateLevelCompletionTimes(jsonDataReco
 
 /*********************************************** For StackedBarChart ****************************************************/ 
 const attemptsPerLevel = calculateAttemptsPerLevel(jsonDataRecordsMongoAttemptsPerLevel); //For recordsMongoAttemptsPerLevel.json
-console.log(attemptsPerLevel)
 
 
 /************************************************** For LineChart *******************************************************/ 
+const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) //For score-session-player.json - the data in the correct format to paint on the bar chart
 
 
 </script>
