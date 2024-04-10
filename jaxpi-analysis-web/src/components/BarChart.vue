@@ -9,8 +9,7 @@
 import c3 from 'c3';
 import 'c3/c3.css';
 import { ref, onMounted, onUnmounted } from 'vue';
-
-import axios from 'axios';
+//import axios from 'axios';
 
 const props = defineProps({
   data: {
@@ -28,11 +27,11 @@ const props = defineProps({
 });
 
 const chart = ref(null);
-const dataFromServer = ref([]); 
+// const dataFromServer = ref([]); 
 
 onMounted(() => {
   // Hacer solicitud GET al servidor
-  axios.get('http://localhost:3000/records', {
+  /*axios.get('http://localhost:3000/records', {
     headers: {
               'Content-Type': 'application/json',
             }
@@ -45,7 +44,7 @@ onMounted(() => {
     })
     .catch(error => {
       console.error('Error al obtener datos del servidor:', error);
-  });
+  });*/
 
   drawBarChart(props.data, props.chartId);
 });
@@ -57,12 +56,18 @@ onUnmounted(() => {
 });
 
 const drawBarChart = (data, chartId) => {
-  const xAxisData = data.map(item => item.name || item.level);
-  const yAxisData = data.map(item => item.value || item.time);
+  const xAxisData = data.map(item => item.nameObject);
+  const yAxisData = data.map(item => item.completionTime || item.value);
+
+ /* console.log(data)
+  console.log(xAxisData)
+  console.log(yAxisData)*/
 
   const names = {
     'bar-chart1': 'Score',
-    'bar-chart2': 'Time'
+    'bar-chart2': 'Time',
+    'bar-chart3': 'Time (ms)',
+    'bar-chart4': 'Time (ms)'
   };
 
   const chartData = [
