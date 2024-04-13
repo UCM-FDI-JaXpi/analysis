@@ -26,7 +26,7 @@ const props = defineProps({
   },
   colorPalette: {
     type: Array,
-    required: true
+    required: false
   }
 });
 
@@ -49,7 +49,6 @@ onMounted(() => {
     .catch(error => {
       console.error('Error al obtener datos del servidor:', error);
   });*/
-
   drawBarChart(props.data, props.chartId);
 });
 
