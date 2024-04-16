@@ -30,7 +30,28 @@
   
   import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
   
+  // WITH WEBSOCKETS
+  import { ref } from 'vue';
+  const props = defineProps({
+    socket: Object // Receive the WebSocket connection as a prop
+  });
+  const barChartData = ref([]);
+
+  // Data received from server
+  props.socket.on('message', (msg) => { 
+    console.log('Message received from server:', msg);
+  });
+
+  props.socket.on('studentData', (updatedData) => { 
+    console.log('Datos actualizados: ', updatedData);
+    barChartData.value = updatedData;
+  });
+
+  // To send data to the server
+  const hello = 'hello websocket'
+  props.socket.emit('message', hello );
   
+    
   /**************************************************** For BarChart *******************************************************/
   const colorPalettes = [['#65DB1C'], ['#6B8CFF']];
   function prepareDataForCharts(jsonData) {
