@@ -10,7 +10,6 @@ import io from "socket.io-client"
 
 const socket = io("http://localhost:3000");
 
-// Before the component is destroyed 
 onBeforeUnmount(() => {
   socket.disconnect(); // Close the websocket connection
 });

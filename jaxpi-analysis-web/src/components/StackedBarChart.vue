@@ -28,9 +28,7 @@ const props = defineProps({
 const chart = ref(null);
 
 onMounted(() => {
-    console.log(props.data)
     drawBarChart(props.data, props.chartId);
-    console.log(props.data)
 });
 
 onUnmounted(() => {

@@ -9,10 +9,10 @@
     <BarChart :data="dataLevelCompletionTimesMongo" chartId="bar-chart4"
               title="Completion time per level MONGO" :colorPalette="colorPalettes[1]" />
     <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart1"
-                     title="Number of attempts per level MONGO" />
+                     title="Number of attempts per level mongo" />
     <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
-    <StackedBarChart v-if="dataAxios.length > 0" :data="dataAxios" chartId="stacked-bar-chart2"
-                     title="Number of attempts per level AXIOS" />
+    <StackedBarChart v-if="realChartData.length > 0" :data="realChartData" chartId="stacked-bar-chart2"
+                     title="Number of attempts per level REAL"/>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ import { ref, onMounted } from 'vue';
 const props = defineProps({
   socket: Object // Receive the WebSocket connection as a prop
 });
-const dataAxios = ref([]);
+const realChartData = ref([]);
 
 // Data received from server
 props.socket.on('message', (msg) => {
@@ -45,7 +45,7 @@ props.socket.on('message', (msg) => {
 
 props.socket.on('newData', (updatedData) => {
   console.log('Datos actualizados: ', updatedData);
-  dataAxios.value = updatedData;
+  realChartData.value = calculateAttemptsPerLevel(updatedData);
 });
 
 // To send data to the server
@@ -63,7 +63,7 @@ const fetchDataFromMongoDB = async () => {
     const response = await axios.get('http://localhost:3000/records', {
       withCredentials: true
     });
-    dataAxios.value = calculateAttemptsPerLevel(response.data);
+    realChartData.value = calculateAttemptsPerLevel(response.data);
   } catch (error) {
     console.error('Error al obtener los datos:', error);
   }
