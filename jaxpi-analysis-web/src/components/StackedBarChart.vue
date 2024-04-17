@@ -9,7 +9,6 @@
 import c3 from 'c3';
 import 'c3/c3.css';
 import { ref, onMounted, onUnmounted } from 'vue';
-//import axios from 'axios';
 
 const props = defineProps({
     data: {
@@ -27,26 +26,11 @@ const props = defineProps({
 });
 
 const chart = ref(null);
-// const dataFromServer = ref([]); 
 
 onMounted(() => {
-    // Hacer solicitud GET al servidor
-    /*axios.get('http://localhost:3000/records', {
-      headers: {
-                'Content-Type': 'application/json',
-              }
-    })
-      .then(response => {
-        // Guardar los datos en el ref
-        dataFromServer.value = response.data;
-        //console.log(response)
-        //console.log(dataFromServer.value)
-      })
-      .catch(error => {
-        console.error('Error al obtener datos del servidor:', error);
-    });*/
-
+    console.log(props.data)
     drawBarChart(props.data, props.chartId);
+    console.log(props.data)
 });
 
 onUnmounted(() => {
