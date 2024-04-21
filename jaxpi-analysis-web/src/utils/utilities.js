@@ -73,22 +73,24 @@ export function calculateAttemptsPerLevel(jsonData) {
         }
     });
 
-    const sortedEvents = jsonData.sort((a, b) => {
+    // Extraer los objetos del array Proxy
+    const realObjects = jsonData.map(proxy => { return proxy });
+
+    const sortedEvents = realObjects.sort((a, b) => {
         return new Date(a.timestamp.$date) - new Date(b.timestamp.$date);
     });
-
+    
     sortedEvents.forEach(event => {
         const verbId = event.verb.id;
         const objectName = event.object.definition.name["en-us"];
 
         if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/started") {
-            if (arrayFlagsStarted[objectName]) {
-                failedAttempts[objectName]++;
-            }
+            failedAttempts[objectName]++;
             arrayFlagsStarted[objectName] = true;
         } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/completed" && arrayFlagsStarted[objectName]) {
             successedAttempts[objectName]++;
             arrayFlagsStarted[objectName] = false;
+            failedAttempts[objectName]--;
         }
     });
 
@@ -110,12 +112,3 @@ export function calculateAttemptsPerLevel(jsonData) {
         });
     return attemptsObject;
 }
-
-// Convert milliseconds to hours:minutes:seconds format
-/*function changeTimeFormat(ms) {
-    const hours = Math.floor(ms / 3600000); // 1 h = 3600000 ms
-    const minutes = Math.floor((ms % 3600000) / 60000); // 1 min = 60000 ms
-    const seconds = Math.floor((ms % 60000) / 1000); // 1 s = 1000 ms
-    const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    return formattedTime;
-}*/

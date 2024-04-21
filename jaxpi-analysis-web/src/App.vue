@@ -8,10 +8,11 @@
 import { onBeforeUnmount } from 'vue';
 import io from "socket.io-client"
 
+// Create the Socket.io instance and send a 'connection' event to the server
 const socket = io("http://localhost:3000");
 
 onBeforeUnmount(() => {
-  socket.disconnect(); // Close the websocket connection
+  socket.disconnect(); // Close the websocket connection by sending a 'disconnect' event to the server
 });
 </script>
 
