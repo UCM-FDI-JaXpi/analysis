@@ -1,12 +1,24 @@
 <template>
   <h1>Charts</h1>
-  <div class="chart-container">
+  <div class="tabs">
+    <button v-for="(tab, index) in tabs" :key="index" 
+              @click="activeTab = index" 
+              :class="{ 'active': activeTab === index }">
+      {{ tab }}
+    </button>
+  </div>
+  
+  <div v-if="activeTab === 0" class="tab-content">
     <StackedBarChart v-if="realChartData.length > 0" :data="realChartData" chartId="stacked-bar-chart1"
-                     title="Number of attempts per level REAL" />
+                  title="Number of attempts per level REAL" />
     <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart2" title="Number of attempts per level mongo" />
+  </div>
 
+  <div v-if="activeTab === 1" class="tab-content">
     <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
-    
+  </div>
+
+  <div v-if="activeTab === 2" class="tab-content">
     <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart1"
               :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
     <BarChart :data="dataLevelCompletionTimes" chartId="bar-chart2" title="Completion time per level"
@@ -42,6 +54,9 @@ class JsonObject {
     return this.data;
   }
 }
+
+const tabs = ref(["Stacked Bar Charts", "Line Charts", "Bar Charts"]);
+const activeTab = ref(0); // Define active tab
 
 const props = defineProps({
   socket: Object // Receive the WebSocket connection as a prop
@@ -125,22 +140,32 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
   background-color: #bfdbf3;
 }
 
-.chart-container {
+#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #stacked-bar-chart1, #line-chart1, #stacked-bar-chart2 {
+  background-color: rgba(255, 255, 255, 0.8);
+  margin: 5px; /* Margin between graphics and container */
+}
+
+/* Add styling for tabs */
+.tabs {
+  display: flex;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  margin-right: 1px;
+  cursor: pointer;
+  border: none;
+  /*background-color: transparent;*/
+}
+
+.tabs button.active {
+  background-color: #79c1fd;
+}
+
+.tab-content {
   display: grid;
   grid-template-columns: 25% 25% 25% 25%;
   background-color: #79c1fd;
   padding: 10px;
-}
-
-#bar-chart1,
-#bar-chart2,
-#bar-chart3,
-#bar-chart4,
-#stacked-bar-chart1,
-#line-chart1,
-#stacked-bar-chart2 {
-  background-color: rgba(255, 255, 255, 0.8);
-  margin: 5px;
-  /* Margin between graphics and container */
 }
 </style>
