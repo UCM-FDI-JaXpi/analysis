@@ -1,24 +1,26 @@
 <template>
   <h1>Charts</h1>
   <div class="chart-container">
-    <BarChart :data="dataJson" chartId="bar-chart1" title="Players score" />
-    <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart2"
-      :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
-    <BarChart :data="dataLevelCompletionTimes" chartId="bar-chart3" title="Completion time per level"
-      :colorPalette="colorPalettes[0]" />
-    <BarChart :data="dataLevelCompletionTimesMongo" chartId="bar-chart4" title="Completion time per level MONGO"
-      :colorPalette="colorPalettes[1]" />
-    <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart1" title="Number of attempts per level mongo" />
+    <StackedBarChart v-if="realChartData.length > 0" :data="realChartData" chartId="stacked-bar-chart1"
+                     title="Number of attempts per level REAL" />
+    <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart2" title="Number of attempts per level mongo" />
+
     <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
-    <StackedBarChart v-if="realChartData.length > 0" :data="realChartData" chartId="stacked-bar-chart2"
-      title="Number of attempts per level REAL" />
+    
+    <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart1"
+              :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
+    <BarChart :data="dataLevelCompletionTimes" chartId="bar-chart2" title="Completion time per level"
+              :colorPalette="colorPalettes[0]" />
+    <BarChart :data="dataLevelCompletionTimesMongo" chartId="bar-chart3" title="Completion time per level MONGO"
+              :colorPalette="colorPalettes[1]" />
+    <BarChart :data="dataJson" chartId="bar-chart4" title="Players score" />
   </div>
 </template>
 
 <script setup>
 import BarChart from '../components/BarChart.vue';
-import StackedBarChart from '../components/StackedBarChart.vue';
 import LineChart from '../components/LineChart.vue';
+import StackedBarChart from '../components/StackedBarChart.vue';
 
 import jsonData from '../data/data.json';
 import jsonDataTimeLevelPlayer from '../data/time-level-player.json';
@@ -28,8 +30,8 @@ import jsonDataRecordsMongoAttemptsPerLevel from '../data/recordsMongoAttemptsPe
 import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
-import axios from 'axios';
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 class JsonObject {
   constructor(data) {
@@ -53,25 +55,24 @@ props.socket.on('message', (msg) => {
   console.log('Message received from server:', msg);
 });
 
-props.socket.on('newData', (updatedData) => {
+props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un array de trazas
   console.log('Datos actualizados: ', updatedData);
 
   if (initialData.value) {
-    initialData.value = initialData.value.concat(updatedData);
-    console.log(initialData.value);
-
-    // Si hay un temporizador en curso, cancela su ejecución para evitar redundancias
-    if (timerId) {
-      console.log(timerId + "timer")
-      clearTimeout(timerId);
+    const realInitialData = initialData.value.data.map(proxy => { return proxy }); // Para poder usar concat
+    const updatedDataProxy = new Proxy(updatedData, {
+      // Define los handlers para el proxy si es necesario
+    });
+    initialData.value.data = realInitialData.concat(updatedDataProxy);
+  
+    if(!timerId){ 
+      /* La primera traza que recibe, inicializa un temporizador de X segundos,
+         y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
+      timerId = setTimeout(() => {
+        realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
+        timerId = null;
+      }, 10000);
     }
-
-    // Configura un temporizador para calcular las métricas después de un cierto tiempo
-    timerId = setTimeout(() => {
-      realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
-      initialData.value = new JsonObject([]); // Restablece la lista de eventos para comenzar a acumular nuevos eventos
-      timerId = null; // Restablece el temporizador a null
-    }, 3000);
   }
 });
 
@@ -91,15 +92,6 @@ const fetchDataFromMongoDB = async () => {
     });
     initialData.value = new JsonObject(response.data) // Guardo los eventos que leo la primera vez,que pasa si es vacio?
     realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
-
-    // Ordenar por nameObject para pasarselo ordenado al componente StackedBarChart
-    realChartData.value = realChartData.value.sort((a, b) => {
-      if (a.nameObject < b.nameObject)
-        return -1;
-      if (a.nameObject > b.nameObject)
-        return 1;
-      return 0;
-    });
   } catch (error) {
     console.error('Error al obtener los datos:', error);
   }

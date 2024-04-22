@@ -8,7 +8,7 @@
 <script setup>
 import c3 from 'c3';
 import 'c3/c3.css';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
     data: {
@@ -35,6 +35,11 @@ onUnmounted(() => {
     if (chart.value) {
         chart.value.destroy();
     }
+});
+
+// Watch for changes in the data prop
+watch(() => props.data, (newData) => {
+    drawBarChart(newData, props.chartId);
 });
 
 const drawBarChart = (data, chartId) => {

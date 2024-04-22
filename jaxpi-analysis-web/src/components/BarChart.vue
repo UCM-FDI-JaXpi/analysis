@@ -46,10 +46,10 @@ const drawBarChart = (data, chartId) => {
   const yAxisData = data.map(item => item.completionTime || item.value);
 
   const names = {
-    'bar-chart1': 'Score',
-    'bar-chart2': 'Time',
+    'bar-chart1': 'Time',
+    'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time (ms)',
-    'bar-chart4': 'Time (ms)'
+    'bar-chart4': 'Score'
   };
 
   const chartData = [

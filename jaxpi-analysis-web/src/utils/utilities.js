@@ -75,11 +75,10 @@ export function calculateAttemptsPerLevel(jsonData) {
 
     // Extraer los objetos del array Proxy
     const realObjects = jsonData.map(proxy => { return proxy });
-
     const sortedEvents = realObjects.sort((a, b) => {
         return new Date(a.timestamp.$date) - new Date(b.timestamp.$date);
     });
-    
+
     sortedEvents.forEach(event => {
         const verbId = event.verb.id;
         const objectName = event.object.definition.name["en-us"];
@@ -110,5 +109,15 @@ export function calculateAttemptsPerLevel(jsonData) {
                 failedAttempts: failedAttempts[level]
             });
         });
+
+    // Sort attemptsObject by nameObject
+    attemptsObject = attemptsObject.sort((a, b) => {
+        if (a.nameObject < b.nameObject)
+            return -1;
+        if (a.nameObject > b.nameObject)
+            return 1;
+        return 0;
+    });
+
     return attemptsObject;
 }
