@@ -1,15 +1,35 @@
 <template>
   <div id="app">
-    <router-view :socket="socket"></router-view>
+    <router-view :socket="socket" :userData="userData"></router-view>
   </div>
 </template>
 
 <script setup>
-import { onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
 import io from "socket.io-client"
+import axios from 'axios';
 
-// Create the Socket.io instance and send a 'connection' event to the server
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3000"); // Create the Socket.io instance and send a 'connection' event to the server
+const userData = ref(null);
+
+onMounted(() => {
+  fetchUserFromMongoDB().then(data => {
+    userData.value = data;
+    socket.emit('authenticate', data);
+  });
+});
+
+const fetchUserFromMongoDB = async () => {
+  try {
+    const user = await axios.get('http://localhost:3000/api/session', {
+      withCredentials: true
+    });
+    console.log('Datos del usuario:', user.data);
+    return user.data;
+  } catch (error) {
+    console.error('Error al obtener los datos del usuario:', error);
+  }
+};
 
 onBeforeUnmount(() => {
   socket.disconnect(); // Close the websocket connection by sending a 'disconnect' event to the server

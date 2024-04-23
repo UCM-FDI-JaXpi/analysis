@@ -11,6 +11,8 @@
   <div v-if="activeTab === 0" class="tab-content">
     <StackedBarChart v-if="realChartData.length > 0" :data="realChartData" chartId="stacked-bar-chart1"
                   title="Number of attempts per level REAL" />
+    <BarChart v-if="verbChartData.length > 0" :data="verbChartData" chartId="bar-chart5" title="New: Verb count" />
+
     <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart2" title="Number of attempts per level mongo" />
   </div>
 
@@ -55,15 +57,20 @@ class JsonObject {
   }
 }
 
-const tabs = ref(["Stacked Bar Charts", "Line Charts", "Bar Charts"]);
-const activeTab = ref(0); // Define active tab
-
 const props = defineProps({
-  socket: Object // Receive the WebSocket connection as a prop
+  socket: Object, // Receive the WebSocket connection as a prop
+  userData: Object
 });
 const realChartData = ref([]);
 const initialData = ref(null);
 let timerId = null;
+
+const tabs = ref(["Relevant Charts", "Line Charts", "Bar Charts"]);
+const activeTab = ref(0); // Define active tab
+
+// Para el recuento de verbos
+const verbCountData = ref({});
+const verbChartData = ref([]);
 
 // Data received from server
 props.socket.on('message', (msg) => {
@@ -72,6 +79,9 @@ props.socket.on('message', (msg) => {
 
 props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un array de trazas
   console.log('Datos actualizados: ', updatedData);
+
+  const verb = updatedData.verb.display['en-us'];
+  verbCountData.value[verb] = (verbCountData.value[verb] || 0) + 1;
 
   if (initialData.value) {
     const realInitialData = initialData.value.data.map(proxy => { return proxy }); // Para poder usar concat
@@ -85,6 +95,10 @@ props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un arr
          y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
       timerId = setTimeout(() => {
         realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
+
+        const verbChartDataArray = Object.entries(verbCountData.value).map(([name, value]) => ({ name, value }));
+        verbChartData.value = prepareDataForCharts(verbChartDataArray);
+
         timerId = null;
       }, 10000);
     }
@@ -106,6 +120,16 @@ const fetchDataFromMongoDB = async () => {
       withCredentials: true
     });
     initialData.value = new JsonObject(response.data) // Guardo los eventos que leo la primera vez,que pasa si es vacio?
+
+    initialData.value.data.forEach(entry => {
+        const verb = entry.verb.display['en-us'];
+        verbCountData.value[verb] = (verbCountData.value[verb] || 0) + 1;
+    });
+
+    // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
+    const verbChartDataArray = Object.entries(verbCountData.value).map(([name, value]) => ({ name, value }));
+    verbChartData.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en fromato estandar
+
     realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
   } catch (error) {
     console.error('Error al obtener los datos:', error);
@@ -140,7 +164,7 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
   background-color: #bfdbf3;
 }
 
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #stacked-bar-chart1, #line-chart1, #stacked-bar-chart2 {
+#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart5, #stacked-bar-chart1, #line-chart1, #stacked-bar-chart2 {
   background-color: rgba(255, 255, 255, 0.8);
   margin: 5px; /* Margin between graphics and container */
 }

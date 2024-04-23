@@ -49,7 +49,8 @@ const drawBarChart = (data, chartId) => {
     'bar-chart1': 'Time',
     'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time (ms)',
-    'bar-chart4': 'Score'
+    'bar-chart4': 'Score',
+    'bar-chart5': 'Times'
   };
 
   const chartData = [
