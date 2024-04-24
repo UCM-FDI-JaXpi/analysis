@@ -1,9 +1,9 @@
 export function calculateLevelCompletionTimes(jsonData) {
     let timestamp;
-    let arrayFlagsStarted = [];
-    let arrayFlagsCompleted = [];
-    let arrayTimes = [];
-    let arrayTimesLoad = [];
+    let arrayFlagsStarted = []; // Para controlar si hubo un started antes de ciertos verbos
+    let arrayFlagsCompleted = []; // Para controlar si hubo un completed antes de ciertos verbos
+    let arrayTimes = []; // Para hacer operaciones auxiliares
+    let arrayTimesLoad = []; // Para guardar los tiempos de las partidas guardadas
     let arrayFinalTimes = [];
 
     const sortedEvents = jsonData.sort((a, b) => {
@@ -11,32 +11,37 @@ export function calculateLevelCompletionTimes(jsonData) {
     });
 
     sortedEvents.forEach(event => {
-        const verbId = event.verb.id;
+        const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con lo ultimo, el verb
         const objectName = event.object.definition.name["en-us"];
 
-        if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/started") {
+        if (verbId === "started") {
             arrayFlagsStarted[objectName] = true;
             arrayFlagsCompleted[objectName] = false;
             timestamp = new Date(event.timestamp.$date);
             arrayTimes[objectName] = 0;
-        } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/exited") {
-            if (arrayFlagsStarted[objectName])
+        } else if (verbId === "exited") {
+            if (arrayFlagsStarted[objectName]) // Guardar el tiempo entre started/loaded -> exited
                 arrayTimes[objectName] += new Date(event.timestamp.$date) - timestamp;
-        } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/loaded") {
+        } else if (verbId === "loaded") {
             if (arrayFlagsStarted[objectName]) {
                 timestamp = new Date(event.timestamp.$date);
-                arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/id_load"]] = arrayTimes[objectName]
+                // Si nunca existió este load, guardo el tiempo hasta el punto guardado, si ya existia, mantengo ese tiempo
+                if(arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]] === 0){ 
+                    // Guardar el tiempo desde el started hasta el punto de guardado
+                    arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]] = arrayTimes[objectName]
+                }
             } else if (arrayFlagsCompleted[objectName]) {
-                arrayTimes[objectName] = arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/id_load"]];
+                arrayTimes[objectName] = arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]];
                 arrayFlagsCompleted[objectName] = false;
             }
-        } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/completed") {
+        } else if (verbId === "completed") {
             if (arrayFlagsStarted[objectName]) {
                 arrayTimes[objectName] += new Date(event.timestamp.$date) - timestamp;
                 arrayFlagsCompleted[objectName] = true;
                 arrayFlagsStarted[objectName] = false;
 
                 if (arrayFinalTimes[objectName]) {
+                    // Como se puede completar varias veces un mismo nivel, elegimos el de menor tiempo
                     if (arrayTimes[objectName] < arrayFinalTimes[objectName])
                         arrayFinalTimes[objectName] = arrayTimes[objectName];
                 } else {
@@ -44,6 +49,9 @@ export function calculateLevelCompletionTimes(jsonData) {
                 }
                 arrayTimes[objectName] = 0;
             }
+        } else if (verbId === "overloaded"){
+             // Guardar el tiempo desde el started hasta el nuevo punto de guardado con el overloaded ya que pisamos el anterior punto de guardado
+             arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]] = arrayTimes[objectName]
         }
     });
 
@@ -80,13 +88,13 @@ export function calculateAttemptsPerLevel(jsonData) {
     });
 
     sortedEvents.forEach(event => {
-        const verbId = event.verb.id;
+        const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con verb
         const objectName = event.object.definition.name["en-us"];
 
-        if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/started") {
+        if (verbId === "started") {
             failedAttempts[objectName]++;
             arrayFlagsStarted[objectName] = true;
-        } else if (verbId === "https://github.com/UCM-FDI-JaXpi/lib/completed" && arrayFlagsStarted[objectName]) {
+        } else if (verbId === "completed" && arrayFlagsStarted[objectName]) {
             successedAttempts[objectName]++;
             arrayFlagsStarted[objectName] = false;
             failedAttempts[objectName]--;

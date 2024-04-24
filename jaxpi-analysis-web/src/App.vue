@@ -15,7 +15,9 @@ const userData = ref(null);
 onMounted(() => {
   fetchUserFromMongoDB().then(data => {
     userData.value = data;
-    socket.emit('authenticate', data);
+    if(data.user){
+      socket.emit('authenticate', data.user.name);
+    }
   });
 });
 

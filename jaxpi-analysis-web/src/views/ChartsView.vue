@@ -128,7 +128,7 @@ const fetchDataFromMongoDB = async () => {
 
     // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
     const verbChartDataArray = Object.entries(verbCountData.value).map(([name, value]) => ({ name, value }));
-    verbChartData.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en fromato estandar
+    verbChartData.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
 
     realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
   } catch (error) {
