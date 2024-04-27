@@ -15,9 +15,12 @@ const userData = ref(null);
 onMounted(() => {
   fetchUserFromMongoDB().then(data => {
     userData.value = data;
-    if(data.user){
+    if(data.user){ // Si no hay conexion con el server, salta al catch
       socket.emit('authenticate', data.user.name);
     }
+  })
+  .catch(error => {
+    console.error('Error al obtener los datos del usuario en el punto de montaje:', error);
   });
 });
 
@@ -29,7 +32,7 @@ const fetchUserFromMongoDB = async () => {
     console.log('Datos del usuario:', user.data);
     return user.data;
   } catch (error) {
-    console.error('Error al obtener los datos del usuario:', error);
+    console.error('Error al obtener los datos del usuario a través de la petición HTTP:', error);
   }
 };
 

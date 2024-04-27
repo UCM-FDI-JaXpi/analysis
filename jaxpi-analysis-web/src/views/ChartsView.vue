@@ -9,11 +9,11 @@
   </div>
   
   <div v-if="activeTab === 0" class="tab-content">
-    <StackedBarChart v-if="realChartData.length > 0" :data="realChartData" chartId="stacked-bar-chart1"
+    <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" :data="dataAttemptsPerLevelPlayer" chartId="stacked-bar-chart1"
                   title="Number of attempts per level REAL" />
-    <BarChart v-if="verbChartData.length > 0" :data="verbChartData" chartId="bar-chart5" title="New: Verb count" />
-
-    <StackedBarChart :data="attemptsPerLevel" chartId="stacked-bar-chart2" title="Number of attempts per level mongo" />
+    <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
+    <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
+              :colorPalette="colorPalettes[1]" />
   </div>
 
   <div v-if="activeTab === 1" class="tab-content">
@@ -21,13 +21,9 @@
   </div>
 
   <div v-if="activeTab === 2" class="tab-content">
-    <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart1"
+    <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart3"
               :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
-    <BarChart :data="dataLevelCompletionTimes" chartId="bar-chart2" title="Completion time per level"
-              :colorPalette="colorPalettes[0]" />
-    <BarChart :data="dataLevelCompletionTimesMongo" chartId="bar-chart3" title="Completion time per level MONGO"
-              :colorPalette="colorPalettes[1]" />
-    <BarChart :data="dataJson" chartId="bar-chart4" title="Players score" />
+
   </div>
 </template>
 
@@ -36,11 +32,8 @@ import BarChart from '../components/BarChart.vue';
 import LineChart from '../components/LineChart.vue';
 import StackedBarChart from '../components/StackedBarChart.vue';
 
-import jsonData from '../data/data.json';
 import jsonDataTimeLevelPlayer from '../data/time-level-player.json';
-import jsonDataExample from '../data/example.json';
 import jsonDataRecordsMongo from '../data/recordsMongo.json';
-import jsonDataRecordsMongoAttemptsPerLevel from '../data/recordsMongoAttemptsPerLevel.json';
 import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
@@ -61,7 +54,7 @@ const props = defineProps({
   socket: Object, // Receive the WebSocket connection as a prop
   userData: Object
 });
-const realChartData = ref([]);
+const dataAttemptsPerLevelPlayer = ref([]);
 const initialData = ref(null);
 let timerId = null;
 
@@ -69,8 +62,8 @@ const tabs = ref(["Relevant Charts", "Line Charts", "Bar Charts"]);
 const activeTab = ref(0); // Define active tab
 
 // Para el recuento de verbos
-const verbCountData = ref({});
-const verbChartData = ref([]);
+const verbCount = ref({});
+const dataVerbCount = ref([]);
 
 // Data received from server
 props.socket.on('message', (msg) => {
@@ -81,7 +74,7 @@ props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un arr
   console.log('Datos actualizados: ', updatedData);
 
   const verb = updatedData.verb.display['en-us'];
-  verbCountData.value[verb] = (verbCountData.value[verb] || 0) + 1;
+  verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
 
   if (initialData.value) {
     const realInitialData = initialData.value.data.map(proxy => { return proxy }); // Para poder usar concat
@@ -94,10 +87,10 @@ props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un arr
       /* La primera traza que recibe, inicializa un temporizador de X segundos,
          y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
       timerId = setTimeout(() => {
-        realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
+        dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
 
-        const verbChartDataArray = Object.entries(verbCountData.value).map(([name, value]) => ({ name, value }));
-        verbChartData.value = prepareDataForCharts(verbChartDataArray);
+        const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+        dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
 
         timerId = null;
       }, 10000);
@@ -123,16 +116,16 @@ const fetchDataFromMongoDB = async () => {
 
     initialData.value.data.forEach(entry => {
         const verb = entry.verb.display['en-us'];
-        verbCountData.value[verb] = (verbCountData.value[verb] || 0) + 1;
+        verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
     });
 
     // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
-    const verbChartDataArray = Object.entries(verbCountData.value).map(([name, value]) => ({ name, value }));
-    verbChartData.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
+    const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+    dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
 
-    realChartData.value = calculateAttemptsPerLevel(initialData.value.getData());
+    dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
   } catch (error) {
-    console.error('Error al obtener los datos:', error);
+    console.error('Error al obtener los datos de http://localhost:3000/records', error);
   }
 };
 
@@ -144,18 +137,11 @@ function prepareDataForCharts(jsonData) {
     value: entry.value || entry.time || entry.score
   }));
 }
-const dataJson = prepareDataForCharts(jsonData) //For data.json - the data in the correct format to paint on the bar chart
 const dataTimeLevelPlayer = prepareDataForCharts(jsonDataTimeLevelPlayer.levels) //For time-level-player.json
-
-const dataLevelCompletionTimes = calculateLevelCompletionTimes(jsonDataExample); //For example.json - the data in the correct format to paint on the bar chart
-const dataLevelCompletionTimesMongo = calculateLevelCompletionTimes(jsonDataRecordsMongo); //For recordsMongo.json
-
-/*********************************************** For StackedBarChart ****************************************************/
-const attemptsPerLevel = calculateAttemptsPerLevel(jsonDataRecordsMongoAttemptsPerLevel); //For recordsMongoAttemptsPerLevel.json
+const dataLevelCompletionTimesMongoPlayer = calculateLevelCompletionTimes(jsonDataRecordsMongo); //For recordsMongo.json
 
 /************************************************** For LineChart *******************************************************/
-const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) //For score-session-player.json - the data in the correct format to paint on the bar chart
-
+const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) //For score-session-player.json - the data in the correct format
 </script>
 
 <style>
@@ -164,7 +150,7 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
   background-color: #bfdbf3;
 }
 
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart5, #stacked-bar-chart1, #line-chart1, #stacked-bar-chart2 {
+#bar-chart1, #bar-chart2, #bar-chart3, #stacked-bar-chart1, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
   margin: 5px; /* Margin between graphics and container */
 }
