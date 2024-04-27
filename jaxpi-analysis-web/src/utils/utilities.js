@@ -129,3 +129,40 @@ export function calculateAttemptsPerLevel(jsonData) {
 
     return attemptsObject;
 }
+
+// Unused function yet, to calculate score/level or score/session or score/day
+export function calculateScorePerLevel(jsonData) { //Para un completed level
+    let scorePerLevel = {};
+
+    // Procesar los datos para calcular el puntaje por nivel
+    jsonData.forEach(event => {
+        const objectName = event.object.definition.name["en-us"]; // Level X
+        const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // completed para coger el score
+        let score;
+        if(verbId === "completed"){
+            score = event.score;
+        }
+        if (score && objectName) {
+            if (!scorePerLevel[objectName]) {
+                scorePerLevel[objectName] = {
+                    bestScore: Number.MIN_SAFE_INTEGER,
+                    worstScore: Number.MAX_SAFE_INTEGER
+                };
+            }
+            
+            if (score > scorePerLevel[objectName].bestScore) {
+                scorePerLevel[objectName].bestScore = score;
+            }
+            if (score < scorePerLevel[objectName].worstScore) {
+                scorePerLevel[objectName].worstScore = score;
+            }
+        }
+    });
+
+    // Formatear los datos para las gráficas
+    return Object.keys(scorePerLevel).map(level => ({
+        nameObject: level,
+        bestScore: scorePerLevel[level].bestScore,
+        worstScore: scorePerLevel[level].worstScore
+    }));
+}
