@@ -14,6 +14,15 @@
     <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
     <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
               :colorPalette="colorPalettes[1]" />
+    <div class="search-table">
+      <form id="search">
+        Search <input name="query" v-model="searchQuery">
+      </form>
+      <DataTable
+        :data="tableData"
+        :columns="tableColumns"
+        :filter-key="searchQuery"/>
+    </div>
   </div>
 
   <div v-if="activeTab === 1" class="tab-content">
@@ -31,6 +40,7 @@
 import BarChart from '../components/BarChart.vue';
 import LineChart from '../components/LineChart.vue';
 import StackedBarChart from '../components/StackedBarChart.vue';
+import DataTable from '../components/DataTable.vue';
 
 import jsonDataTimeLevelPlayer from '../data/time-level-player.json';
 import jsonDataRecordsMongo from '../data/recordsMongo.json';
@@ -39,6 +49,15 @@ import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+
+const searchQuery = ref('')
+const tableColumns = ['users', 'numberOfStatements', 'lastStatementSend']
+const tableData = [
+  { users: 'Chuck Norris', numberOfStatements: Infinity },
+  { users: 'Bruce Lee', numberOfStatements: 9000 },
+  { users: 'Jackie Chan', numberOfStatements: 7000 },
+  { users: 'Jet Li', numberOfStatements: 8000 }
+]
 
 class JsonObject {
   constructor(data) {
@@ -112,18 +131,28 @@ const fetchDataFromMongoDB = async () => {
     const response = await axios.get('http://localhost:3000/records', {
       withCredentials: true
     });
-    initialData.value = new JsonObject(response.data) // Guardo los eventos que leo la primera vez,que pasa si es vacio?
+    const userType = props.userData.user.usr_type;
 
-    initialData.value.data.forEach(entry => {
-        const verb = entry.verb.display['en-us'];
-        verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-    });
+    if (userType === 'student') {
+      console.log('Im student')
+      initialData.value = new JsonObject(response.data)
+      initialData.value.data.forEach(entry => {
+          const verb = entry.verb.display['en-us'];
+          verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+      });
 
-    // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
-    const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-    dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
+      // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
+      const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+      dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
 
-    dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
+      dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
+    } else if (userType === 'teacher') {
+      console.log('Im teacher')
+      console.log(response.data)
+
+    } else if (userType === 'dev'){
+      console.log('Im dev')
+    }
   } catch (error) {
     console.error('Error al obtener los datos de http://localhost:3000/records', error);
   }
