@@ -14,7 +14,7 @@
     <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
     <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
               :colorPalette="colorPalettes[1]" />
-    <div  v-if="dataTable.length > 0" class="search-table">
+    <div v-if="dataTable.length > 0" class="search-table">
       <form id="search">
         Search <input name="query" v-model="searchQuery">
       </form>
@@ -157,31 +157,31 @@ const fetchDataFromMongoDB = async () => {
     } else if (userType === 'teacher') {
       console.log('Im teacher')
       console.log(response.data)
-      
+
       // For DataTable
       dataTableNoFiltered.value = response.data.map(item => {
         const actors = item.actors.map(actor => {
-          // Para cada actor, nos quedamos con 'studentName' y con algunos campos del array 'statements'
-          return {
-            studentName: actor.studentName,
-            statements: actor.statements.map(statement => ({
-              verb: statement.verb,
-              timestamp: statement.timestamp
-            }))
-          };
+            // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
+            actor.statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            const statements = actor.statements.map(statement => ({
+                verb: statement.verb,
+                timestamp: statement.timestamp
+            }));
+            return { // Para cada actor, nos quedamos con 'studentName' y con algunos campos del array 'statements' 
+              studentName: actor.studentName,
+              statements };
         });
-        // Devolvemos lo mismo que nos dio el back pero solo con los campos necesarios 
-        return {
-            actors: actors,
-            _id: item._id
-          };
+        return { // Devolvemos lo mismo que nos dio el back pero solo con los campos necesarios 
+          actors,
+          _id: item._id };
       });
-      console.log(dataTableNoFiltered.value)
+      console.log(dataTableNoFiltered.value);
 
       dataTable.value = dataTableNoFiltered.value.flatMap(item => {
         return item.actors.map(actor => { 
-          //Comprueba si el actor tiene statements, si los tiene devuelve el ultimo timestamp (en ppio estan ordenados por timestamp en el back), sino devuelve null
-          const lastStatement = actor.statements.length > 0 ? actor.statements[actor.statements.length - 1].timestamp : null;
+          // Comprueba si el actor tiene statements, si los tiene devuelve el primer timestamp que es el mas reciente, sino devuelve null
+          const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
           return {
             users: actor.studentName,
             numberOfStatements: actor.statements.length,
