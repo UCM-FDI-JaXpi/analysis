@@ -5,21 +5,21 @@
                 <th v-for="key in columns" :key="key"
                     @click="sortBy(key)"
                     :class="{ active: sortKey == key }">
-                    {{ capitalize(key) }}
+                    {{ columnTitles[key] }}
                     <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
                     </span>
                 </th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="entry in filteredData" :key="entry.id">
-                <td v-for="key in columns" :key="`_${entry.id}_${key}`">
-                    {{ entry[key] }}
+            <tr v-for="entry in filteredData" :key="entry.users">
+                <td v-for="key in columns" :key="`_${entry.users}_${key}`">
+                    {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }}
                 </td>
             </tr>
         </tbody>
     </table>
-    <p v-else>No matches found.</p>
+    <p v-else>No matches found</p>
 </template>
 
 <script setup>
@@ -28,6 +28,7 @@ import { ref, computed } from 'vue'
 const props = defineProps({
     data: Array,
     columns: Array,
+    columnTitles: Object,
     filterKey: String
 })
 
@@ -63,9 +64,14 @@ function sortBy(key) {
     sortOrders.value[key] *= -1
 }
 
-function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
+// To format the timestamp in a readable format
+function formatTimestamp(timestamp) {
+    return new Date(timestamp).toLocaleString();
 }
+
+/*function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}*/
 </script>
 
 <style>
@@ -80,7 +86,7 @@ td {
 }
 
 th,td {
-    min-width: 120px;
+    min-width: 145px;
     padding: 10px 20px;
 }
 

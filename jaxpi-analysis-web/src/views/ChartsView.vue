@@ -14,13 +14,14 @@
     <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
     <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
               :colorPalette="colorPalettes[1]" />
-    <div class="search-table">
+    <div  v-if="dataTable.length > 0" class="search-table">
       <form id="search">
         Search <input name="query" v-model="searchQuery">
       </form>
       <DataTable
-        :data="tableData"
+        :data="dataTable"
         :columns="tableColumns"
+        :columnTitles="dataTableColumnTitles"
         :filter-key="searchQuery"/>
     </div>
   </div>
@@ -32,7 +33,6 @@
   <div v-if="activeTab === 2" class="tab-content">
     <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart3"
               :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
-
   </div>
 </template>
 
@@ -51,13 +51,20 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const searchQuery = ref('')
-const tableColumns = ['users', 'numberOfStatements', 'lastStatementSend']
-const tableData = [
+const tableColumns = ['users', 'numberOfStatements', 'lastTimestamp']
+const dataTableColumnTitles = {
+  users: 'Users',
+  numberOfStatements: 'Number of statements',
+  lastTimestamp: 'Last statement send'
+};
+const dataTable = ref([]);
+/*  = [
   { users: 'Chuck Norris', numberOfStatements: Infinity },
   { users: 'Bruce Lee', numberOfStatements: 9000 },
   { users: 'Jackie Chan', numberOfStatements: 7000 },
   { users: 'Jet Li', numberOfStatements: 8000 }
-]
+] */
+const dataTableNoFiltered = ref([]);
 
 class JsonObject {
   constructor(data) {
@@ -146,9 +153,45 @@ const fetchDataFromMongoDB = async () => {
       dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
 
       dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
+
     } else if (userType === 'teacher') {
       console.log('Im teacher')
       console.log(response.data)
+      
+      // For DataTable
+      dataTableNoFiltered.value = response.data.map(item => {
+        const actors = item.actors.map(actor => {
+          // Para cada actor, nos quedamos con 'studentName' y con algunos campos del array 'statements'
+          return {
+            studentName: actor.studentName,
+            statements: actor.statements.map(statement => ({
+              verb: statement.verb,
+              timestamp: statement.timestamp
+            }))
+          };
+        });
+        // Devolvemos lo mismo que nos dio el back pero solo con los campos necesarios 
+        return {
+            actors: actors,
+            _id: item._id
+          };
+      });
+      console.log(dataTableNoFiltered.value)
+
+      dataTable.value = dataTableNoFiltered.value.flatMap(item => {
+        return item.actors.map(actor => { 
+          //Comprueba si el actor tiene statements, si los tiene devuelve el ultimo timestamp (en ppio estan ordenados por timestamp en el back), sino devuelve null
+          const lastStatement = actor.statements.length > 0 ? actor.statements[actor.statements.length - 1].timestamp : null;
+          return {
+            users: actor.studentName,
+            numberOfStatements: actor.statements.length,
+            lastTimestamp: lastStatement
+          };
+        });
+      }).sort((a, b) => { // Sort by timestamp, from latest to oldest
+          return new Date(b.lastTimestamp) - new Date(a.lastTimestamp);
+      });
+      console.log(dataTable.value)
 
     } else if (userType === 'dev'){
       console.log('Im dev')
