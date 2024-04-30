@@ -15,6 +15,10 @@
     <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
               :colorPalette="colorPalettes[1]" />
     <div v-if="dataTable.length > 0" class="search-table">
+      <select v-model="selectedClass">
+        <option disabled value="">Please select a class</option>
+        <option v-for="classData in classOptions" :key="classData" :value="classData">{{ classData }}</option>
+      </select>
       <form id="search">
         Search <input name="query" v-model="searchQuery">
       </form>
@@ -47,7 +51,7 @@ import jsonDataRecordsMongo from '../data/recordsMongo.json';
 import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 
 const searchQuery = ref('')
@@ -58,12 +62,6 @@ const dataTableColumnTitles = {
   lastTimestamp: 'Last statement send'
 };
 const dataTable = ref([]);
-/*  = [
-  { users: 'Chuck Norris', numberOfStatements: Infinity },
-  { users: 'Bruce Lee', numberOfStatements: 9000 },
-  { users: 'Jackie Chan', numberOfStatements: 7000 },
-  { users: 'Jet Li', numberOfStatements: 8000 }
-] */
 const dataTableNoFiltered = ref([]);
 
 class JsonObject {
@@ -90,6 +88,10 @@ const activeTab = ref(0); // Define active tab
 // Para el recuento de verbos
 const verbCount = ref({});
 const dataVerbCount = ref([]);
+
+// For select-dropdown
+const selectedClass = ref('');
+const classOptions = ref([]);
 
 // Data received from server
 props.socket.on('message', (msg) => {
@@ -158,6 +160,13 @@ const fetchDataFromMongoDB = async () => {
       console.log('Im teacher')
       console.log(response.data)
 
+      classOptions.value = response.data.map(classData => classData._id); // Save the ids of the different classes of a teacher
+      classOptions.value.sort(); // Sort by alphabetical order
+
+      if (classOptions.value.length > 0 && !selectedClass.value) { // Set the first class by default
+        selectedClass.value = classOptions.value[0];
+      }
+
       // For DataTable
       dataTableNoFiltered.value = response.data.map(item => {
         const actors = item.actors.map(actor => {
@@ -173,24 +182,12 @@ const fetchDataFromMongoDB = async () => {
               statements };
         });
         return { // Devolvemos lo mismo que nos dio el back pero solo con los campos necesarios 
-          actors,
-          _id: item._id };
+          _id: item._id,
+          actors};
       });
-      console.log(dataTableNoFiltered.value);
-
-      dataTable.value = dataTableNoFiltered.value.flatMap(item => {
-        return item.actors.map(actor => { 
-          // Comprueba si el actor tiene statements, si los tiene devuelve el primer timestamp que es el mas reciente, sino devuelve null
-          const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
-          return {
-            users: actor.studentName,
-            numberOfStatements: actor.statements.length,
-            lastTimestamp: lastStatement
-          };
-        });
-      }).sort((a, b) => { // Sort by timestamp, from latest to oldest
-          return new Date(b.lastTimestamp) - new Date(a.lastTimestamp);
-      });
+      console.log(dataTableNoFiltered.value)
+      // Filtrar los datos para la clase seleccionada
+      filterDataTable(selectedClass.value);
       console.log(dataTable.value)
 
     } else if (userType === 'dev'){
@@ -200,6 +197,26 @@ const fetchDataFromMongoDB = async () => {
     console.error('Error al obtener los datos de http://localhost:3000/records', error);
   }
 };
+
+const filterDataTable = (selectedClass) => {
+  dataTable.value = dataTableNoFiltered.value.filter(item => item._id === selectedClass)
+    .flatMap(item => item.actors.map(actor => {
+      const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
+      return {
+        users: actor.studentName,
+        numberOfStatements: actor.statements.length,
+        lastTimestamp: lastStatement
+      };
+    }))
+    .sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp));
+};
+
+// Lógica para manejar cambios en la clase seleccionada
+watch(selectedClass, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    filterDataTable(newValue);
+  }
+});
 
 /**************************************************** For BarChart *******************************************************/
 const colorPalettes = [['#65DB1C'], ['#6B8CFF']];
