@@ -1,5 +1,5 @@
 <template>
-    <table v-if="filteredData.length">
+    <table>
         <thead>
             <tr>
                 <th v-for="key in columns" :key="key"
@@ -11,15 +11,22 @@
                 </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody v-if="filteredData.length">
             <tr v-for="entry in filteredData" :key="entry.users">
                 <td v-for="key in columns" :key="`_${entry.users}_${key}`">
                     {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }}
                 </td>
             </tr>
         </tbody>
+        <tbody v-else>
+            <tr>
+                <td v-for="key in columns" :key="key"> <!-- Renderizar celdas vacías para cada columna -->
+                    &nbsp;
+                </td>
+            </tr>
+        </tbody>
     </table>
-    <p v-else>No matches found</p>
+    <p v-if="filteredData.length === 0">No matches found</p>
 </template>
 
 <script setup>
@@ -86,8 +93,8 @@ td {
 }
 
 th,td {
-    min-width: 145px;
     padding: 10px 20px;
+    text-align: center;
 }
 
 th {

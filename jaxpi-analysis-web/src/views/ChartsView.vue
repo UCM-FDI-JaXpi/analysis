@@ -15,18 +15,18 @@
     <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
               :colorPalette="colorPalettes[1]" />
     <div v-if="dataTable.length > 0" class="search-table">
-      <select v-model="selectedClass">
+      <h2>Last statements received</h2>
+      <select v-model="selectedClass" id="classSelect">
         <option disabled value="">Please select a class</option>
         <option v-for="classData in classOptions" :key="classData" :value="classData">{{ classData }}</option>
       </select>
       <form id="search">
         Search <input name="query" v-model="searchQuery">
       </form>
-      <DataTable
-        :data="dataTable"
-        :columns="tableColumns"
-        :columnTitles="dataTableColumnTitles"
-        :filter-key="searchQuery"/>
+      <DataTable :data="dataTable"
+                 :columns="tableColumns"
+                 :columnTitles="dataTableColumnTitles"
+                 :filter-key="searchQuery"/>
     </div>
   </div>
 
@@ -241,7 +241,7 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
 
 #bar-chart1, #bar-chart2, #bar-chart3, #stacked-bar-chart1, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
-  margin: 5px; /* Margin between graphics and container */
+  min-width: 415px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
 /* Add styling for tabs */
@@ -254,7 +254,6 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
   margin-right: 1px;
   cursor: pointer;
   border: none;
-  /*background-color: transparent;*/
 }
 
 .tabs button.active {
@@ -262,9 +261,18 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
 }
 
 .tab-content {
-  display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
-  background-color: #79c1fd;
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
+  gap: 50px; /* Espacio entre los elementos */
   padding: 10px;
+  background-color: #79c1fd;
+}
+
+.search-table select {
+  margin-bottom: 10px; /* Agrega espacio entre el select y el form */
+}
+
+.search-table form {
+  margin-bottom: 10px; /* Agrega espacio entre el form y la tabla */
 }
 </style>
