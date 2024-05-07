@@ -34,8 +34,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, defineEmits } from 'vue'
+
+const emit = defineEmits(['student-selected']); // Definir evento personalizado
 
 const props = defineProps({
     data: Array,
@@ -87,12 +88,11 @@ function formatTimestamp(timestamp) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }*/
 
-const router = useRouter()
-
 function showStudentDetail(studentName) {
     console.log(studentName)
-  router.push({ name: 'StudentDetailView', params: { name: studentName } })
+    emit('student-selected', studentName); // Emitir evento personalizado con el nombre del estudiante
 }
+
 </script>
 
 <style>

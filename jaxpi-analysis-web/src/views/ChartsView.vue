@@ -26,7 +26,8 @@
       <DataTable :data="dataTableFilteredTeacher"
                  :columns="tableColumnsTeacher"
                  :columnTitles="dataTableColumnTitlesTeacher"
-                 :filter-key="searchQueryTeacher"/>
+                 :filter-key="searchQueryTeacher"
+                 @student-selected="handleStudentSelected"/>
     </div>
   </div>
 
@@ -51,9 +52,13 @@ import jsonDataRecordsMongo from '../data/recordsMongo.json';
 import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
+
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+import { updateSelectedStudent } from '../store/studentStore'
 
+const router = useRouter();
 const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
@@ -61,8 +66,10 @@ const dataTableColumnTitlesTeacher = {
   numberOfStatements: 'Number of statements',
   lastTimestamp: 'Last statement send'
 };
-const dataTableFilteredTeacher = ref([]);
-const dataTableNoFilteredTeacher = ref([]);
+const allData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor
+const dataTableNoFilteredTeacher = ref([]); // Guardo solo algunos campos de response.data, para no pasarle todo
+const dataTableFilteredTeacher = ref([]); // De dataTableNoFilteredTeacher me quedo solo con la selectedClassTeacher y se lo paso a DataTable
+const dataFilteredStudentDetail = ref([]); // Guardo studentName y sus statements, luego junto a selectedClassTeacher se lo paso a StudentDetailView.vue
 
 class JsonObject {
   constructor(data) {
@@ -158,7 +165,8 @@ const fetchDataFromMongoDB = async () => {
 
     } else if (userType === 'teacher') {
       console.log('Im teacher')
-      console.log(response.data)
+      allData.value = response.data;
+
 
       classOptionsTeacher.value = response.data.map(classData => classData._id); // Save the ids of the different classes of a teacher
       classOptionsTeacher.value.sort(); // Sort by alphabetical order
@@ -217,6 +225,24 @@ watch(selectedClassTeacher, (newValue, oldValue) => {
     filterDataTable(newValue);
   }
 });
+
+const filterDataStudentDetail = (selectedClassTeacher, studentName) => { // En dataFilteredStudentDetail: studentName y sus statements
+  dataFilteredStudentDetail.value = allData.value.filter(item => item._id === selectedClassTeacher)
+    .flatMap(item => item.actors)
+    .find(actor => actor.studentName === studentName);
+    console.log(dataFilteredStudentDetail.value)
+};
+
+
+function handleStudentSelected(studentName) {
+  filterDataStudentDetail(selectedClassTeacher.value, studentName)
+  const selectedStudentData = {
+    studentData: dataFilteredStudentDetail.value,
+    selectedClass: selectedClassTeacher.value
+  };
+  updateSelectedStudent(selectedStudentData) // Le paso tanto la selectedClassTeacher como el nombre del estudiante y sus statements / a studentStore.js
+  router.push({ name: 'StudentDetailView', params: { name: studentName} })
+}
 
 /**************************************************** For BarChart *******************************************************/
 const colorPalettes = [['#65DB1C'], ['#6B8CFF']];
