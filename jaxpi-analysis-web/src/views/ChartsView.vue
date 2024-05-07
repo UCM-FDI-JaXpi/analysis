@@ -240,6 +240,7 @@ function handleStudentSelected(studentName) {
     studentData: dataFilteredStudentDetail.value,
     selectedClass: selectedClassTeacher.value
   };
+  console.log(selectedStudentData)
   updateSelectedStudent(selectedStudentData) // Le paso tanto la selectedClassTeacher como el nombre del estudiante y sus statements / a studentStore.js
   router.push({ name: 'StudentDetailView', params: { name: studentName} })
 }

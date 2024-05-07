@@ -52,6 +52,7 @@ const drawBarChart = (data, chartId) => {
 
   const names = {
     'bar-chart1': 'Times',
+    'bar-chart-student-detail1': 'Times',
     'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time'
   };
