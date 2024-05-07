@@ -12,8 +12,12 @@
             </tr>
         </thead>
         <tbody v-if="filteredData.length">
-            <tr v-for="entry in filteredData" :key="entry.users">
-                <td v-for="key in columns" :key="`_${entry.users}_${key}`">
+            <tr v-for="entry in filteredData" :key="entry.student"
+                @click="showStudentDetail(entry.student)"
+                @mouseover="highlightRow = entry.student"
+                @mouseleave="highlightRow = null"
+                :class="{ 'highlight': highlightRow === entry.student }">
+                <td v-for="key in columns" :key="`_${entry.student}_${key}`">
                     {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }}
                 </td>
             </tr>
@@ -31,6 +35,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
     data: Array,
@@ -38,6 +43,8 @@ const props = defineProps({
     columnTitles: Object,
     filterKey: String
 })
+let highlightRow = ref(null)
+
 
 const sortKey = ref('')
 const sortOrders = ref(
@@ -79,17 +86,29 @@ function formatTimestamp(timestamp) {
 /*function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }*/
+
+const router = useRouter()
+
+function showStudentDetail(studentName) {
+    console.log(studentName)
+  router.push({ name: 'StudentDetailView', params: { name: studentName } })
+}
 </script>
 
 <style>
 table {
-    border: 2px solid #42b983;
+    border: 2px solid #4276b9;
     border-radius: 3px;
     background-color: #fff;
 }
-
 td {
-    background-color: #f9f9f9;
+    background-color: #f7f5f5; /* Color por defecto cuando el mouse no está sobre la fila */
+}
+
+/* Estilo para td cuando el mouse está sobre la fila */
+tr.highlight td {
+    background-color: #b4dffca4; /* Color cuando el mouse está sobre la fila */
+    cursor: pointer;
 }
 
 th,td {
@@ -98,7 +117,7 @@ th,td {
 }
 
 th {
-    background-color: #42b983;
+    background-color: #3fa8ee;
     color: rgba(255, 255, 255, 0.66);
     cursor: pointer;
     user-select: none;

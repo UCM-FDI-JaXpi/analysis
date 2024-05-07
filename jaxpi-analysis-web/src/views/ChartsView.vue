@@ -14,19 +14,19 @@
     <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
     <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
               :colorPalette="colorPalettes[1]" />
-    <div v-if="dataTable.length > 0" class="search-table">
+    <div v-if="dataTableFilteredTeacher.length > 0" class="search-table">
       <h2>Last statements received</h2>
-      <select v-model="selectedClass" id="classSelect">
+      <select v-model="selectedClassTeacher" id="class-options-teacher">
         <option disabled value="">Please select a class</option>
-        <option v-for="classData in classOptions" :key="classData" :value="classData">{{ classData }}</option>
+        <option v-for="classData in classOptionsTeacher" :key="classData" :value="classData">{{ classData }}</option>
       </select>
       <form id="search">
-        Search <input name="query" v-model="searchQuery">
+        Search <input name="query-teacher" v-model="searchQueryTeacher">
       </form>
-      <DataTable :data="dataTable"
-                 :columns="tableColumns"
-                 :columnTitles="dataTableColumnTitles"
-                 :filter-key="searchQuery"/>
+      <DataTable :data="dataTableFilteredTeacher"
+                 :columns="tableColumnsTeacher"
+                 :columnTitles="dataTableColumnTitlesTeacher"
+                 :filter-key="searchQueryTeacher"/>
     </div>
   </div>
 
@@ -54,15 +54,15 @@ import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../uti
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 
-const searchQuery = ref('')
-const tableColumns = ['users', 'numberOfStatements', 'lastTimestamp']
-const dataTableColumnTitles = {
-  users: 'Users',
+const searchQueryTeacher = ref('')
+const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
+const dataTableColumnTitlesTeacher = {
+  student: 'Students',
   numberOfStatements: 'Number of statements',
   lastTimestamp: 'Last statement send'
 };
-const dataTable = ref([]);
-const dataTableNoFiltered = ref([]);
+const dataTableFilteredTeacher = ref([]);
+const dataTableNoFilteredTeacher = ref([]);
 
 class JsonObject {
   constructor(data) {
@@ -90,8 +90,8 @@ const verbCount = ref({});
 const dataVerbCount = ref([]);
 
 // For select-dropdown
-const selectedClass = ref('');
-const classOptions = ref([]);
+const selectedClassTeacher = ref('');
+const classOptionsTeacher = ref([]);
 
 // Data received from server
 props.socket.on('message', (msg) => {
@@ -160,15 +160,15 @@ const fetchDataFromMongoDB = async () => {
       console.log('Im teacher')
       console.log(response.data)
 
-      classOptions.value = response.data.map(classData => classData._id); // Save the ids of the different classes of a teacher
-      classOptions.value.sort(); // Sort by alphabetical order
+      classOptionsTeacher.value = response.data.map(classData => classData._id); // Save the ids of the different classes of a teacher
+      classOptionsTeacher.value.sort(); // Sort by alphabetical order
 
-      if (classOptions.value.length > 0 && !selectedClass.value) { // Set the first class by default
-        selectedClass.value = classOptions.value[0];
+      if (classOptionsTeacher.value.length > 0 && !selectedClassTeacher.value) { // Set the first class by default
+        selectedClassTeacher.value = classOptionsTeacher.value[0];
       }
 
       // For DataTable
-      dataTableNoFiltered.value = response.data.map(item => {
+      dataTableNoFilteredTeacher.value = response.data.map(item => {
         const actors = item.actors.map(actor => {
             // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
             actor.statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -185,10 +185,10 @@ const fetchDataFromMongoDB = async () => {
           _id: item._id,
           actors};
       });
-      console.log(dataTableNoFiltered.value)
+      console.log(dataTableNoFilteredTeacher.value)
       // Filtrar los datos para la clase seleccionada
-      filterDataTable(selectedClass.value);
-      console.log(dataTable.value)
+      filterDataTable(selectedClassTeacher.value);
+      console.log(dataTableFilteredTeacher.value)
 
     } else if (userType === 'dev'){
       console.log('Im dev')
@@ -198,12 +198,12 @@ const fetchDataFromMongoDB = async () => {
   }
 };
 
-const filterDataTable = (selectedClass) => {
-  dataTable.value = dataTableNoFiltered.value.filter(item => item._id === selectedClass)
+const filterDataTable = (selectedClassTeacher) => {
+  dataTableFilteredTeacher.value = dataTableNoFilteredTeacher.value.filter(item => item._id === selectedClassTeacher)
     .flatMap(item => item.actors.map(actor => {
       const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
       return {
-        users: actor.studentName,
+        student: actor.studentName,
         numberOfStatements: actor.statements.length,
         lastTimestamp: lastStatement
       };
@@ -212,7 +212,7 @@ const filterDataTable = (selectedClass) => {
 };
 
 // Lógica para manejar cambios en la clase seleccionada
-watch(selectedClass, (newValue, oldValue) => {
+watch(selectedClassTeacher, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     filterDataTable(newValue);
   }
