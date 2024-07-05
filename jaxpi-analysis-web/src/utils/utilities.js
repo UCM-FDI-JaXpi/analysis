@@ -12,7 +12,7 @@ export function calculateLevelCompletionTimes(jsonData) {
 
     sortedEvents.forEach(event => {
         const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con lo ultimo, el verb
-        const objectName = event.object.definition.name["en-us"];
+        const objectName = event.object.definition.name["en-US"];
 
         if (verbId === "started") {
             arrayFlagsStarted[objectName] = true;
@@ -89,7 +89,7 @@ export function calculateAttemptsPerLevel(jsonData) {
 
     sortedEvents.forEach(event => {
         const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con verb
-        const objectName = event.object.definition.name["en-us"];
+        const objectName = event.object.definition.name["en-US"];
 
         if (verbId === "started") {
             failedAttempts[objectName]++;
@@ -136,7 +136,7 @@ export function calculateScorePerLevel(jsonData) { //Para un completed level
 
     // Procesar los datos para calcular el puntaje por nivel
     jsonData.forEach(event => {
-        const objectName = event.object.definition.name["en-us"]; // Level X
+        const objectName = event.object.definition.name["en-US"]; // Level X
         const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // completed para coger el score
         let score;
         if(verbId === "completed"){

@@ -9,7 +9,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/started",
     "display": {
-      "en-us": "started",
+      "en-US": "started",
       "es": "empezó"
     }
   },
@@ -18,11 +18,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       }
     }
@@ -65,7 +65,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/exited",
     "display": {
-      "en-us": "exited",
+      "en-US": "exited",
       "es": "salió"
     }
   },
@@ -74,11 +74,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       }
     }
@@ -121,7 +121,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/loaded",
     "display": {
-      "en-us": "loaded",
+      "en-US": "loaded",
       "es": "cargado"
     }
   },
@@ -130,11 +130,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       },
       "extensions": {
@@ -180,7 +180,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/exited",
     "display": {
-      "en-us": "exited",
+      "en-US": "exited",
       "es": "salió"
     }
   },
@@ -189,11 +189,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       }
     }
@@ -236,7 +236,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/loaded",
     "display": {
-      "en-us": "loaded",
+      "en-US": "loaded",
       "es": "cargado"
     }
   },
@@ -245,11 +245,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       },
       "extensions": {
@@ -295,7 +295,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/completed",
     "display": {
-      "en-us": "completed",
+      "en-US": "completed",
       "es": "completado"
     }
   },
@@ -304,11 +304,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       },
       "extensions": {
@@ -354,7 +354,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/started",
     "display": {
-      "en-us": "started",
+      "en-US": "started",
       "es": "empezó"
     }
   },
@@ -363,11 +363,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 2",
+        "en-US": "Level 2",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       }
     }
@@ -410,7 +410,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/jumped",
     "display": {
-      "en-us": "jumped",
+      "en-US": "jumped",
       "es": "saltado"
     }
   },
@@ -419,11 +419,11 @@
     "definition": {
       "type": "Non-playable character",
       "name": {
-        "en-us": "Bowser",
+        "en-US": "Bowser",
         "es": "Bowser"
       },
       "description": {
-        "en-us": "Bowser is the main antagonist of the game",
+        "en-US": "Bowser is the main antagonist of the game",
         "es": "Bowser es el principal antagonista del juego"
       },
       "extensions": {
@@ -470,7 +470,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/completed",
     "display": {
-      "en-us": "completed",
+      "en-US": "completed",
       "es": "completado"
     }
   },
@@ -479,11 +479,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 2",
+        "en-US": "Level 2",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       },
       "extensions": {
@@ -529,7 +529,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/started",
     "display": {
-      "en-us": "started",
+      "en-US": "started",
       "es": "empezó"
     }
   },
@@ -538,11 +538,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       }
     }
@@ -585,7 +585,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/started",
     "display": {
-      "en-us": "started",
+      "en-US": "started",
       "es": "empezó"
     }
   },
@@ -594,11 +594,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       }
     }
@@ -641,7 +641,7 @@
   "verb": {
     "id": "https://github.com/UCM-FDI-JaXpi/lib/completed",
     "display": {
-      "en-us": "completed",
+      "en-US": "completed",
       "es": "completado"
     }
   },
@@ -650,11 +650,11 @@
     "definition": {
       "type": "Level",
       "name": {
-        "en-us": "Level 1",
+        "en-US": "Level 1",
         "es": "Nivel 1 completado"
       },
       "description": {
-        "en-us": "You completed level 1!",
+        "en-US": "You completed level 1!",
         "es": "¡Has completado el nivel 1!"
       },
       "extensions": {

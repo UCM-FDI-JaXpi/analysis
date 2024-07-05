@@ -108,7 +108,7 @@ props.socket.on('message', (msg) => {
 props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un array de trazas
   console.log('Datos actualizados: ', updatedData);
 
-  const verb = updatedData.verb.display['en-us'];
+  const verb = updatedData.verb.display['en-US'];
   verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
 
   if (initialData.value) {
@@ -153,7 +153,7 @@ const fetchDataFromMongoDB = async () => {
       console.log('Im student')
       initialData.value = new JsonObject(response.data)
       initialData.value.data.forEach(entry => {
-          const verb = entry.verb.display['en-us'];
+          const verb = entry.verb.display['en-US'];
           verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
       });
 
