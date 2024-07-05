@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <header>
+      <NavBar />
+    </header>
     <router-view :socket="socket" :userData="userData"></router-view>
   </div>
 </template>
@@ -8,6 +11,7 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import io from "socket.io-client"
 import axios from 'axios';
+import NavBar from './components/NavBar.vue';
 
 const socket = io("http://localhost:3000"); // Create the Socket.io instance and send a 'connection' event to the server
 const userData = ref(null);
