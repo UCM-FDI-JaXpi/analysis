@@ -1,16 +1,18 @@
 <template>
-  <div class="student-info">
-    <div class="info-pair">
-      <span class="title">Student:</span> 
-      <span class="value">{{ selectedStudent.studentData.studentName }}</span>
+	<div class="container">
+    <div class="student-info">
+      <div class="info-pair">
+        <span class="title">Student:</span> 
+        <span class="value">{{ selectedStudent.studentData.studentName }}</span>
+      </div>
+      <div class="info-pair">
+        <span class="title">Class:</span> 
+        <span class="value">{{ selectedStudent.selectedClass }}</span>
+      </div>
     </div>
-    <div class="info-pair">
-      <span class="title">Class:</span> 
-      <span class="value">{{ selectedStudent.selectedClass }}</span>
-    </div>
-  </div>
 
-  <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart-student-detail1" title="Verb count" />
+    <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart-student-detail1" title="Verb count" />
+  </div>
 </template>
 
 <script setup>

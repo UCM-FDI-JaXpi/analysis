@@ -1,43 +1,45 @@
 <template>
-  <h1>Charts</h1>
-  <div class="tabs">
-    <button v-for="(tab, index) in tabs" :key="index" 
-              @click="activeTab = index" 
-              :class="{ 'active': activeTab === index }">
-      {{ tab }}
-    </button>
-  </div>
-  
-  <div v-if="activeTab === 0" class="tab-content">
-    <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" :data="dataAttemptsPerLevelPlayer" chartId="stacked-bar-chart1"
-                  title="Number of attempts per level REAL" />
-    <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
-    <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
-              :colorPalette="colorPalettes[1]" />
-    <div v-if="dataTableFilteredTeacher.length > 0" class="search-table">
-      <h2>Last statements received</h2>
-      <select v-model="selectedClassTeacher" id="class-options-teacher">
-        <option disabled value="">Please select a class</option>
-        <option v-for="classData in classOptionsTeacher" :key="classData" :value="classData">{{ classData }}</option>
-      </select>
-      <form id="search">
-        Search <input name="query-teacher" v-model="searchQueryTeacher">
-      </form>
-      <DataTable :data="dataTableFilteredTeacher"
-                 :columns="tableColumnsTeacher"
-                 :columnTitles="dataTableColumnTitlesTeacher"
-                 :filter-key="searchQueryTeacher"
-                 @student-selected="handleStudentSelected"/>
+  <div class="container">
+    <h1>Charts</h1>
+    <div class="tabs">
+      <button v-for="(tab, index) in tabs" :key="index" 
+                @click="activeTab = index" 
+                :class="{ 'active': activeTab === index }">
+        {{ tab }}
+      </button>
     </div>
-  </div>
+    
+    <div v-if="activeTab === 0" class="tab-content">
+      <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" :data="dataAttemptsPerLevelPlayer" chartId="stacked-bar-chart1"
+                    title="Number of attempts per level REAL" />
+      <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
+      <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
+                :colorPalette="colorPalettes[1]" />
+      <div v-if="dataTableFilteredTeacher.length > 0" class="search-table">
+        <h2>Last statements received</h2>
+        <select v-model="selectedClassTeacher" id="class-options-teacher">
+          <option disabled value="">Please select a class</option>
+          <option v-for="classData in classOptionsTeacher" :key="classData" :value="classData">{{ classData }}</option>
+        </select>
+        <form id="search">
+          Search <input name="query-teacher" v-model="searchQueryTeacher">
+        </form>
+        <DataTable :data="dataTableFilteredTeacher"
+                  :columns="tableColumnsTeacher"
+                  :columnTitles="dataTableColumnTitlesTeacher"
+                  :filter-key="searchQueryTeacher"
+                  @student-selected="handleStudentSelected"/>
+      </div>
+    </div>
 
-  <div v-if="activeTab === 1" class="tab-content">
-    <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
-  </div>
+    <div v-if="activeTab === 1" class="tab-content">
+      <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
+    </div>
 
-  <div v-if="activeTab === 2" class="tab-content">
-    <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart3"
-              :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
+    <div v-if="activeTab === 2" class="tab-content">
+      <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart3"
+                :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
+    </div>
   </div>
 </template>
 
