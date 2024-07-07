@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { selectedStudent } from '../store/studentStore'
+import { selectedStudent } from '../stores/studentStore'
 import BarChart from '../components/BarChart.vue';
 import { ref } from 'vue';
 

@@ -58,9 +58,9 @@ import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../uti
 import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import { updateSelectedStudent } from '../store/studentStore'
+import { updateSelectedStudent } from '../stores/studentStore'
 
-const router = useRouter();
+const router = useRouter(); // To navigate from one tab to another
 const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
@@ -236,7 +236,7 @@ const filterDataStudentDetail = (selectedClassTeacher, studentName) => { // En d
 };
 
 
-function handleStudentSelected(studentName) {
+function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
   filterDataStudentDetail(selectedClassTeacher.value, studentName)
   const selectedStudentData = {
     studentData: dataFilteredStudentDetail.value,
@@ -244,7 +244,7 @@ function handleStudentSelected(studentName) {
   };
   console.log(selectedStudentData)
   updateSelectedStudent(selectedStudentData) // Le paso tanto la selectedClassTeacher como el nombre del estudiante y sus statements / a studentStore.js
-  router.push({ name: 'StudentDetailView', params: { name: studentName} })
+  router.push({ name: 'StudentDetailView', params: { name: studentName} }) // Go to StudentDetailView using useRouter
 }
 
 /**************************************************** For BarChart *******************************************************/
