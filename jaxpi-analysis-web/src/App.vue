@@ -3,20 +3,28 @@
     <header>
       <NavBar />
     </header>
-    <router-view :socket="socket" :userData="userData"></router-view>
+    <div class="main-container">
+      <SidebarMenu v-if="showSidebar" />
+      <router-view :socket="socket"></router-view>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
 import io from "socket.io-client"
 import axios from 'axios';
 import NavBar from './components/NavBar.vue';
+import SidebarMenu from './components/SidebarMenu.vue';
 
 const socket = io("http://localhost:3000"); // Create the Socket.io instance and send a 'connection' event to the server
 const userData = ref(null);
+const route = useRoute(); // To navigate from one tab to another
+const authStore = useAuthStore(); // To use Pinia store 
 
-onMounted(() => {
+onMounted(() => { // REVISAR PORQUE YA NO USO ESTE USERDATA CON PINIA (?)
   fetchUserFromMongoDB().then(data => {
     userData.value = data;
     if(data.user){ // Si no hay conexion con el server, salta al catch
@@ -43,9 +51,14 @@ const fetchUserFromMongoDB = async () => {
 onBeforeUnmount(() => {
   socket.disconnect(); // Close the websocket connection by sending a 'disconnect' event to the server
 });
+
+const showSidebar = computed(() => { // In these views we don't want to have SidebarMenu
+  const noSidebarRoutes = ['HomeView', 'AboutUsView', 'LoginView', 'RegisterView'];
+  return authStore.isAuthenticated && !noSidebarRoutes.includes(route.name);
+});
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Arial, sans-serif;
 }

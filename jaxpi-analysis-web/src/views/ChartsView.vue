@@ -55,12 +55,15 @@ import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
 
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
 import { updateSelectedStudent } from '../stores/studentStore'
 
 const router = useRouter(); // To navigate from one tab to another
+const authStore = useAuthStore(); // To use Pinia store 
+
 const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
@@ -84,8 +87,7 @@ class JsonObject {
 }
 
 const props = defineProps({
-  socket: Object, // Receive the WebSocket connection as a prop
-  userData: Object
+  socket: Object // Receive the WebSocket connection as a prop
 });
 const dataAttemptsPerLevelPlayer = ref([]);
 const initialData = ref(null);
@@ -149,9 +151,10 @@ const fetchDataFromMongoDB = async () => {
     const response = await axios.get('http://localhost:3000/records', {
       withCredentials: true
     });
-    const userType = props.userData.user.usr_type;
+    // Obtener el usertype desde el store Pinia
+    const userType = computed(() => authStore.userType);
 
-    if (userType === 'student') {
+    if (userType.value === 'student') {
       console.log('Im student')
       initialData.value = new JsonObject(response.data)
       initialData.value.data.forEach(entry => {
@@ -165,7 +168,7 @@ const fetchDataFromMongoDB = async () => {
 
       dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
 
-    } else if (userType === 'teacher') {
+    } else if (userType.value === 'teacher') {
       console.log('Im teacher')
       allData.value = response.data;
 
@@ -200,7 +203,7 @@ const fetchDataFromMongoDB = async () => {
       filterDataTable(selectedClassTeacher.value);
       console.log(dataTableFilteredTeacher.value)
 
-    } else if (userType === 'dev'){
+    } else if (userType.value === 'dev'){
       console.log('Im dev')
     }
   } catch (error) {

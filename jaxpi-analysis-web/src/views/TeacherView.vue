@@ -1,12 +1,17 @@
 <template>
     <h1>Teacher's view</h1>
-    <h2>Teacher details</h2>
-    <p> Name: </p>
-    <p> Email: </p>
+    <h3>Teacher details</h3>
+    <p> Name: {{ teacher.name }}</p>
+    <p> Email: {{ teacher.email }}</p>
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/authStore';
+import { computed } from 'vue';
+
+const authStore = useAuthStore();
+const teacher = computed(() => authStore.userData);
 </script>
 
-<style>
+<style scoped>
 </style>

@@ -18,7 +18,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '@/stores/authStore';
 
 const authStore = useAuthStore();
 const userType = computed(() => authStore.userType);
@@ -27,7 +27,7 @@ const userType = computed(() => authStore.userType);
 <style scoped>
 .sidebar {
     width: 200px;
-    background-color: #f8f8f8;
+    background-color: #ffcc31;
     padding: 10px;
     display: flex;
     flex-direction: column;
