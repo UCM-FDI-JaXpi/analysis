@@ -4,24 +4,33 @@
         <router-link class="nav-item" to="/charts">Go to Charts</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/login">Login</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>
-        <a v-if="isLoggedIn" class="nav-item" @click="logout">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
+        <a v-if="isLoggedIn" class="nav-item" @click="showModal = true">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
         <router-link class="nav-item" to="/about-us">About us</router-link>
+
+        <ConfirmModal
+          :visible="showModal"
+          @confirm="logout" 
+          @cancel="showModal = false" 
+        />
     </nav>
 </template>
 
 <script setup>
 import { useAuthStore } from '@/stores/authStore';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import ConfirmModal from './ConfirmModal.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
+const showModal = ref(false);
 
 const logout = () => {
   authStore.logout();
   router.push('login'); // Redirigir a la pagina de login
+  showModal.value = false;
 };
 </script>
 
