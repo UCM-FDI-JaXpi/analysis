@@ -1,8 +1,9 @@
 <template>
     <h1>Teacher's view</h1>
-    <h3>Teacher details</h3>
-    <p> Name: {{ teacher.name }}</p>
-    <p> Email: {{ teacher.email }}</p>
+    <h3 v-if="teacher">Teacher details</h3>
+    <p v-if="teacher"> Name: {{ teacher.name }}</p>
+    <p v-if="teacher"> Email: {{ teacher.email }}</p>
+    <p v-else>Please log in as a teacher to view teacher details.</p>
 </template>
 
 <script setup>
