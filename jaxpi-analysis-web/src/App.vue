@@ -27,7 +27,7 @@ const authStore = useAuthStore(); // To use Pinia store
 watch(() => authStore.userData,
   (newValue) => {
     if (newValue) {
-      console.log("Datos del usuario (Pinia):", toRaw(newValue));
+      console.log("Datos del usuario (Pinia):", toRaw(newValue)); // Convertir el objeto Proxy en un objeto plano mas legible que la estructura proxy
       socket.emit('authenticate', newValue.name);
     }
   },

@@ -2,13 +2,27 @@
     <nav class="navbar">
         <router-link class="nav-item" to="/">Home</router-link>
         <router-link class="nav-item" to="/charts">Go to Charts</router-link>
-        <router-link class="nav-item" to="/login">Login</router-link>
-        <router-link class="nav-item" to="/register">Register</router-link>
+        <router-link v-if="!isLoggedIn" class="nav-item" to="/login">Login</router-link>
+        <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>
+        <a v-if="isLoggedIn" class="nav-item" @click="logout">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
         <router-link class="nav-item" to="/about-us">About us</router-link>
     </nav>
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/authStore';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const isLoggedIn = computed(() => authStore.isAuthenticated);
+
+const logout = () => {
+  authStore.logout();
+  router.push('login'); // Redirigir a la pagina de login
+};
 </script>
 
 <style scoped>
@@ -28,12 +42,12 @@
 }
 
 .nav-item:hover,
-.nav-item.router-link-active:hover {
+.nav-item.router-link-exact-active:hover {
   background-color: #7bb3e0; /* Color de fondo al pasar el mouse */
   color: rgba(255, 255, 255, 0.87); /* Color de texto al pasar el mouse */
 }
 
-.nav-item.router-link-active { /* Cuando un link esta seleccionado */
+.nav-item.router-link-exact-active { /* Cuando un link esta seleccionado */
   background-color: transparent;
   color: #ffffff; 
   font-weight: bold;
