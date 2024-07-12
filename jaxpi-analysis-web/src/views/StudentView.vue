@@ -4,7 +4,7 @@
     <p v-if="student"> Name: {{ student.name }}</p>
     <p v-if="student"> Email: {{ student.email }}</p>
     <p v-else>Please log in as a student to view student details.</p>
-    <router-link to="/charts">View Charts</router-link>
+    <router-link v-if="student" to="/charts">View Charts</router-link>
 </template>
 
 <script setup>
@@ -12,7 +12,10 @@ import { useAuthStore } from '@/stores/authStore';
 import { computed } from 'vue';
 
 const authStore = useAuthStore();
-const student = computed(() => authStore.userData);
+const student = computed(() => { // Devuelve todos los datos si usr_type = 'student', sino, null
+    const studentData = authStore.userData
+    return studentData && studentData.usr_type === 'student' ? studentData : null;
+});
 </script>
 
 <style>
