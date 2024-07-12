@@ -7,6 +7,7 @@ import LoginView from '@/views/LoginView.vue'
 import StudentDetailView from '@/views/StudentDetailView.vue'
 import TeacherView from '@/views/TeacherView.vue'
 import StudentView from '@/views/StudentView.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const routes = [
     { path: '/', name: 'HomeView', component: HomeView },
@@ -17,6 +18,7 @@ const routes = [
     { path: '/student-detail/:name', name: 'StudentDetailView', component: StudentDetailView},
     { path: '/teacher', name: 'TeacherView', component: TeacherView },
     { path: '/student', name: 'StudentView', component: StudentView },
+    { path: '/:pathMatch(.*)*', name: 'NotFoundView', component: NotFoundView }, // For undefined routes
 ]
 
 const router = createRouter({
