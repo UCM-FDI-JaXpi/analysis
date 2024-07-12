@@ -4,6 +4,7 @@
     <p v-if="teacher"> Name: {{ teacher.name }}</p>
     <p v-if="teacher"> Email: {{ teacher.email }}</p>
     <p v-else>Please log in as a teacher to view teacher details.</p>
+    <router-link to="/charts">View Charts</router-link>
 </template>
 
 <script setup>

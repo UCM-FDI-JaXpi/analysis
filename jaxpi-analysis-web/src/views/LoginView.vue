@@ -14,7 +14,7 @@
 			<button type="submit">Login</button>
 		</form>
 
-		<a href="/register">Register</a>
+		<router-link to="/register" class="link">Register</router-link>
 	</div>
 </template>
 
@@ -42,7 +42,6 @@ const login = async () => {
 			});
 			const userData = userDataResponse.data.user;
 			console.log("userData: ", userData);
-			authStore.login(userData);
 
 			switch (userData.usr_type) {
 				case 'teacher':
@@ -57,6 +56,7 @@ const login = async () => {
 				default:
 					router.push('/');
 			}
+			authStore.login(userData);
 		} else {
 			console.error('Login failed');
 		}
