@@ -37,11 +37,12 @@ const login = async () => {
 		}, { withCredentials: true });
 
 		if (response.status === 200) {
-			const userDataResponse = await axios.get('http://localhost:3000/api/session', {
+			console.log(response.data.message); // Imprimir  mensaje del servidor (exito)
+			const userDataResponse = await axios.get('http://localhost:3000/api/session', { // podria dar error??
 				withCredentials: true
 			});
 			const userData = userDataResponse.data.user;
-			console.log("userData: ", userData);
+			console.log("Login successful, userData: ", userData);
 
 			switch (userData.usr_type) {
 				case 'teacher':
