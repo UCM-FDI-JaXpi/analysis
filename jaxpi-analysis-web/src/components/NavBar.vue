@@ -4,6 +4,7 @@
         <router-link class="nav-item" to="/charts">Go to Charts</router-link>
         <router-link v-if="isTeacher" class="nav-item" to="/teacher">Teacher View</router-link>
         <router-link v-if="isStudent" class="nav-item" to="/student">Student View</router-link>
+        <router-link v-if="isDev" class="nav-item" to="/dev">Dev View</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/login">Login</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>
         <a v-if="isLoggedIn" class="nav-item" @click="showModal = true">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
@@ -29,6 +30,7 @@ const router = useRouter();
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const isTeacher = computed(() => authStore.userType === 'teacher');
 const isStudent = computed(() => authStore.userType === 'student');
+const isDev = computed(() => authStore.userType === 'dev');
 const showModal = ref(false);
 
 const logout = () => {

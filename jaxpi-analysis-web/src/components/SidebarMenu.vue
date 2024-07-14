@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar">
+    <div v-if="userType === 'teacher' || userType === 'student'" class="sidebar"> <!--Dev no tiene sidebar-->
         <template v-if="userType === 'teacher'">
             <router-link to="/teacher/classes">Classes</router-link>
             <router-link to="/teacher/students">Students</router-link>
@@ -9,9 +9,6 @@
             <router-link to="/student/games">Games stats</router-link>
             <router-link to="/student/classes">Classes stats</router-link>
             <router-link to="/student/profile">Profile</router-link>
-        </template>
-        <template v-else-if="userType === 'dev'">
-            <router-link to="/dev/stats">Players stats</router-link>
         </template>
     </div>
 </template>
@@ -33,8 +30,7 @@ const userType = computed(() => authStore.userType);
     flex-direction: column;
 }
 
-.sidebar a {
-    /* router-link */
+.sidebar a {    /* router-link */
     margin: 10px 0;
     text-decoration: none;
     color: #333;
