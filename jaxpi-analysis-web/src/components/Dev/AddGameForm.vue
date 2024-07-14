@@ -9,7 +9,7 @@
             <textarea v-model="gameData.description" id="description"></textarea>
 
             <button type="submit">Create</button>
-            <button type="button" @click="$emit('cancel')">Cancel</button>
+            <button type="button" @click="cancelForm">Cancel</button>
         </form>
     </div>
 </template>
@@ -17,21 +17,27 @@
 <script setup>
 import { ref } from 'vue';
 
+const emit = defineEmits(['submit', 'cancel']); // Definir los eventos que el componente puede emitir
+
 const gameData = ref({
     name: '',
     description: '',
 });
 
 const addGame = () => {
-    // Emitir evento para agregar el juego con los datos actuales
     const gameToAdd = { ...gameData.value };
     resetForm();
-    return gameToAdd;
+    emit('submit', gameToAdd); // Emitir evento 'submit' con los datos del juego al padre DevView para añadir el juego
 };
 
 const resetForm = () => {
     gameData.value.name = '';
     gameData.value.description = '';
+};
+
+const cancelForm = () => {
+    resetForm();
+    emit('cancel'); // Emitir evento 'cancel' al padre DevView
 };
 </script>
 
@@ -50,11 +56,15 @@ form label {
 
 form input,
 form textarea {
-    width: 100%;
+    width: 40%;
+    display: block;
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+form textarea {
+    height: 7em;
 }
 
 form button {

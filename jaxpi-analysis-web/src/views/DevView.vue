@@ -51,8 +51,12 @@ const selectGame = (game) => {
 
 const handleAddGame = async (gameData) => {
   try {
+    console.log(gameData)
     const response = await axios.post('http://localhost:3000/dev/games', gameData, { //??
-      withCredentials: true
+      withCredentials: true,
+      headers: {
+          'Content-Type': 'application/json',
+      },
     });
     if (response.status === 201) {
       games.value.push(response.data);
