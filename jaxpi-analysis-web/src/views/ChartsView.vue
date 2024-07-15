@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <h1>Charts</h1>
+    <h1 v-if="dev">Charts for Game ID: {{ gameId }}</h1>
     <div class="tabs">
       <button v-for="(tab, index) in tabs" :key="index" 
                 @click="activeTab = index" 
@@ -60,6 +61,10 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { updateSelectedStudent } from '../stores/studentStore'
+
+import { useGamesStore } from '@/stores/gamesStore';
+const gamesStore = useGamesStore();
+const gameId = gamesStore.getSelectedGameId;
 
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store 

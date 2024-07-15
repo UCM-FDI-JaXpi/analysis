@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useGamesStore } from './gamesStore';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -21,7 +22,9 @@ export const useAuthStore = defineStore('auth', {
                 });
 
                 if (response.status === 200) {
-                    this.resetAuthState();
+                    const gamesStore = useGamesStore();
+                    gamesStore.resetGamesState(); // Limpiar gamesStore
+                    this.resetAuthState(); // Limpiar authStore
                     console.log(response.data.message); // Imprimir mensaje del servidor (exito)
                 }
                 else
