@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <h1>Charts</h1>
-    <h1 v-if="dev">Charts for Game ID: {{ gameId }}</h1>
+    <h3 v-if="userType === 'dev' && selectedGame">Game ID: {{ selectedGame.id }}</h3>
+    <h3 v-if="userType === 'dev' && selectedGame">Game name: {{ selectedGame.name }}</h3>
     <div class="tabs">
       <button v-for="(tab, index) in tabs" :key="index" 
                 @click="activeTab = index" 
@@ -60,14 +61,14 @@ import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
-import { updateSelectedStudent } from '../stores/studentStore'
-
 import { useGamesStore } from '@/stores/gamesStore';
-const gamesStore = useGamesStore();
-const gameId = gamesStore.getSelectedGameId;
+import { updateSelectedStudent } from '../stores/studentStore';
 
 const router = useRouter(); // To navigate from one tab to another
-const authStore = useAuthStore(); // To use Pinia store 
+const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
+const userType = computed(() => authStore.userType);
+const gamesStore = useGamesStore();
+const selectedGame = gamesStore.getSelectedGame; // Obtener datos del juego seleccionado desde el store con el gameId
 
 const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
@@ -156,8 +157,6 @@ const fetchDataFromMongoDB = async () => {
     const response = await axios.get('http://localhost:3000/records', {
       withCredentials: true
     });
-    // Obtener el usertype desde el store Pinia
-    const userType = computed(() => authStore.userType);
 
     if (userType.value === 'student') {
       console.log('Im student')

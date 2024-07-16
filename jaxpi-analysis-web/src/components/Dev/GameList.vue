@@ -5,7 +5,7 @@
                 <div class="game-info">
                     <h4>{{ game.name }}</h4>
                     <p>Token: {{ hideToken(game.token) }}</p>
-                    <button @click="copyToken(game.token)">Copy Token</button>
+                    <button @click.stop="copyToken(game.token)">Copy Token</button>
                 </div>
 
             </li>
