@@ -4,7 +4,7 @@
             <li v-for="game in games" :key="game.id" @click="selectGame(game)" class="game-item">
                 <div class="game-info">
                     <h4>{{ game.name }}</h4>
-                    <p>Token: {{ hideToken(game.token) }}</p>
+                    <p>Token: {{ game.token }}</p>
                     <button @click.stop="copyToken(game.token)">Copy Token</button>
                 </div>
 
@@ -24,10 +24,6 @@ const emit = defineEmits(['selectGame'])
 const selectGame = (game) => {
     emit('selectGame', game)
 }
-
-const hideToken = (token) => {
-    return '*'.repeat(token.length);
-};
 
 const copyToken = (token) => { // Copiar al portapapeles del usuario
     navigator.clipboard.writeText(token)
