@@ -175,7 +175,7 @@ const fetchDataFromMongoDB = async () => {
     } else if (userType.value === 'teacher') {
       console.log('Im teacher')
       allData.value = response.data;
-
+      console.log(response.data)
 
       classOptionsTeacher.value = response.data.map(classData => classData._id); // Save the ids of the different classes of a teacher
       classOptionsTeacher.value.sort(); // Sort by alphabetical order
