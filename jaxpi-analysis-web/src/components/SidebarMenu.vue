@@ -1,18 +1,13 @@
 <template>
     <div v-if="userType === 'teacher'" class="sidebar"> <!--Ni Dev ni Student tienen sidebar-->
-        <template v-if="userType === 'teacher'">
-            <router-link to="/teacher/sessions" class="menu-link">Sessions</router-link>
-            <div>
-                <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
-                    Groups
-                    <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
-                </div>
-                <div v-if="isTeacherGroupsSubmenuOpen" class="submenu">
-                    <router-link to="/teacher/groups/groupA" class="submenu-link">A</router-link>
-                    <router-link to="/teacher/groups/groupB" class="submenu-link">B</router-link>
-                </div>
-            </div>
-        </template>
+        <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
+            Groups
+            <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
+        </div>
+        <div v-if="isTeacherGroupsSubmenuOpen" class="submenu">
+            <router-link to="/teacher/groups/groupA" class="submenu-link">A</router-link>
+            <router-link to="/teacher/groups/groupB" class="submenu-link">B</router-link>
+        </div>
     </div>
 </template>
 
