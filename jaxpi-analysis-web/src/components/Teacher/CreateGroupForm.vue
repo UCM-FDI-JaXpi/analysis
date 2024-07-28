@@ -28,8 +28,10 @@
 
 <script setup>
 import { ref, watch } from 'vue';
+import { useGroupStore } from '@/stores/groupStore';
 
 const emit = defineEmits(['submit', 'cancel']);
+const groupStore = useGroupStore();
 
 const groupData = ref({
     groupName: '',
@@ -45,22 +47,29 @@ watch(generationType, (newType) => {
     }
 });
 
-const addGroup = () => {
+const addGroup = async () => {
     const groupToAdd = { ...groupData.value }; // Crea una copia del objeto groupData
-    if (generationType.value === 'manual') {
-        const studentsArray = groupData.value.students.split('\n').map(s => s.trim()).filter(s => s); // Divide la cadena en un array de lineas, luego elimina espacios en blanco antes y despues de cada linea y por ultimo elimina cualquier linea vacia
-        if (studentsArray.length > maxStudents) {
-            alert(`You can only have up to ${maxStudents} students.`);
-            return;
+    try {
+        let createdGroup;
+        if (generationType.value === 'manual') {
+            const studentsArray = groupData.value.students.split('\n').map(s => s.trim()).filter(s => s); // Divide la cadena en un array de lineas, luego elimina espacios en blanco antes y despues de cada linea y por ultimo elimina cualquier linea vacia
+            if (studentsArray.length > maxStudents) {
+                alert(`You can only have up to ${maxStudents} students.`);
+                return;
+            }
+            createdGroup = await groupStore.createGroupManual(groupToAdd.groupName, studentsArray);
+        } else { // random
+            createdGroup = await groupStore.createGroupRandom(groupToAdd.groupName, numNames.value);
         }
-        console.log(groupData.value.students);
-        console.log(studentsArray);
-
-    } else { // random
-
+        alert('Group created successfully!');
+        console.log(createdGroup.students);
+        
+        resetForm();
+        emit('submit', createdGroup);
+    } catch (error) {
+        console.error('There was an error creating the group:', error);
+        alert('There was an error creating the group. Please try again.');
     }
-    resetForm();
-    emit('submit', groupToAdd);
 };
 
 const resetForm = () => {
