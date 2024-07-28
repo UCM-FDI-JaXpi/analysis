@@ -1,8 +1,8 @@
 <template>
-    <h2>Create class</h2>
-    <form @submit.prevent="addClass">
-        <label for="className">Class name:</label>
-        <input type="text" v-model="classData.className" id="className" required />
+    <h2>Create group</h2>
+    <form @submit.prevent="addGroup">
+        <label for="groupName">Group name:</label>
+        <input type="text" v-model="groupData.groupName" id="groupName" required />
 
         <label for="generationType">Choose generation method:</label>
         <select v-model="generationType" id="generationType">
@@ -17,7 +17,7 @@
 
         <div v-if="generationType === 'manual'">
             <label for="students">Students (one per line):</label>
-            <textarea v-model="classData.students" id="students"></textarea>
+            <textarea v-model="groupData.students" id="students"></textarea>
         </div>
 
         <button type="submit">Create</button>
@@ -30,8 +30,8 @@ import { ref, watch } from 'vue';
 
 const emit = defineEmits(['submit', 'cancel']);
 
-const classData = ref({
-    className: '',
+const groupData = ref({
+    groupName: '',
     students: '',
 });
 const generationType = ref('manual');
@@ -39,7 +39,7 @@ const numNames = ref(1);
 
 watch(generationType, (newType) => {
     if (newType === 'random') {
-        classData.value.students = ''; // Borro lo que haya anterior por si acaso
+        groupData.value.students = ''; // Borro lo que haya anterior por si acaso
     }
 });
 
@@ -56,18 +56,18 @@ const generateRandomNames = (count) => {
     return names;
 };
 
-const addClass = () => {
-    const classToAdd = { ...classData.value }; // Crea una copia del objeto classData
+const addGroup = () => {
+    const groupToAdd = { ...groupData.value }; // Crea una copia del objeto groupData
     if (generationType.value === 'random')
-        classToAdd.students = generateRandomNames(numNames.value);
+        groupToAdd.students = generateRandomNames(numNames.value);
 
     resetForm();
-    emit('submit', classToAdd);
+    emit('submit', groupToAdd);
 };
 
 const resetForm = () => {
-    classData.value.className = '';
-    classData.value.students = '';
+    groupData.value.groupName = '';
+    groupData.value.students = '';
     generationType.value = 'manual';
     numNames.value = 1;
 };

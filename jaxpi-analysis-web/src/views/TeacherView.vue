@@ -8,15 +8,13 @@
             <router-link to="/charts">View Charts</router-link>
         </div>
         <div class="buttons" v-if="teacher && !showConfirmationCreatedSession">
-            <button v-if="!showCreateClassForm && !showCreateSessionForm" @click="showCreateClassForm = true">Create
-                class</button>
-            <button v-if="!showCreateClassForm && !showCreateSessionForm" @click="showCreateSessionForm = true">Create
-                session</button>
+            <button v-if="!showCreateGroupForm && !showCreateSessionForm" @click="showCreateGroupForm = true">Create group</button>
+            <button v-if="!showCreateGroupForm && !showCreateSessionForm" @click="showCreateSessionForm = true">Create session</button>
         </div>
 
         <!-- Formulario para crear clase -->
-        <div v-if="showCreateClassForm" class="form-container">
-            <CreateClassForm @cancel="showCreateClassForm = false" @submit="handleCreateClass" />
+        <div v-if="showCreateGroupForm" class="form-container">
+            <CreateGroupForm @cancel="showCreateGroupForm = false" @submit="handleCreateGroup" />
         </div>
 
         <!-- Formulario para crear sesión -->
@@ -29,7 +27,7 @@
             <h3>Session Created</h3>
             <p>Session Name: {{ createdSession.sessionName }}</p>
             <p>Game: {{ createdSession.gameName }}</p>
-            <p>Class: {{ createdSession.className }}</p>
+            <p>Group: {{ createdSession.groupName }}</p>
             <p>Students and passwords:</p>
             <ul>
                 <li v-for="student in createdSession.studentPasswordPair" :key="student.name">
@@ -43,9 +41,9 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/authStore';
 import { computed, ref } from 'vue';
-import CreateClassForm from '@/components/Teacher/CreateClassForm.vue';
+import { useAuthStore } from '@/stores/authStore';
+import CreateGroupForm from '@/components/Teacher/CreateGroupForm.vue';
 import CreateSessionForm from '@/components/Teacher/CreateSessionForm.vue';
 
 const authStore = useAuthStore();
@@ -54,15 +52,15 @@ const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teac
     return teacherData && teacherData.usr_type === 'teacher' ? teacherData : null;
 });
 
-const showCreateClassForm = ref(false);
+const showCreateGroupForm = ref(false);
 const showCreateSessionForm = ref(false);
 const showConfirmationCreatedSession = ref(false);
 const createdSession = ref({});
 
-const handleCreateClass = async (classData) => {
-    showCreateClassForm.value = false;
-    console.log(classData);
-    console.log(classData.students.split('\n'));
+const handleCreateGroup = async (groupData) => {
+    showCreateGroupForm.value = false;
+    console.log(groupData);
+    console.log(groupData.students.split('\n'));
 };
 
 const handleCreateSession = async (sessionData) => {

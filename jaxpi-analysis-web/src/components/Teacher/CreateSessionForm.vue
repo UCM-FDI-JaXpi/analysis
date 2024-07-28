@@ -9,13 +9,13 @@
             <option v-for="game in games" :key="game.id" :value="game.name">{{ game.name }}</option>
         </select>
 
-        <label for="class">Class:</label>
-        <select v-model="selectedClass" id="class" @change="updateSelectedClass" required>
-            <option v-for="classItem in classes" :key="classItem.id" :value="classItem">{{ classItem.name }}</option>
+        <label for="group">Group:</label>
+        <select v-model="selectedGroup" id="group" @change="updateSelectedGroup" required>
+            <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
         </select>
 
-        <p v-if="selectedClass">{{ selectedClass.students.length }} 
-                                {{ selectedClass.students.length === 1 ? 'student' : 'students' }}</p>
+        <p v-if="selectedGroup">{{ selectedGroup.students.length }} 
+                                {{ selectedGroup.students.length === 1 ? 'student' : 'students' }}</p>
 
         <button type="submit">Create</button>
         <button type="button" @click="cancelForm">Cancel</button>
@@ -33,23 +33,23 @@ const games = ref([
     { id: 3, name: 'Mario' },
 ]);
 
-const classes = ref([
-    { id: 1, name: 'Class A', students: ['Student 0'] },
-    { id: 2, name: 'Class B', students: ['Student 1', 'Student 2', 'Student 3'] },
-    { id: 3, name: 'Class C', students: ['Student 4', 'Student 5'] },
+const groups = ref([
+    { id: 1, name: 'Group A', students: ['Student 0'] },
+    { id: 2, name: 'Group B', students: ['Student 1', 'Student 2', 'Student 3'] },
+    { id: 3, name: 'Group C', students: ['Student 4', 'Student 5'] },
 ]);
 
 const sessionData = ref({
     sessionName: '',
     gameName: '',
-    className: '',
+    groupName: '',
     studentPasswordPair: [],
 });
 
-const selectedClass = ref(null);
+const selectedGroup = ref(null);
 
-const updateSelectedClass = () => {
-    sessionData.value.className = selectedClass.value.name;
+const updateSelectedGroup = () => {
+    sessionData.value.groupName = selectedGroup.value.name;
 };
 
 const generatePasswords = (students) => { // Devuelve un array de studentNames junto a sus contraseñas
@@ -61,7 +61,7 @@ const generatePasswords = (students) => { // Devuelve un array de studentNames j
 
 const addSession = () => {
     const sessionToAdd = { ...sessionData.value };
-    sessionToAdd.studentPasswordPair = generatePasswords(selectedClass.value.students);
+    sessionToAdd.studentPasswordPair = generatePasswords(selectedGroup.value.students);
 
     resetForm();
     emit('submit', sessionToAdd);
@@ -70,8 +70,8 @@ const addSession = () => {
 const resetForm = () => {
     sessionData.value.sessionName = '';
     sessionData.value.gameName = '';
-    sessionData.value.className = '';
-    selectedClass.value = null;
+    sessionData.value.groupName = '';
+    selectedGroup.value = null;
 };
 
 const cancelForm = () => {

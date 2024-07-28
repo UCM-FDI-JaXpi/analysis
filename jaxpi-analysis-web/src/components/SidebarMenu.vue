@@ -3,13 +3,13 @@
         <template v-if="userType === 'teacher'">
             <router-link to="/teacher/sessions" class="menu-link">Sessions</router-link>
             <div>
-                <div class="menu-item" @click="toggleTeacherClassesSubmenu">
-                    Classes
-                    <span>{{ isTeacherClassesSubmenuOpen ? '-' : '+' }}</span>
+                <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
+                    Groups
+                    <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
                 </div>
-                <div v-if="isTeacherClassesSubmenuOpen" class="submenu">
-                    <router-link to="/teacher/classes/classA" class="submenu-link">A</router-link>
-                    <router-link to="/teacher/classes/classB" class="submenu-link">B</router-link>
+                <div v-if="isTeacherGroupsSubmenuOpen" class="submenu">
+                    <router-link to="/teacher/groups/groupA" class="submenu-link">A</router-link>
+                    <router-link to="/teacher/groups/groupB" class="submenu-link">B</router-link>
                 </div>
             </div>
         </template>
@@ -22,10 +22,10 @@ import { useAuthStore } from '@/stores/authStore';
 
 const authStore = useAuthStore();
 const userType = computed(() => authStore.userType);
-const isTeacherClassesSubmenuOpen = ref(false);
+const isTeacherGroupsSubmenuOpen = ref(false);
 
-const toggleTeacherClassesSubmenu = () => {
-    isTeacherClassesSubmenuOpen.value = !isTeacherClassesSubmenuOpen.value;
+const toggleTeacherGroupsSubmenu = () => {
+    isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
 };
 </script>
 
