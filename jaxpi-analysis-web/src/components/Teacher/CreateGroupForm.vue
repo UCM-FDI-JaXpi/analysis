@@ -61,14 +61,17 @@ const addGroup = async () => {
         } else { // random
             createdGroup = await groupStore.createGroupRandom(groupToAdd.groupName, numNames.value);
         }
-        alert('Group created successfully!');
-        console.log(createdGroup.students);
-        
-        resetForm();
-        emit('submit', createdGroup);
+        if(createdGroup){
+            console.log('Group created successfully!');
+            console.log(createdGroup);
+            resetForm();
+            emit('submit', createdGroup);
+        }else{
+            //aqui seteariamos para mostrar mensaje de error ya 
+            //que queremos mostrar el mensaje, y que el form siga abierto
+        }
     } catch (error) {
-        console.error('There was an error creating the group:', error);
-        alert('There was an error creating the group. Please try again.');
+        console.error('Error no controlado: ', error);
     }
 };
 

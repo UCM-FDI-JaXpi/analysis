@@ -12,7 +12,7 @@ export const useGroupStore = defineStore('groupStore', {
             this.loading = true;
             this.error = null;
             try {
-                const response = await axios.post('http://localhost:3000/create-group-with-students', {
+                const response = await axios.post('http://localhost:3000/teacher/create-group-with-students', {
                     name: groupName,
                     students,
                 }, {
@@ -22,37 +22,38 @@ export const useGroupStore = defineStore('groupStore', {
                     },
                 });
                 if (response.status === 201) { // exito
-                    console.log(response.data);
-                    this.groups.push(response.data.group);
+                    this.groups.push(response.data);
                     this.loading = false;
-                    return response.data.group;
-                } else {
-                    console.log('error en el else')
-                    throw new Error('Failed to create group');
+                    return response.data;
                 }
             } catch (error) {
-                console.log(error.message)
-                console.log(error.response?.data?.message)
                 this.error = error.response?.data?.message || error.message;
                 this.loading = false;
-                throw error;
+                alert('There was an error creating the group. Please try again.');
             }
         },
         async createGroupRandom(groupName, nStudents) {
             this.loading = true;
             this.error = null;
             try {
-                const response = await axios.post('http://localhost:3000/create-group-from-scratch', {
+                const response = await axios.post('http://localhost:3000/teacher/create-group-from-scratch', {
                     name: groupName,
                     nStudents,
+                }, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 });
-                this.groups.push(response.data.group);
-                this.loading = false;
-                return response.data.group;
+                if (response.status === 201) { // exito
+                    this.groups.push(response.data);
+                    this.loading = false;
+                    return response.data;
+                }
             } catch (error) {
-                this.error = error.message;
+                this.error = error.response?.data?.message || error.message;
                 this.loading = false;
-                throw error;
+                alert('There was an error creating the group. Please try again.');
             }
         },
     },

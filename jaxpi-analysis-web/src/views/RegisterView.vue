@@ -22,11 +22,14 @@
       <div>
             <label for="usr_type">I am a:</label>
             <select name="usr_type" id="usr_type">
-                <option value="student">Student</option>
                 <option value="teacher">Teacher</option>
                 <option value="dev">Developer</option>
             </select>
         </div>
+        <div>
+        <label for="institution">Institution</label>
+        <input type="text" id="institution" name="institution" required>
+      </div>
       <button type="submit">Register</button>
     </form>
     

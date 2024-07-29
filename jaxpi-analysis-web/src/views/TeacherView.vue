@@ -5,9 +5,10 @@
             <h3>Teacher details</h3>
             <p> Name: {{ teacher.name }}</p>
             <p> Email: {{ teacher.email }}</p>
+            <p> Institution: {{ teacher.institution }}</p>  
             <router-link to="/charts">View Charts</router-link>
         </div>
-        <div class="buttons" v-if="teacher && !showConfirmationCreatedSession">
+        <div class="buttons" v-if="teacher && !showConfirmationCreatedSession && !showConfirmationCreatedGroup" >
             <button v-if="!showCreateGroupForm && !showCreateSessionForm" @click="showCreateGroupForm = true">Create group</button>
             <button v-if="!showCreateGroupForm && !showCreateSessionForm" @click="showCreateSessionForm = true">Create session</button>
         </div>
@@ -24,8 +25,8 @@
 
         <!-- Mensaje de información de sesión creada -->
         <div v-if="showConfirmationCreatedSession" class="confirmation">
-            <h3>Session Created</h3>
-            <p>Session Name: {{ createdSession.sessionName }}</p>
+            <h3>Session created</h3>
+            <p>Session name: {{ createdSession.sessionName }}</p>
             <p>Game: {{ createdSession.gameName }}</p>
             <p>Group: {{ createdSession.groupName }}</p>
             <p>Students and passwords:</p>
@@ -34,6 +35,20 @@
                         {{ student.name }}: {{ student.password }}</li>
             </ul>
             <button @click="showConfirmationCreatedSession = false">OK</button>
+        </div>
+
+        <!-- Mensaje de información de sesión creada -->
+        <div v-if="showConfirmationCreatedGroup" class="confirmation">
+            <h3>Group Created</h3>
+            <p>Institution: {{ createdGroup.institution }}</p>
+            <p>Group name: {{ createdGroup.name }}</p>
+            <p>Teacher: {{ createdGroup.teacher }}</p>
+            <p>Students:</p>
+            <ul>
+                <li v-for="student in createdGroup.students" :key="student">
+                        {{ student }}</li>
+            </ul>
+            <button @click="showConfirmationCreatedGroup = false">OK</button>
         </div>
 
         <p v-if="!teacher">Please log in as a teacher to view teacher details.</p>
@@ -54,13 +69,19 @@ const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teac
 
 const showCreateGroupForm = ref(false);
 const showCreateSessionForm = ref(false);
+const showConfirmationCreatedGroup = ref(false);
+const createdGroup = ref({});
 const showConfirmationCreatedSession = ref(false);
 const createdSession = ref({});
 
 const handleCreateGroup = async (groupData) => {
     showCreateGroupForm.value = false;
-    console.log(groupData);
-    console.log(groupData.students.split('\n'));
+    createdGroup.value = groupData;
+    //llamada al back
+    // si todo ha ido bien
+    showConfirmationCreatedGroup.value = true;
+    //si ha ido mal
+    //showErrorCreatedSession.value = true;
 };
 
 const handleCreateSession = async (sessionData) => {
@@ -103,7 +124,7 @@ const handleCreateSession = async (sessionData) => {
     padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #f9f9f9;
