@@ -9,8 +9,8 @@
             <router-link to="/charts">View Charts</router-link>
         </div>
         <div class="buttons" v-if="teacher && !showConfirmationCreatedSession && !showConfirmationCreatedGroup" >
-            <button v-if="!showCreateGroupForm && !showCreateSessionForm" @click="showCreateGroupForm = true">Create group</button>
-            <button v-if="!showCreateGroupForm && !showCreateSessionForm" @click="showCreateSessionForm = true">Create session</button>
+            <button v-if="!showCreateGroupForm && !showCreateGameSessionForm" @click="showCreateGroupForm = true">Create group</button>
+            <button v-if="!showCreateGroupForm && !showCreateGameSessionForm" @click="showCreateGameSessionForm = true">Create session</button>
         </div>
 
         <!-- Formulario para crear clase -->
@@ -19,8 +19,8 @@
         </div>
 
         <!-- Formulario para crear sesión -->
-        <div v-if="showCreateSessionForm" class="form-container">
-            <CreateSessionForm @cancel="showCreateSessionForm = false" @submit="handleCreateSession" />
+        <div v-if="showCreateGameSessionForm" class="form-container">
+            <CreateGameSessionForm @cancel="showCreateGameSessionForm = false" @submit="handleCreateGameSession" />
         </div>
 
         <!-- Mensaje de información de sesión creada -->
@@ -59,7 +59,7 @@
 import { computed, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import CreateGroupForm from '@/components/Teacher/CreateGroupForm.vue';
-import CreateSessionForm from '@/components/Teacher/CreateSessionForm.vue';
+import CreateGameSessionForm from '@/components/Teacher/CreateGameSessionForm.vue';
 
 const authStore = useAuthStore();
 const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teacher', sino, null
@@ -68,7 +68,7 @@ const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teac
 });
 
 const showCreateGroupForm = ref(false);
-const showCreateSessionForm = ref(false);
+const showCreateGameSessionForm = ref(false);
 const showConfirmationCreatedGroup = ref(false);
 const createdGroup = ref({});
 const showConfirmationCreatedSession = ref(false);
@@ -84,8 +84,8 @@ const handleCreateGroup = async (groupData) => {
     //showErrorCreatedSession.value = true;
 };
 
-const handleCreateSession = async (sessionData) => {
-    showCreateSessionForm.value = false;
+const handleCreateGameSession = async (sessionData) => {
+    showCreateGameSessionForm.value = false;
     createdSession.value = sessionData;
     console.log(sessionData);
     console.log(createdSession.value);

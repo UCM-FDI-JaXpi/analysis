@@ -1,11 +1,11 @@
 <template>
-    <h2>Create Session</h2>
-    <form @submit.prevent="addSession">
-        <label for="sessionName">Session name:</label>
-        <input type="text" v-model="sessionData.sessionName" id="sessionName" required />
+    <h2>Create game session</h2>
+    <form @submit.prevent="addGameSession">
+        <label for="gameSessionName">Game session name:</label>
+        <input type="text" v-model="gameSessionData.gameSessionName" id="gameSessionName" required />
 
         <label for="game">Game:</label>
-        <select v-model="sessionData.gameName" id="game" required>
+        <select v-model="gameSessionData.gameName" id="game" required>
             <option v-for="game in games" :key="game.id" :value="game.name">{{ game.name }}</option>
         </select>
 
@@ -24,8 +24,10 @@
 
 <script setup>
 import { ref } from 'vue';
+//import { useGameSessionStore } from '@/stores/gameSessionStore';
 
 const emit = defineEmits(['submit', 'cancel']);
+//const gameSessionStore = useGameSessionStore();
 
 const games = ref([
     { id: 1, name: 'Pop' },
@@ -39,8 +41,8 @@ const groups = ref([
     { id: 3, name: 'Group C', students: ['Student 4', 'Student 5'] },
 ]);
 
-const sessionData = ref({
-    sessionName: '',
+const gameSessionData = ref({
+    gameSessionName: '',
     gameName: '',
     groupName: '',
     studentPasswordPair: [],
@@ -49,7 +51,7 @@ const sessionData = ref({
 const selectedGroup = ref(null);
 
 const updateSelectedGroup = () => {
-    sessionData.value.groupName = selectedGroup.value.name;
+    gameSessionData.value.groupName = selectedGroup.value.name;
 };
 
 const generatePasswords = (students) => { // Devuelve un array de studentNames junto a sus contraseñas
@@ -59,18 +61,18 @@ const generatePasswords = (students) => { // Devuelve un array de studentNames j
     }));
 };
 
-const addSession = () => {
-    const sessionToAdd = { ...sessionData.value };
-    sessionToAdd.studentPasswordPair = generatePasswords(selectedGroup.value.students);
+const addGameSession = () => {
+    const gameSessionToAdd = { ...gameSessionData.value };
+    gameSessionToAdd.studentPasswordPair = generatePasswords(selectedGroup.value.students);
 
     resetForm();
-    emit('submit', sessionToAdd);
+    emit('submit', gameSessionToAdd);
 };
 
 const resetForm = () => {
-    sessionData.value.sessionName = '';
-    sessionData.value.gameName = '';
-    sessionData.value.groupName = '';
+    gameSessionData.value.gameSessionName = '';
+    gameSessionData.value.gameName = '';
+    gameSessionData.value.groupName = '';
     selectedGroup.value = null;
 };
 
