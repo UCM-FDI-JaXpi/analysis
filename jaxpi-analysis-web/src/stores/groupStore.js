@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-export const useGroupStore = defineStore('groupStore', {
+export const useGroupStore = defineStore('groups', {
     state: () => ({
         groups: [],
         loading: false,
@@ -54,6 +54,25 @@ export const useGroupStore = defineStore('groupStore', {
                 this.error = error.response?.data?.message || error.message;
                 this.loading = false;
                 alert('There was an error creating the group. Please try again.');
+            }
+        },
+        async fetchGroups() { // Your groups as a teacher
+            this.loading = true;
+            this.error = null;
+            try {
+                const response = await axios.get('http://localhost:3000/teacher/get-groups', {
+                    withCredentials: true,
+                });
+                if (response.status === 200) {
+                    this.groups = response.data;
+
+                } else {
+                    console.error('Failed to fetch groups');
+                }
+            } catch (error) {
+                this.error = error.response?.data?.message || error.message;
+                this.loading = false;
+                console.error('Error fetching groups:', error);
             }
         },
     },

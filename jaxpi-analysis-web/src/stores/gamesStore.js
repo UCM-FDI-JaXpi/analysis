@@ -7,7 +7,7 @@ export const useGamesStore = defineStore('games', {
         selectedGameId: null
     }),
     actions: {
-        async fetchGames() {
+        async fetchGames() { // When you're dev
             try {
                 const response = await axios.get('http://localhost:3000/dev/games', {
                     withCredentials: true,
@@ -19,6 +19,20 @@ export const useGamesStore = defineStore('games', {
                 }
             } catch (error) {
                 console.error('Error fetching games:', error);
+            }
+        },
+        async fetchAllGames() { // When you're teacher
+            try {
+                const response = await axios.get('http://localhost:3000/games', {
+                    withCredentials: true,
+                });
+                if (response.status === 200) {
+                    this.games = response.data;
+                } else {
+                    console.error('Failed to fetch all games');
+                }
+            } catch (error) {
+                console.error('Error fetching all games:', error);
             }
         },
         async addGame(gameData) {

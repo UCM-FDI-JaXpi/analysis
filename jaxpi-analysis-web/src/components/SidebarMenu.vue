@@ -5,23 +5,34 @@
             <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
         </div>
         <div v-if="isTeacherGroupsSubmenuOpen" class="submenu">
-            <router-link to="/teacher/groups/groupA" class="submenu-link">A</router-link>
-            <router-link to="/teacher/groups/groupB" class="submenu-link">B</router-link>
+            <router-link v-for="group in groups" :key="group.id" :to="`/teacher/groups/${group.id}`" class="submenu-link">
+                {{ group.name }}
+            </router-link>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useGroupStore } from '@/stores/groupStore';
 
 const authStore = useAuthStore();
+const groupStore = useGroupStore();
+
 const userType = computed(() => authStore.userType);
 const isTeacherGroupsSubmenuOpen = ref(false);
+const groups = computed(() => groupStore.groups);
 
 const toggleTeacherGroupsSubmenu = () => {
     isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
 };
+
+onMounted(async () => {
+    if (userType.value === 'teacher') {
+        await groupStore.fetchGroups();
+    }
+});
 </script>
 
 <style scoped>

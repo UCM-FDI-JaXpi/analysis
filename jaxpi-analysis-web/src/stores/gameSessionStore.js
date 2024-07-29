@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-export const useGameSessionStore = defineStore('gameSessionStore', {
+export const useGameSessionStore = defineStore('gameSession', {
     state: () => ({
         gameSessions: [],
         loading: false,

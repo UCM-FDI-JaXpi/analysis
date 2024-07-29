@@ -1,15 +1,15 @@
 <template>
     <h2>Create game session</h2>
     <form @submit.prevent="addGameSession">
-        <label for="gameSessionName">Game session name:</label>
-        <input type="text" v-model="gameSessionData.gameSessionName" id="gameSessionName" required />
+        <label for="gameSessionName">Game session name</label>
+        <input type="text" v-model="gameSessionData.gameSessionName" id="gameSessionName" />
 
-        <label for="game">Game:</label>
+        <label for="game">Game *</label>
         <select v-model="gameSessionData.gameName" id="game" required>
             <option v-for="game in games" :key="game.id" :value="game.name">{{ game.name }}</option>
         </select>
 
-        <label for="group">Group:</label>
+        <label for="group">Group *</label>
         <select v-model="selectedGroup" id="group" @change="updateSelectedGroup" required>
             <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
         </select>
@@ -23,23 +23,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 //import { useGameSessionStore } from '@/stores/gameSessionStore';
+import { useGamesStore } from '@/stores/gamesStore';
+import { useGroupStore } from '@/stores/groupStore';
 
 const emit = defineEmits(['submit', 'cancel']);
 //const gameSessionStore = useGameSessionStore();
+const gamesStore = useGamesStore();
+const groupStore = useGroupStore();
 
-const games = ref([
-    { id: 1, name: 'Pop' },
-    { id: 2, name: 'Tetris' },
-    { id: 3, name: 'Mario' },
-]);
-
-const groups = ref([
-    { id: 1, name: 'Group A', students: ['Student 0'] },
-    { id: 2, name: 'Group B', students: ['Student 1', 'Student 2', 'Student 3'] },
-    { id: 3, name: 'Group C', students: ['Student 4', 'Student 5'] },
-]);
+const games = computed(() => gamesStore.games);
+const groups = computed(() => groupStore.groups);
 
 const gameSessionData = ref({
     gameSessionName: '',
@@ -49,6 +44,13 @@ const gameSessionData = ref({
 });
 
 const selectedGroup = ref(null);
+
+onMounted(async () => {
+    // Load games
+    if (!gamesStore.games.length) {
+        await gamesStore.fetchAllGames();
+    }
+});
 
 const updateSelectedGroup = () => {
     gameSessionData.value.groupName = selectedGroup.value.name;
