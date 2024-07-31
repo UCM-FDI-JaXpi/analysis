@@ -28,10 +28,10 @@
 
 <script setup>
 import { ref, watch } from 'vue';
-import { useGroupStore } from '@/stores/groupStore';
+import { useGroupsStore } from '@/stores/groupsStore';
 
 const emit = defineEmits(['submit', 'cancel']);
-const groupStore = useGroupStore();
+const groupsStore = useGroupsStore();
 
 const groupData = ref({
     groupName: '',
@@ -57,9 +57,9 @@ const addGroup = async () => {
                 alert(`You can only have up to ${maxStudents} students.`);
                 return;
             }
-            createdGroup = await groupStore.createGroupManual(groupToAdd.groupName, studentsArray);
+            createdGroup = await groupsStore.createGroupManual(groupToAdd.groupName, studentsArray);
         } else { // random
-            createdGroup = await groupStore.createGroupRandom(groupToAdd.groupName, numNames.value);
+            createdGroup = await groupsStore.createGroupRandom(groupToAdd.groupName, numNames.value);
         }
         if(createdGroup){
             console.log('Group created successfully!');

@@ -14,8 +14,8 @@
             <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
         </select>
 
-        <p v-if="selectedGroup">{{ selectedGroup.students.length }} 
-                                {{ selectedGroup.students.length === 1 ? 'student' : 'students' }}</p>
+        <small v-if="selectedGroup">{{ selectedGroup.students.length }} 
+                                {{ selectedGroup.students.length === 1 ? 'student' : 'students' }}</small>
 
         <button type="submit">Create</button>
         <button type="button" @click="cancelForm">Cancel</button>
@@ -24,23 +24,22 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-//import { useGameSessionStore } from '@/stores/gameSessionStore';
+import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 import { useGamesStore } from '@/stores/gamesStore';
-import { useGroupStore } from '@/stores/groupStore';
+import { useGroupsStore } from '@/stores/groupsStore';
 
 const emit = defineEmits(['submit', 'cancel']);
-//const gameSessionStore = useGameSessionStore();
+const gameSessionsStore = useGameSessionsStore();
 const gamesStore = useGamesStore();
-const groupStore = useGroupStore();
+const groupsStore = useGroupsStore();
 
 const games = computed(() => gamesStore.games);
-const groups = computed(() => groupStore.groups);
+const groups = computed(() => groupsStore.groups);
 
 const gameSessionData = ref({
     gameSessionName: '',
     gameName: '',
     groupName: '',
-    studentPasswordPair: [],
 });
 
 const selectedGroup = ref(null);
@@ -56,19 +55,37 @@ const updateSelectedGroup = () => {
     gameSessionData.value.groupName = selectedGroup.value.name;
 };
 
-const generatePasswords = (students) => { // Devuelve un array de studentNames junto a sus contraseñas
-    return students.map(student => ({
-        name: student,
-        password: Math.random().toString(36).substring(2, 8) // Generate a random password
-    }));
-};
+const addGameSession = async () => {
+    try {
+        const groupId = selectedGroup.value.id;
+        const game = games.value.find(game => game.name === gameSessionData.value.gameName);
+        const gameId = game ? game.id : null;
 
-const addGameSession = () => {
-    const gameSessionToAdd = { ...gameSessionData.value };
-    gameSessionToAdd.studentPasswordPair = generatePasswords(selectedGroup.value.students);
+        console.log(selectedGroup.value);
+        console.log(groupId);
+        console.log(game);
+        console.log(gameId);
 
-    resetForm();
-    emit('submit', gameSessionToAdd);
+
+        if (groupId && gameId) {
+            const response = await gameSessionsStore.createGameSession(gameSessionData.value.gameSessionName,
+                                                                       groupId, gameId);
+
+            if (response) {
+                console.log('Game session created successfully!');
+                console.log(response);
+                resetForm();
+                emit('submit', response);
+            } else {
+                alert('Failed to create game session. Please try again.');
+            }
+        } else {
+            alert('Please select a valid group and game.');
+        }
+
+    } catch (error) {
+        console.error('Error creating game session:', error);
+    }
 };
 
 const resetForm = () => {
@@ -94,5 +111,9 @@ form {
 textarea {
     width: 100%;
     height: 100px;
+}
+
+small {
+    color: gray;
 }
 </style>

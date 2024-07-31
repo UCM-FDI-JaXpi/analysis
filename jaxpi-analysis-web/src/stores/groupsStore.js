@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
-export const useGroupStore = defineStore('groups', {
+export const useGroupsStore = defineStore('groups', {
     state: () => ({
         groups: [],
         loading: false,
@@ -23,13 +23,13 @@ export const useGroupStore = defineStore('groups', {
                 });
                 if (response.status === 201) { // exito
                     this.groups.push(response.data);
-                    this.loading = false;
                     return response.data;
                 }
             } catch (error) {
                 this.error = error.response?.data?.message || error.message;
-                this.loading = false;
                 alert('There was an error creating the group. Please try again.');
+            } finally {
+                this.loading = false;
             }
         },
         async createGroupRandom(groupName, nStudents) {
@@ -47,13 +47,13 @@ export const useGroupStore = defineStore('groups', {
                 });
                 if (response.status === 201) { // exito
                     this.groups.push(response.data);
-                    this.loading = false;
                     return response.data;
                 }
             } catch (error) {
                 this.error = error.response?.data?.message || error.message;
-                this.loading = false;
                 alert('There was an error creating the group. Please try again.');
+            } finally {
+                this.loading = false;
             }
         },
         async fetchGroups() { // Your groups as a teacher
@@ -65,14 +65,12 @@ export const useGroupStore = defineStore('groups', {
                 });
                 if (response.status === 200) {
                     this.groups = response.data;
-
-                } else {
-                    console.error('Failed to fetch groups');
                 }
             } catch (error) {
                 this.error = error.response?.data?.message || error.message;
+                alert('Error fetching groups');
+            } finally {
                 this.loading = false;
-                console.error('Error fetching groups:', error);
             }
         },
     },

@@ -15,14 +15,14 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
-import { useGroupStore } from '@/stores/groupStore';
+import { useGroupsStore } from '@/stores/groupsStore';
 
 const authStore = useAuthStore();
-const groupStore = useGroupStore();
+const groupsStore = useGroupsStore();
 
 const userType = computed(() => authStore.userType);
 const isTeacherGroupsSubmenuOpen = ref(false);
-const groups = computed(() => groupStore.groups);
+const groups = computed(() => groupsStore.groups);
 
 const toggleTeacherGroupsSubmenu = () => {
     isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
@@ -30,7 +30,7 @@ const toggleTeacherGroupsSubmenu = () => {
 
 onMounted(async () => {
     if (userType.value === 'teacher') {
-        await groupStore.fetchGroups();
+        await groupsStore.fetchGroups();
     }
 });
 </script>
