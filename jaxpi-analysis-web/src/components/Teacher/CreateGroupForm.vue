@@ -46,13 +46,26 @@ watch(generationType, (newType) => {
         groupData.value.students = ''; // Borro lo que haya anterior por si acaso
     }
 });
+const cleanStudentName = (name) => {
+    return name
+        .replace(/,/g, ' ')   // Reemplaza comas por espacios
+        .replace(/\s+/g, ' ') // Reemplaza múltiples espacios por un solo espacio
+        .trim();              // Elimina espacios al principio y al final
+};
+
+const validateStudentNames = (students) => {
+    return students
+        .split('\n')           // Divide en líneas
+        .map(cleanStudentName) // Limpia cada nombre
+        .filter(s => s);       // Elimina líneas vacías
+};
 
 const addGroup = async () => {
     const groupToAdd = { ...groupData.value }; // Crea una copia del objeto groupData
     try {
         let createdGroup;
         if (generationType.value === 'manual') {
-            const studentsArray = groupData.value.students.split('\n').map(s => s.trim()).filter(s => s); // Divide la cadena en un array de lineas, luego elimina espacios en blanco antes y despues de cada linea y por ultimo elimina cualquier linea vacia
+           const studentsArray = validateStudentNames(groupData.value.students);
             if (studentsArray.length > maxStudents) {
                 alert(`You can only have up to ${maxStudents} students.`);
                 return;

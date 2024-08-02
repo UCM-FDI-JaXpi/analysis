@@ -3,9 +3,9 @@
         <h1>Teacher's view</h1>
         <div class="teacher-details" v-if="teacher">
             <h3>Teacher details</h3>
-            <p> Name: {{ teacher.name }}</p>
-            <p> Email: {{ teacher.email }}</p>
-            <p> Institution: {{ teacher.institution }}</p>  
+            <p><strong>Name:</strong> {{ teacher.name }}</p>
+            <p><strong>Email:</strong> {{ teacher.email }}</p>
+            <p><strong>Institution:</strong> {{ teacher.institution }}</p>  
             <router-link to="/charts">View Charts</router-link>
         </div>
         <div class="buttons" v-if="teacher && !showConfirmationCreatedGameSession && !showConfirmationCreatedGroup" >
@@ -26,24 +26,27 @@
         <!-- Mensaje de información de sesión creada -->
         <div v-if="showConfirmationCreatedGameSession" class="confirmation">
             <h3>Game session created</h3>
-            <p>Game session name: {{ createdGameSession.sessionName }}</p>
-            <p>Game: {{ gameName }}</p>
-            <p>Group: {{ groupName }}</p>
-            <p>Students and passwords:</p>
+            <p><strong>Game session name:</strong> {{ createdGameSession.sessionName }}</p>
+            <p><strong>Game:</strong> {{ gameName }}</p>
+            <p><strong>Group:</strong> {{ groupName }}</p>
+            <p><strong>Students and game session keys:</strong></p>
             <ul>
                 <li v-for="student in createdGameSession.students" :key="student.key">
                         {{ student.name }} - {{ student.key }}</li>
             </ul>
-            <button @click="showConfirmationCreatedGameSession = false">OK</button>
+            <div class="buttons">
+               <button @click="showConfirmationCreatedGameSession = false">OK</button>
+               <button @click="exportDataToCSV">Export CSV</button>
+            </div>
         </div>
 
         <!-- Mensaje de información de sesión creada -->
         <div v-if="showConfirmationCreatedGroup" class="confirmation">
             <h3>Group Created</h3>
-            <p>Institution: {{ createdGroup.institution }}</p>
-            <p>Group name: {{ createdGroup.name }}</p>
-            <p>Teacher: {{ createdGroup.teacher }}</p>
-            <p>Students:</p>
+            <p><strong>Institution:</strong> {{ createdGroup.institution }}</p>
+            <p><strong>Group name:</strong> {{ createdGroup.name }}</p>
+            <p><strong>Teacher:</strong> {{ createdGroup.teacher }}</p>
+            <p><strong>Students:</strong></p>
             <ul>
                 <li v-for="student in createdGroup.students" :key="student">
                         {{ student }}</li>
@@ -105,6 +108,24 @@ const handleCreateGameSession = async (sessionData) => {
     showConfirmationCreatedGameSession.value = true;
     //si ha ido mal
     //showErrorCreatedGameSession.value = true;
+};
+
+const exportDataToCSV = () => {
+    const students = createdGameSession.value.students;
+    let csvContent = "Name,GameSessionKey\n";
+    students.forEach(student => {
+        csvContent += `${student.name},${student.key}\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }); // Tipo MIME y codificacion de caracteres utf-8
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob); // Crea una URL temporal que apunta al Blob
+    link.setAttribute("href", url);
+    link.setAttribute("download", "students_gameSessionKeys.csv"); // Nombre del archivo a descargar
+    document.body.appendChild(link); // Añadimos temporalmente link al documento
+
+    link.click(); // Simulamos un click para desencadenar la descarga
+    document.body.removeChild(link); // Eliminamos link del documento
 };
 </script>
 
