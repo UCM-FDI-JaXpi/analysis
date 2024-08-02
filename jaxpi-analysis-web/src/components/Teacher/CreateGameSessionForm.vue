@@ -61,15 +61,8 @@ const addGameSession = async () => {
         const game = games.value.find(game => game.name === gameSessionData.value.gameName);
         const gameId = game ? game.id : null;
 
-        console.log(selectedGroup.value);
-        console.log(groupId);
-        console.log(game);
-        console.log(gameId);
-
-
         if (groupId && gameId) {
-            const response = await gameSessionsStore.createGameSession(gameSessionData.value.gameSessionName,
-                                                                       groupId, gameId);
+            const response = await gameSessionsStore.createGameSession(gameSessionData.value.gameSessionName, groupId, gameId);
 
             if (response) {
                 console.log('Game session created successfully!');

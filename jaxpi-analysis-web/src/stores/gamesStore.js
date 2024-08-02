@@ -66,5 +66,8 @@ export const useGamesStore = defineStore('games', {
         getSelectedGame() {
           return this.games.find(game => game.id === this.selectedGameId);
         },
+        getGameNameById: (state) => {
+            return (gameId) => state.games.find((game) => game.id === gameId).name;
+          },
     }
 });

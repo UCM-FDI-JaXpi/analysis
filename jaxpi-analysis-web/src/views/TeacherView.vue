@@ -8,9 +8,9 @@
             <p> Institution: {{ teacher.institution }}</p>  
             <router-link to="/charts">View Charts</router-link>
         </div>
-        <div class="buttons" v-if="teacher && !showConfirmationCreatedSession && !showConfirmationCreatedGroup" >
+        <div class="buttons" v-if="teacher && !showConfirmationCreatedGameSession && !showConfirmationCreatedGroup" >
             <button v-if="!showCreateGroupForm && !showCreateGameSessionForm" @click="showCreateGroupForm = true">Create group</button>
-            <button v-if="!showCreateGroupForm && !showCreateGameSessionForm" @click="showCreateGameSessionForm = true">Create session</button>
+            <button v-if="!showCreateGroupForm && !showCreateGameSessionForm" @click="showCreateGameSessionForm = true">Create game session</button>
         </div>
 
         <!-- Formulario para crear clase -->
@@ -24,17 +24,17 @@
         </div>
 
         <!-- Mensaje de información de sesión creada -->
-        <div v-if="showConfirmationCreatedSession" class="confirmation">
-            <h3>Session created</h3>
-            <p>Session name: {{ createdSession.sessionName }}</p>
-            <p>Game: {{ createdSession.gameName }}</p>
-            <p>Group: {{ createdSession.groupName }}</p>
+        <div v-if="showConfirmationCreatedGameSession" class="confirmation">
+            <h3>Game session created</h3>
+            <p>Game session name: {{ createdGameSession.sessionName }}</p>
+            <p>Game: {{ gameName }}</p>
+            <p>Group: {{ groupName }}</p>
             <p>Students and passwords:</p>
             <ul>
-                <li v-for="student in createdSession.studentPasswordPair" :key="student.name">
-                        {{ student.name }}: {{ student.password }}</li>
+                <li v-for="student in createdGameSession.students" :key="student.key">
+                        {{ student.name }} - {{ student.key }}</li>
             </ul>
-            <button @click="showConfirmationCreatedSession = false">OK</button>
+            <button @click="showConfirmationCreatedGameSession = false">OK</button>
         </div>
 
         <!-- Mensaje de información de sesión creada -->
@@ -58,21 +58,33 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useGamesStore } from '@/stores/gamesStore';
+import { useGroupsStore } from '@/stores/groupsStore';
+
 import CreateGroupForm from '@/components/Teacher/CreateGroupForm.vue';
 import CreateGameSessionForm from '@/components/Teacher/CreateGameSessionForm.vue';
 
 const authStore = useAuthStore();
-const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teacher', sino, null
-    const teacherData = authStore.userData
-    return teacherData && teacherData.usr_type === 'teacher' ? teacherData : null;
-});
+const gamesStore = useGamesStore();
+const groupsStore = useGroupsStore();
 
 const showCreateGroupForm = ref(false);
 const showCreateGameSessionForm = ref(false);
 const showConfirmationCreatedGroup = ref(false);
+const showConfirmationCreatedGameSession = ref(false);
 const createdGroup = ref({});
-const showConfirmationCreatedSession = ref(false);
-const createdSession = ref({});
+const createdGameSession = ref({});
+
+const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teacher', sino, null
+    const teacherData = authStore.userData
+    return teacherData && teacherData.usr_type === 'teacher' ? teacherData : null;
+});
+const gameName = computed(() => {
+    return createdGameSession.value.gameId ? gamesStore.getGameNameById(createdGameSession.value.gameId) : 'No game selected';
+});
+const groupName = computed(() => {
+    return createdGameSession.value.gameId ? groupsStore.getGroupNameById(createdGameSession.value.groupId) : 'No group selected';
+});
 
 const handleCreateGroup = async (groupData) => {
     showCreateGroupForm.value = false;
@@ -81,19 +93,18 @@ const handleCreateGroup = async (groupData) => {
     // si todo ha ido bien
     showConfirmationCreatedGroup.value = true;
     //si ha ido mal
-    //showErrorCreatedSession.value = true;
+    //showErrorCreatedGameSession.value = true;
 };
 
 const handleCreateGameSession = async (sessionData) => {
     showCreateGameSessionForm.value = false;
-    createdSession.value = sessionData;
-    console.log(sessionData);
-    console.log(createdSession.value);
+    createdGameSession.value = sessionData;
+    console.log(createdGameSession.value);
     //llamada al back
     // si todo ha ido bien
-    showConfirmationCreatedSession.value = true;
+    showConfirmationCreatedGameSession.value = true;
     //si ha ido mal
-    //showErrorCreatedSession.value = true;
+    //showErrorCreatedGameSession.value = true;
 };
 </script>
 
