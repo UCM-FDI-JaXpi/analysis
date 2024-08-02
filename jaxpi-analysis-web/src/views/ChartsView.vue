@@ -62,13 +62,16 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
-import { updateSelectedStudent } from '../stores/studentStore';
+import { useStudentStore } from '@/stores/studentStore';
 
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const userType = computed(() => authStore.userType);
 const gamesStore = useGamesStore();
+const studentStore = useStudentStore();
+
 const selectedGame = gamesStore.getSelectedGame; // Obtener datos del juego seleccionado desde el store con el gameId
+//const selectedGame = computed(() => gamesStore.getSelectedGame); ???
 
 const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
@@ -239,9 +242,7 @@ const filterDataStudentDetail = (selectedClassTeacher, studentName) => { // En d
   dataFilteredStudentDetail.value = allData.value.filter(item => item._id === selectedClassTeacher)
     .flatMap(item => item.actors)
     .find(actor => actor.studentName === studentName);
-    console.log(dataFilteredStudentDetail.value)
 };
-
 
 function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
   filterDataStudentDetail(selectedClassTeacher.value, studentName)
@@ -250,7 +251,7 @@ function handleStudentSelected(studentName) { // When you click on a row in the 
     selectedClass: selectedClassTeacher.value
   };
   console.log(selectedStudentData)
-  updateSelectedStudent(selectedStudentData) // Le paso tanto la selectedClassTeacher como el nombre del estudiante y sus statements / a studentStore.js
+  studentStore.updateSelectedStudent(selectedStudentData); // Le paso tanto la selectedClassTeacher como el nombre del estudiante y sus statements / a studentStore.js
   router.push({ name: 'StudentDetailView', params: { name: studentName} }) // Go to StudentDetailView using useRouter
 }
 

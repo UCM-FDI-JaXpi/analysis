@@ -16,23 +16,37 @@
 </template>
 
 <script setup>
-import { selectedStudent } from '../stores/studentStore'
+import { computed, ref, watch } from 'vue';
+import { useStudentStore } from '../stores/studentStore'
 import BarChart from '../components/BarChart.vue';
-import { ref } from 'vue';
+
+const studentStore = useStudentStore();
+const selectedStudent = computed(() => studentStore.selectedStudent);
 
 // Para el recuento de verbos
 const verbCount = ref({});
 const dataVerbCount = ref([]);
 
-if (selectedStudent.value && selectedStudent.value.studentData) {
-  selectedStudent.value.studentData.statements.forEach(entry => {
-    const verb = entry.verb.display['en-US'];
-    verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-  });
-}
+// Función para actualizar los datos del estudiante y los datos para el chart
+const updateStudentData = () => {
+  if (selectedStudent.value && selectedStudent.value.studentData) {
+    verbCount.value = {}; // Reinicia el verbCount
+    selectedStudent.value.studentData.statements.forEach(entry => { // Actualiza el conteo de verbos basándose en el nuevo estudiante seleccionado
+      const verb = entry.verb.display['en-US'];
+      verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+    });
+    console.log(verbCount.value);
+    dataVerbCount.value = Object.entries(verbCount.value).map(([nameObject, value]) => ({ nameObject, value })); // Convierte el conteo de verbos a un formato adecuado para el gráfico  
+  } else {
+    console.log(verbCount.value);
+    dataVerbCount.value = [];
+  }
+};
 
-console.log(verbCount.value)
-dataVerbCount.value = Object.entries(verbCount.value).map(([nameObject, value]) => ({ nameObject, value }));
+// Observa los cambios en selectedStudent y actualiza los datos
+watch(selectedStudent, () => {
+  updateStudentData();
+}, { immediate: true }); // Ejecuta la función inmediatamente para inicializar, al montar el componente por ejemplo, la ejecuta si o si, y cuando cambia selectedStudent tambien
 </script>
 
 <style>

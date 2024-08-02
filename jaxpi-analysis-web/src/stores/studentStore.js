@@ -1,10 +1,16 @@
-import { ref } from 'vue'
+import { defineStore } from 'pinia';
 
-const storedStudentData = JSON.parse(localStorage.getItem('selectedStudent'))
-export const selectedStudent = ref(storedStudentData || null)
+export const useStudentStore = defineStore('selectedStudent', {
+    state: () => ({
+        selectedStudent: null // All info like class, studentData(statements and studentName)
+    }),
 
-export function updateSelectedStudent(selectedStudentData) {
-    selectedStudent.value = selectedStudentData
-    // Almacenamos los nuevos datos en Local Storage
-    localStorage.setItem('selectedStudent', JSON.stringify(selectedStudentData))
-}
+    actions: {
+        updateSelectedStudent(selectedStudentData) {
+            this.selectedStudent = selectedStudentData;
+        },
+        clearSelectedStudent() {
+            this.selectedStudent = null;
+        }
+    }
+});
