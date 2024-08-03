@@ -67,7 +67,7 @@ const login = async () => {
 };
 </script>
 
-<style>
+<style scoped>
 h1 {
 	font-size: 25px;
 	color: #333;
@@ -76,6 +76,5 @@ h1 {
 .link {
 	display: block;
 	margin-bottom: 10px;
-	/* Space between links */
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+  <div class="container">
     <h1>Register</h1>
 
     <form action="http://localhost:3000/admin/register" method="POST">
@@ -20,35 +20,37 @@
         <input type="password" id="rep_pwd" name="rep_pwd" required>
       </div>
       <div>
-            <label for="usr_type">I am a:</label>
-            <select name="usr_type" id="usr_type">
-                <option value="teacher">Teacher</option>
-                <option value="dev">Developer</option>
-            </select>
-        </div>
-        <div>
+        <label for="usr_type">I am a:</label>
+        <select name="usr_type" id="usr_type" v-model="userType">
+          <option value="teacher">Teacher</option>
+          <option value="dev">Developer</option>
+        </select>
+      </div>
+      <div v-if="userType === 'teacher'">
         <label for="institution">Institution</label>
         <input type="text" id="institution" name="institution" required>
       </div>
       <button type="submit">Register</button>
     </form>
-    
-    <a href="/login">Login</a>
+
+    <router-link to="/login" class="link">Login</router-link>
   </div>
-  </template>
-  
-  <script setup>
-  </script>
-  
-  <style>
-  h1 {
-    font-size: 25px;
-    color: #333;
-  }
-  
-  .link {
-    display: block;
-    margin-bottom: 10px; /* Space between links */
-  }
-  </style>
-  
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const userType = ref('teacher');
+</script>
+
+<style scoped>
+h1 {
+  font-size: 25px;
+  color: #333;
+}
+
+.link {
+	display: block;
+	margin-bottom: 10px;
+}
+</style>
