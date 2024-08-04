@@ -75,6 +75,9 @@ export const useGroupsStore = defineStore('groups', {
         },
     },
     getters: {
+        getGroupById: (state) => {
+            return (groupId) => state.groups.find((group) => group.id === groupId);
+        },
         getGroupNameById: (state) => {
             return (groupId) => state.groups.find((group) => group.id === groupId).name
         }

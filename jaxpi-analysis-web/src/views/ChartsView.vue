@@ -1,6 +1,14 @@
 <template>
   <div class="container">
     <h1>Charts</h1>
+    <div v-if="groupId">
+      <h2>Viewing charts for group: {{ groupId }}</h2>
+    </div>
+    <div v-else>
+      <h2>Viewing general charts</h2>
+    </div>
+
+    
     <h3 v-if="userType === 'dev' && selectedGame">Game ID: {{ selectedGame.id }}</h3>
     <h3 v-if="userType === 'dev' && selectedGame">Game name: {{ selectedGame.name }}</h3>
     <div class="tabs">
@@ -59,17 +67,19 @@ import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../uti
 
 import { ref, onMounted, watch, computed } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useStudentStore } from '@/stores/studentStore';
 
+const route = useRoute(); // To access route params
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
-const userType = computed(() => authStore.userType);
 const gamesStore = useGamesStore();
 const studentStore = useStudentStore();
 
+const groupId = computed(() => route.params.groupId); // Get groupId from route params 
+const userType = computed(() => authStore.userType);
 const selectedGame = gamesStore.getSelectedGame; // Obtener datos del juego seleccionado desde el store con el gameId
 //const selectedGame = computed(() => gamesStore.getSelectedGame); ???
 

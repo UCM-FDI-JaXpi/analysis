@@ -5,7 +5,7 @@
             <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
         </div>
         <div v-if="isTeacherGroupsSubmenuOpen" class="submenu">
-            <router-link v-for="group in groups" :key="group.id" :to="`/teacher/groups/${group.id}`" class="submenu-link">
+            <router-link v-for="group in groups" :key="group.id" :to="`/group-details/${group.id}`"  class="submenu-link">
                 {{ group.name }}
             </router-link>
         </div>

@@ -19,7 +19,7 @@ import NavBar from './components/NavBar.vue';
 import SidebarMenu from './components/SidebarMenu.vue';
 
 const socket = io("http://localhost:3000"); // Create the Socket.io instance and send a 'connection' event to the server
-const route = useRoute(); // To navigate from one tab to another
+const route = useRoute();
 const authStore = useAuthStore(); // To use Pinia store 
 
 
