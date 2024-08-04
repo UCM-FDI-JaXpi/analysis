@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useGameSessionsStore } from './gameSessionsStore';
 import { useGamesStore } from './gamesStore';
+import { useGroupsStore } from './groupsStore';
+import { useStudentStore } from './studentStore';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -22,9 +25,20 @@ export const useAuthStore = defineStore('auth', {
                 });
 
                 if (response.status === 200) {
+                    this.$reset(); // Limpiar authStore
+
+                    const gameSessionsStore = useGameSessionsStore();
+                    gameSessionsStore.$reset(); // Limpiar gameSessionsStore
+
                     const gamesStore = useGamesStore();
-                    gamesStore.resetGamesState(); // Limpiar gamesStore
-                    this.resetAuthState(); // Limpiar authStore
+                    gamesStore.$reset(); // Limpiar gamesStore
+
+                    const groupsStore = useGroupsStore();
+                    groupsStore.$reset(); // Limpiar groupsStore                    
+
+                    const studentStore = useStudentStore();
+                    studentStore.$reset(); // Limpiar studentStore
+
                     console.log(response.data.message); // Imprimir mensaje del servidor (exito)
                 }
                 else
@@ -32,11 +46,6 @@ export const useAuthStore = defineStore('auth', {
             } catch (error) {
                 console.error('Error:', error);
             }
-        },
-        resetAuthState() {
-            this.isAuthenticated = false;
-            this.userData = null;
-            this.userType = '';
         }
-    },
+    }
 });

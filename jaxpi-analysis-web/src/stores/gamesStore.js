@@ -54,10 +54,6 @@ export const useGamesStore = defineStore('games', {
         },
         setSelectedGameId(gameId) {
             this.selectedGameId = gameId;
-        },
-        resetGamesState() {
-            this.games = [];
-            this.selectedGameId = null;
         }
     }, getters: {
         getSelectedGameId() { // Quizas borrar ya que tengo el gameId en un Game, el setSelectedGameId si que hace falta
