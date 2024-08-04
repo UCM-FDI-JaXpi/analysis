@@ -15,8 +15,8 @@ import { onBeforeUnmount, watch, toRaw, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import io from "socket.io-client"
-import NavBar from './components/NavBar.vue';
-import SidebarMenu from './components/SidebarMenu.vue';
+import NavBar from './components/navigation/NavBar.vue';
+import SidebarMenu from './components/navigation/SidebarMenu.vue';
 
 const socket = io("http://localhost:3000"); // Create the Socket.io instance and send a 'connection' event to the server
 const route = useRoute();

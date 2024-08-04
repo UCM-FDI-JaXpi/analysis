@@ -23,8 +23,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import GameList from '@/components/Dev/GameList.vue';
-import AddGameForm from '@/components/Dev/AddGameForm.vue';
+import GameList from '@/components/dev/GameList.vue';
+import AddGameForm from '@/components/dev/AddGameForm.vue';
 
 const authStore = useAuthStore();
 const gamesStore = useGamesStore();

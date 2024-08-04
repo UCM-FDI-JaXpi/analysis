@@ -64,8 +64,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 
-import CreateGroupForm from '@/components/Teacher/CreateGroupForm.vue';
-import CreateGameSessionForm from '@/components/Teacher/CreateGameSessionForm.vue';
+import CreateGroupForm from '@/components/teacher/CreateGroupForm.vue';
+import CreateGameSessionForm from '@/components/teacher/CreateGameSessionForm.vue';
 
 const authStore = useAuthStore();
 const gamesStore = useGamesStore();

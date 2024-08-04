@@ -23,7 +23,7 @@
 import { useAuthStore } from '@/stores/authStore';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ConfirmModal from './ConfirmModal.vue';
+import ConfirmModal from '../ConfirmModal.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
