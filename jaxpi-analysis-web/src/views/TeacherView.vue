@@ -179,4 +179,8 @@ const exportDataToCSV = () => {
 .confirmation button:hover {
     background-color: #0056b3;
 }
+
+h1 {
+    margin-bottom: 0;
+}
 </style>

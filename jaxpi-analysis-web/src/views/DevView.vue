@@ -1,19 +1,20 @@
 <template>
   <div class="dev-view">
-    <div class="developer-info">
-      <h1>Dev's view</h1>
-      <h3 v-if="dev">Dev details</h3>
-      <p v-if="dev"> Name: {{ dev.name }}</p>
-      <p v-if="dev"> Email: {{ dev.email }}</p>
-      <p v-else>Please log in as a dev to view dev details.</p>
+    <h1>Dev's view</h1>
+    <div class="dev-details" v-if="dev">
+      <h3>Dev details</h3>
+      <p><strong>Name:</strong> {{ dev.name }}</p>
+      <p><strong>Email:</strong> {{ dev.email }}</p>
     </div>
 
-    <div class="game-section">
+    <div class="game-section" v-if="dev">
       <h2 v-if="dev && !showAddGameForm">Game List</h2>
       <GameList v-if="dev && !showAddGameForm" :games="gamesStore.games" @selectGame="selectGame" />
       <button v-if="dev && !showAddGameForm" @click="showAddGameForm = true">Add Game</button>
       <AddGameForm v-if="showAddGameForm" @cancel="showAddGameForm = false" @submit="handleAddGame" />
     </div>
+
+    <p v-else>Please log in as a dev to view dev details.</p>
   </div>
 </template>
 
@@ -51,4 +52,24 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.dev-view {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dev-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dev-details > * {
+    margin: 0; /* Elimina el margin de todos los elementos dentro de dev-details */
+}
+
+h1 {
+    margin-bottom: 0;
+}
 </style>

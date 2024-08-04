@@ -22,7 +22,7 @@ const groupsStore = useGroupsStore();
 
 const userType = computed(() => authStore.userType);
 const isTeacherGroupsSubmenuOpen = ref(false);
-const groups = computed(() => groupsStore.groups);
+const groups = computed(() => groupsStore.groups); // Si le quito computed mi sidebar sale vacio, porq no se actualiza bien en el template si no le pongo computed al state
 
 const toggleTeacherGroupsSubmenu = () => {
     isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
