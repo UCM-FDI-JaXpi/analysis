@@ -8,3 +8,9 @@
 <script setup>
 import GroupList from '@/components/GroupList.vue';
 </script>
+
+<style scoped>
+.groups {
+    padding: 10px;
+}
+</style>

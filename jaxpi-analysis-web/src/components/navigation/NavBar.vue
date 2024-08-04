@@ -5,6 +5,7 @@
         <router-link v-if="isTeacher || isStudent" class="nav-item" to="/groups">Groups</router-link>
         <router-link v-if="isTeacher" class="nav-item" to="/teacher">Teacher View</router-link>
         <router-link v-if="isStudent" class="nav-item" to="/student">Student View</router-link>
+        <router-link v-if="isDev" class="nav-item" to="/games">Games</router-link>
         <router-link v-if="isDev" class="nav-item" to="/dev">Dev View</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/login">Login</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>

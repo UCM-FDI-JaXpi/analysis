@@ -2,10 +2,10 @@
     <div>
         <h2>Add Game</h2>
         <form @submit.prevent="addGame">
-            <label for="name">Name:</label>
+            <label for="name">Name *</label>
             <input type="text" v-model="gameData.name" id="name" required />
 
-            <label for="description">Description:</label>
+            <label for="description">Description</label>
             <textarea v-model="gameData.description" id="description"></textarea>
 
             <button type="submit">Create</button>
@@ -43,10 +43,7 @@ const cancelForm = () => {
 
 <style scoped>
 form {
-    margin-top: 20px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
 }
 
 form label {

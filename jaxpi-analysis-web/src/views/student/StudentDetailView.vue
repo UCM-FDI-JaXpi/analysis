@@ -17,8 +17,8 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { useStudentStore } from '../stores/studentStore'
-import BarChart from '../components/BarChart.vue';
+import { useStudentStore } from '@/stores/studentStore'
+import BarChart from '@/components/BarChart.vue';
 
 const studentStore = useStudentStore();
 const selectedStudent = computed(() => studentStore.selectedStudent);

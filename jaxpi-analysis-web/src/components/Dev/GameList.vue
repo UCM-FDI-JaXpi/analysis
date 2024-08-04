@@ -1,29 +1,31 @@
 <template>
     <div class="game-list">
-        <ul>
-            <li v-for="game in games" :key="game.id" @click="selectGame(game)" class="game-item">
+        <div class="card-container">
+            <div v-for="game in games" :key="game.id" class="card">
                 <div class="game-info">
-                    <h4>{{ game.name }}</h4>
-                    <p>Token: {{ game.token }}</p>
-                    <button @click.stop="copyToken(game.token)">Copy Token</button>
+                    <h2>{{ game.name }}</h2>
+                    <div class="token-container">
+                        <p>Token: {{ game.token }}</p>
+                        <button @click.stop="copyToken(game.token)">Copy Token</button>
+                    </div>
                 </div>
-
-            </li>
-        </ul>
+                <div class="card-actions">
+                    <router-link :to="{ name: 'GameDetailsView', params: { gameId: game.id } }" class="details-button">
+                        View Details
+                    </router-link>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-// eslint-disable-next-line
-const props = defineProps({
-    games: Array
-})
 
-const emit = defineEmits(['selectGame'])
+import { computed } from 'vue';
+import { useGamesStore } from '@/stores/gamesStore';
 
-const selectGame = (game) => {
-    emit('selectGame', game)
-}
+const gamesStore = useGamesStore();
+const games = computed(() => gamesStore.games);
 
 const copyToken = (token) => { // Copiar al portapapeles del usuario
     navigator.clipboard.writeText(token)
@@ -38,48 +40,68 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
 
 <style scoped>
 .game-list {
-    margin-top: 20px;
+    padding: 20px;
 }
 
-.game-list ul {
-    padding: 0;
+.card-container {
+    display: flex;
+    flex-direction: column; /* Apila los elementos verticalmente */
+    gap: 10px;
 }
 
-.game-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f0f0f0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    max-width: 600px;
+    min-width: min-content;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.game-info {
+    flex-grow: 1; /* Permite que esta sección crezca y tome el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre el título y el contenedor del token */
 }
 
-.game-item:hover {
-    background-color: #e0e0e0;
+.token-container {
+    display: flex;
+    align-items: center; /* Alinea verticalmente el texto y el botón */
+    gap: 10px; /* Espacio entre el texto y el botón */
 }
 
-.game-info h4 {
+.game-info h2 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
 }
 
 .game-info p {
-    margin-top: 10px;
-    margin-bottom: 0;
+    margin: 0; /* Elimina el margen por defecto */
     color: #666;
 }
 
-.game-info button {
-    padding: 5px 10px;
-    background-color: #1976D2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 5px;
+.card-actions {
+    flex-shrink: 0; /* Para que el div del botón no se reduzca */
 }
 
-.game-info button:hover {
-    background-color: #1565C0;
+.details-button {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #1976D2;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.24s ease;
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+.details-button:hover {
+    background-color: #0479ffaf;
 }
 </style>
