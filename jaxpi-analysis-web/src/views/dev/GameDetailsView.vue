@@ -33,6 +33,7 @@
           :visible="showSuccessModal"
           title="Success!"
           message="Game deleted successfully!"
+          @ok="handleSuccessModalOk"
         />
     </div>
 </template>
@@ -62,13 +63,13 @@ const deleteGame = async () => {
         await gamesStore.deleteGame(gameId.value);
         showDeleteModal.value = false;
         showSuccessModal.value = true;
-        setTimeout(() => {
-            showSuccessModal.value = false;
-            router.push('/games');
-        }, 3000); // 3 segundos
     } catch (error) {
         console.error('Failed to delete game:', error);
     }
+};
+const handleSuccessModalOk = () => {
+    showSuccessModal.value = false;
+    router.push('/games'); // Navigate to the games list after closing the success modal
 };
 </script>
 

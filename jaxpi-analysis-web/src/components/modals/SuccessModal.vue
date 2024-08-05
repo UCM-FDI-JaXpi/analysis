@@ -4,6 +4,9 @@
             <div class="modal">
                 <h3>{{ title }}</h3>
                 <p>{{ message }}</p>
+                <div class="modal-actions">
+                    <button @click="ok">OK</button>
+                </div>
             </div>
         </div>
     </Teleport>
@@ -22,6 +25,13 @@ const props = defineProps({
         default: 'Operation completed successfully.',
     },
 });
+
+
+const emit = defineEmits(['ok']);
+
+const ok = () => {
+    emit('ok');
+};
 </script>
 
 <style scoped>
@@ -42,5 +52,23 @@ const props = defineProps({
     padding: 2em;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+}
+
+button {
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #76C0FF7A;
+}
+
+button:hover {
+    background: #1976D2;
+    color: white;
 }
 </style>
