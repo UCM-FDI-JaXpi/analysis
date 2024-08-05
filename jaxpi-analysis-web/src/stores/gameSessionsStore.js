@@ -33,6 +33,23 @@ export const useGameSessionsStore = defineStore('gameSessions', {
             } finally {
                 this.loading = false;
             }
+        },
+        async fetchGameSessions(groupId) {
+            this.loading = true;
+            this.error = null;
+            try {
+                const response = await axios.get(`http://localhost:3000/teacher/get-game-sessions/${groupId}`, {
+                    withCredentials: true,
+                });
+                if (response.status === 200) {
+                    this.gameSessions = response.data;
+                }
+            } catch (error) {
+                this.error = error.response?.data?.message || error.message;
+                alert('Error fetching game sessions');
+            } finally {
+                this.loading = false;
+            }
         }
-    },
+    }
 });

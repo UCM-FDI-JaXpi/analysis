@@ -68,6 +68,7 @@ export const useGroupsStore = defineStore('groups', {
                 }
             } catch (error) {
                 this.error = error.response?.data?.message || error.message;
+                console.log(error);
                 alert('Error fetching groups');
             } finally {
                 this.loading = false;

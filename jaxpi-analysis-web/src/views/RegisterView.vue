@@ -2,7 +2,7 @@
   <div class="container">
     <h1>Register</h1>
 
-    <form action="http://localhost:3000/admin/register" method="POST">
+    <form action="http://localhost:3000/register" method="POST">
       <div>
         <label for="name">Name</label>
         <input type="text" id="name" name="name" required>

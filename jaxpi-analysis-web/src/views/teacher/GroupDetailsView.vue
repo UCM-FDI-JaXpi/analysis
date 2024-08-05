@@ -2,6 +2,7 @@
     <div class="group-details" v-if="group">
         <h1>Group details for {{ group.name }}</h1>
         <p><strong>Group id: </strong>{{ group.id }}</p>
+
         <div class="tabs">
             <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                 :class="{ 'active': activeTab === index }">
@@ -14,7 +15,7 @@
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
-            gamesessionsss
+            <GameSessionsList :groupId="group.id" />
         </div>
     </div>
 </template>
@@ -23,6 +24,7 @@
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
+import GameSessionsList from '@/components/teacher/GameSessionList.vue'
 
 //import ChartsView from './ChartsView.vue';
 
