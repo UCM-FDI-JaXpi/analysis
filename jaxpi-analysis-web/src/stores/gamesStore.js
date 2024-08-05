@@ -52,6 +52,21 @@ export const useGamesStore = defineStore('games', {
                 console.error('Error adding game:', error);
             }
         },
+        async deleteGame(gameId) {
+            try {
+                const response = await axios.delete(`http://localhost:3000/dev/games/${gameId}`, {
+                    withCredentials: true
+                });
+                if (response.status === 200) {
+                    console.log('Success:', response.data.message);
+                    this.games = this.games.filter(game => game.id !== gameId);
+                } else {
+                    console.error('Failed to delete game');
+                }
+            } catch (error) {
+                console.error('Error deleting game:', error);
+            }
+        },
         setSelectedGameId(gameId) {
             this.selectedGameId = gameId;
         }

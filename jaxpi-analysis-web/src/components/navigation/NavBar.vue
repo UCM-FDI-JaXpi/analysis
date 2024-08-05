@@ -9,13 +9,15 @@
         <router-link v-if="isDev" class="nav-item" to="/dev">Dev View</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/login">Login</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>
-        <a v-if="isLoggedIn" class="nav-item" @click="showModal = true">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
+        <a v-if="isLoggedIn" class="nav-item" @click="showLogoutModal = true">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
         <router-link class="nav-item" to="/about-us">About us</router-link>
 
         <ConfirmModal
-          :visible="showModal"
+          :visible="showLogoutModal"
+          title="Confirm logout"
+          message="Are you sure you want to logout?"
           @confirm="logout" 
-          @cancel="showModal = false" 
+          @cancel="showLogoutModal = false"
         />
     </nav>
 </template>
@@ -24,7 +26,7 @@
 import { useAuthStore } from '@/stores/authStore';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import ConfirmModal from '../ConfirmModal.vue';
+import ConfirmModal from '@/components/modals/ConfirmModal.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -33,12 +35,12 @@ const isLoggedIn = computed(() => authStore.isAuthenticated);
 const isTeacher = computed(() => authStore.userType === 'teacher');
 const isStudent = computed(() => authStore.userType === 'student');
 const isDev = computed(() => authStore.userType === 'dev');
-const showModal = ref(false);
+const showLogoutModal = ref(false);
 
 const logout = () => {
   authStore.logout();
   router.push('/login'); // Redirigir a la pagina de login
-  showModal.value = false;
+  showLogoutModal.value = false;
 };
 </script>
 

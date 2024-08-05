@@ -3,7 +3,7 @@
         <div v-if="visible" class="modal-overlay" @click="cancel">
             <div class="modal" @click.stop>
                 <h3>{{ title }}</h3>
-                <p>{{ message }}</p>
+                <p v-html="message"></p>  <!-- v-html para renderizar HTML en el mensaje -->
                 <div class="modal-actions">
                     <button @click="confirm">Yes</button>
                     <button @click="cancel">No</button>
@@ -19,11 +19,11 @@ const props = defineProps({
     visible: Boolean,
     title: {
         type: String,
-        default: 'Confirm Logout',
+        default: 'Confirm',
     },
     message: {
         type: String,
-        default: 'Are you sure you want to logout?',
+        default: 'Are you sure?',
     },
 });
 
@@ -70,7 +70,6 @@ button {
     border-radius: 4px;
     cursor: pointer;
     background:#76C0FF7A;
-;
 }
 
 button:hover {
