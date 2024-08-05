@@ -38,6 +38,9 @@ const activeTab = ref(0); // Define active tab
 </script>
 
 <style scoped>
+.group-details {
+    padding: 10px;
+}
 /* Add styling for tabs */
 .tabs {
     display: flex;
