@@ -3,11 +3,15 @@
     <div class="student-info">
       <div class="info-pair">
         <span class="title">Student:</span> 
-        <span class="value">{{ selectedStudent.studentData.studentName }}</span>
+        <span class="value">{{ selectedStudent.studentData.name }}</span>
       </div>
       <div class="info-pair">
         <span class="title">Class:</span> 
-        <span class="value">{{ selectedStudent.selectedClass }}</span>
+        <span class="value" v-if="selectedStudent.studentData.statements.length > 0">
+          {{ selectedStudent.studentData.statements[0].context.contextActivities.parent.id }}
+        </span>
+        <span class="value" v-else> <!-- NO CLASS-->
+        </span>
       </div>
     </div>
 

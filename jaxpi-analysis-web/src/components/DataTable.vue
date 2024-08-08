@@ -101,6 +101,7 @@ table {
     border-radius: 3px;
     background-color: #fff;
 }
+
 td {
     background-color: #f7f5f5; /* Color por defecto cuando el mouse no está sobre la fila */
 }

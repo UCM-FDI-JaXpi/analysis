@@ -41,6 +41,7 @@ onMounted(async () => {
     flex-direction: column;
     gap: 10px;
 }
+
 .student-game-session-key > * {
     margin: 0;
 }

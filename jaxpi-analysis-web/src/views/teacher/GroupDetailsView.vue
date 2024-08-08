@@ -11,7 +11,7 @@
         </div>
 
         <div v-if="activeTab === 0" class="tab-content">
-            chartsss
+            <ChartsView :socket="socket" />
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
@@ -24,9 +24,8 @@
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
+import ChartsView from '../ChartsView.vue';
 import GameSessionsList from '@/components/teacher/GameSessionList.vue'
-
-//import ChartsView from './ChartsView.vue';
 
 const route = useRoute();
 const groupsStore = useGroupsStore();
@@ -35,6 +34,10 @@ const group = computed(() => groupsStore.getGroupById(groupId.value));
 
 const tabs = ref(["Charts", "Game sessions"]);
 const activeTab = ref(0); // Define active tab
+const props = defineProps({
+  socket: Object // Receive the WebSocket connection as a prop
+});
+console.log(props);
 </script>
 
 <style scoped>

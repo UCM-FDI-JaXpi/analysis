@@ -1,16 +1,15 @@
 <template>
   <div class="container">
-    <h1>Charts</h1>
+    <!-- <h1>Charts</h1>
     <div v-if="groupId">
       <h2>Viewing charts for group: {{ groupId }}</h2>
     </div>
     <div v-else>
       <h2>Viewing general charts</h2>
-    </div>
-
-    
+    </div> -->
     <h3 v-if="userType === 'dev' && selectedGame">Game ID: {{ selectedGame.id }}</h3>
     <h3 v-if="userType === 'dev' && selectedGame">Game name: {{ selectedGame.name }}</h3>
+
     <div class="tabs">
       <button v-for="(tab, index) in tabs" :key="index" 
                 @click="activeTab = index" 
@@ -20,21 +19,12 @@
     </div>
     
     <div v-if="activeTab === 0" class="tab-content">
-      <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" :data="dataAttemptsPerLevelPlayer" chartId="stacked-bar-chart1"
-                    title="Number of attempts per level REAL" />
-      <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
-      <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
-                :colorPalette="colorPalettes[1]" />
-      <div v-if="dataTableFilteredTeacher.length > 0" class="search-table">
+      <div v-if="dataTableFormat.length > 0" class="search-table">
         <h2>Last statements received</h2>
-        <select v-model="selectedClassTeacher" id="class-options-teacher">
-          <option disabled value="">Please select a class</option>
-          <option v-for="classData in classOptionsTeacher" :key="classData" :value="classData">{{ classData }}</option>
-        </select>
         <form id="search">
           Search <input name="query-teacher" v-model="searchQueryTeacher">
         </form>
-        <DataTable :data="dataTableFilteredTeacher"
+        <DataTable :data="dataTableFormat"
                   :columns="tableColumnsTeacher"
                   :columnTitles="dataTableColumnTitlesTeacher"
                   :filter-key="searchQueryTeacher"
@@ -43,10 +33,18 @@
     </div>
 
     <div v-if="activeTab === 1" class="tab-content">
-      <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
+      <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" :data="dataAttemptsPerLevelPlayer" chartId="stacked-bar-chart1"
+                    title="Number of attempts per level REAL" />
+      <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
+      <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
+                :colorPalette="colorPalettes[1]" />
     </div>
 
     <div v-if="activeTab === 2" class="tab-content">
+      <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
+    </div>
+
+    <div v-if="activeTab === 3" class="tab-content">
       <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart3"
                 :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
     </div>
@@ -65,34 +63,34 @@ import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
 
-import { ref, onMounted, watch, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import axios from 'axios';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useStudentStore } from '@/stores/studentStore';
 
-const route = useRoute(); // To access route params
+// const route = useRoute(); // To access route params
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const gamesStore = useGamesStore();
 const studentStore = useStudentStore();
 
-const groupId = computed(() => route.params.groupId); // Get groupId from route params 
+// const groupId = computed(() => route.params.groupId); // Get groupId from route params 
 const userType = computed(() => authStore.userType);
 const selectedGame = gamesStore.getSelectedGame; // Obtener datos del juego seleccionado desde el store con el gameId
 //const selectedGame = computed(() => gamesStore.getSelectedGame); ???
 
-const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
   student: 'Students',
   numberOfStatements: 'Number of statements',
   lastTimestamp: 'Last statement send'
 };
-const allData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor
-const dataTableNoFilteredTeacher = ref([]); // Guardo solo algunos campos de response.data, para no pasarle todo
-const dataTableFilteredTeacher = ref([]); // De dataTableNoFilteredTeacher me quedo solo con la selectedClassTeacher y se lo paso a DataTable
+const searchQueryTeacher = ref('')
+
+const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
+const dataTableFormat = ref([]); // De originalData preparo bien los campos de la tabla y se lo paso a DataTable
 const dataFilteredStudentDetail = ref([]); // Guardo studentName y sus statements, luego junto a selectedClassTeacher se lo paso a StudentDetailView.vue
 
 class JsonObject {
@@ -112,23 +110,21 @@ const dataAttemptsPerLevelPlayer = ref([]);
 const initialData = ref(null);
 let timerId = null;
 
-const tabs = ref(["Relevant Charts", "Line Charts", "Bar Charts"]);
+const tabs = ref(["Table", "Charts", "Line Charts", "Bar Charts"]);
 const activeTab = ref(0); // Define active tab
 
 // Para el recuento de verbos
 const verbCount = ref({});
 const dataVerbCount = ref([]);
 
-// For select-dropdown
-const selectedClassTeacher = ref('');
-const classOptionsTeacher = ref([]);
-
 // Data received from server
+console.log(props)
 props.socket.on('message', (msg) => {
   console.log('Message received from server:', msg);
 });
 
-props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un array de trazas
+
+props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
   console.log('Datos actualizados: ', updatedData);
 
   const verb = updatedData.verb.display['en-US'];
@@ -160,8 +156,8 @@ props.socket.on('newData', (updatedData) => { // Recibe traza a traza, no un arr
 const hello = 'hello websocket'
 props.socket.emit('message', hello);
 
-onMounted(() => {
-  fetchDataFromMongoDB();
+onMounted(async () => {
+  await fetchDataFromMongoDB();
 });
 
 // To load data from MongoDB server using Axios
@@ -187,38 +183,8 @@ const fetchDataFromMongoDB = async () => {
 
     } else if (userType.value === 'teacher') {
       console.log('Im teacher')
-      allData.value = response.data;
+      originalData.value = response.data;
       console.log(response.data)
-
-      classOptionsTeacher.value = response.data.map(classData => classData._id); // Save the ids of the different classes of a teacher
-      classOptionsTeacher.value.sort(); // Sort by alphabetical order
-
-      if (classOptionsTeacher.value.length > 0 && !selectedClassTeacher.value) { // Set the first class by default
-        selectedClassTeacher.value = classOptionsTeacher.value[0];
-      }
-
-      // For DataTable
-      dataTableNoFilteredTeacher.value = response.data.map(item => {
-        const actors = item.actors.map(actor => {
-            // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
-            actor.statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            
-            const statements = actor.statements.map(statement => ({
-                verb: statement.verb,
-                timestamp: statement.timestamp
-            }));
-            return { // Para cada actor, nos quedamos con 'studentName' y con algunos campos del array 'statements' 
-              studentName: actor.studentName,
-              statements };
-        });
-        return { // Devolvemos lo mismo que nos dio el back pero solo con los campos necesarios 
-          _id: item._id,
-          actors};
-      });
-      console.log(dataTableNoFilteredTeacher.value)
-      // Filtrar los datos para la clase seleccionada
-      filterDataTable(selectedClassTeacher.value);
-      console.log(dataTableFilteredTeacher.value)
 
     } else if (userType.value === 'dev'){
       console.log('Im dev')
@@ -228,40 +194,37 @@ const fetchDataFromMongoDB = async () => {
   }
 };
 
-const filterDataTable = (selectedClassTeacher) => {
-  dataTableFilteredTeacher.value = dataTableNoFilteredTeacher.value.filter(item => item._id === selectedClassTeacher)
-    .flatMap(item => item.actors.map(actor => {
-      const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
-      return {
-        student: actor.studentName,
-        numberOfStatements: actor.statements.length,
-        lastTimestamp: lastStatement
-      };
-    }))
-    .sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp));
-};
-
-// Lógica para manejar cambios en la clase seleccionada
-watch(selectedClassTeacher, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    filterDataTable(newValue);
+watch(originalData, (newValue) => {
+  if (newValue.length > 0) {
+    dataTableFormat.value = newValue.flatMap(item => {
+      return item.actors.map(actor => {
+        // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
+        actor.statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+         // Comprueba si el actor tiene statements, si los tiene devuelve el primer timestamp que es el mas reciente, sino devuelve null
+        const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
+        return {
+          student: actor.name,
+          numberOfStatements: actor.statements.length,
+          lastTimestamp: lastStatement
+        };
+      });
+    }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
+    console.log(dataTableFormat.value);
   }
 });
 
-const filterDataStudentDetail = (selectedClassTeacher, studentName) => { // En dataFilteredStudentDetail: studentName y sus statements
-  dataFilteredStudentDetail.value = allData.value.filter(item => item._id === selectedClassTeacher)
-    .flatMap(item => item.actors)
-    .find(actor => actor.studentName === studentName);
+const filterDataStudentDetail = (studentName) => { // En dataFilteredStudentDetail: studentName y sus statements
+  dataFilteredStudentDetail.value = originalData.value.flatMap(item => item.actors)
+                                                 .find(actor => actor.name === studentName);
 };
 
 function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
-  filterDataStudentDetail(selectedClassTeacher.value, studentName)
+  filterDataStudentDetail(studentName);
   const selectedStudentData = {
-    studentData: dataFilteredStudentDetail.value,
-    selectedClass: selectedClassTeacher.value
+    studentData: dataFilteredStudentDetail.value
   };
   console.log(selectedStudentData)
-  studentStore.updateSelectedStudent(selectedStudentData); // Le paso tanto la selectedClassTeacher como el nombre del estudiante y sus statements / a studentStore.js
+  studentStore.updateSelectedStudent(selectedStudentData); // Le paso el name del estudiante y sus statements
   router.push({ name: 'StudentDetailView', params: { name: studentName} }) // Go to StudentDetailView using useRouter
 }
 
