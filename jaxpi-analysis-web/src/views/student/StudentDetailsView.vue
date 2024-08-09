@@ -3,7 +3,7 @@
     <div class="student-info">
       <div class="info-pair">
         <span class="title">Student:</span> 
-        <span class="value">{{ selectedStudent.studentData.name }}</span>
+        <span class="value">{{ selectedStudent.name }}</span>
       </div>
       <div  v-if="groupId" class="info-pair">
         <span class="title">Class:</span> 
@@ -34,9 +34,9 @@ const dataVerbCount = ref([]);
 
 // Función para actualizar los datos del estudiante y los datos para el chart
 const updateStudentData = () => {
-  if (selectedStudent.value && selectedStudent.value.studentData) {
+  if (selectedStudent.value) {
     verbCount.value = {}; // Reinicia el verbCount
-    selectedStudent.value.studentData.statements.forEach(entry => { // Actualiza el conteo de verbos basándose en el nuevo estudiante seleccionado
+    selectedStudent.value.statements.forEach(entry => { // Actualiza el conteo de verbos basándose en el nuevo estudiante seleccionado
       const verb = entry.verb.display['en-US'];
       verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
     });

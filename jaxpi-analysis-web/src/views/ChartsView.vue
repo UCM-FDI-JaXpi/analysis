@@ -86,7 +86,7 @@ const searchQueryTeacher = ref('')
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
 const dataTableFormat = ref([]); // De originalData preparo bien los campos de la tabla y se lo paso a DataTable
-const dataStudentDetail = ref([]); // Guardo studentName y sus statements, luego junto a selectedClassTeacher se lo paso a StudentDetailsView.vue
+const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
 
 class JsonObject {
   constructor(data) {
@@ -100,7 +100,7 @@ class JsonObject {
 
 const props = defineProps({
   socket: Object, // Receive the WebSocket connection as a prop
-  groupId: String
+  groupId: String // No required
 });
 
 const dataAttemptsPerLevelPlayer = ref([]);
@@ -119,7 +119,6 @@ console.log(props)
 props.socket.on('message', (msg) => {
   console.log('Message received from server:', msg);
 });
-
 
 props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
   console.log('Datos actualizados: ', updatedData);
@@ -210,16 +209,14 @@ watch(originalData, (newValue) => {
   }
 });
 
-const filterDataStudentDetail = (studentName) => { // En dataStudentDetail: studentName y sus statements
-  dataStudentDetail.value = originalData.value.flatMap(item => item.actors)
+const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
+  dataStudentDetails.value = originalData.value.flatMap(item => item.actors)
                                                  .find(actor => actor.name === studentName);
 };
 
 function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
-  filterDataStudentDetail(studentName);
-  const selectedStudentData = {
-    studentData: dataStudentDetail.value
-  };
+  filterdataStudentDetails(studentName);
+  const selectedStudentData = dataStudentDetails.value;
   console.log(selectedStudentData)
   groupsStore.setSelectedGroupId(props.groupId); // Seteo el group seleccionado
   studentStore.setSelectedStudent(selectedStudentData); // Seteo el name del estudiante y sus statements
