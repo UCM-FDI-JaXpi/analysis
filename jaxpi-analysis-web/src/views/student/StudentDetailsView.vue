@@ -5,13 +5,9 @@
         <span class="title">Student:</span> 
         <span class="value">{{ selectedStudent.studentData.name }}</span>
       </div>
-      <div class="info-pair">
+      <div  v-if="groupId" class="info-pair">
         <span class="title">Class:</span> 
-        <span class="value" v-if="selectedStudent.studentData.statements.length > 0">
-          {{ selectedStudent.studentData.statements[0].context.contextActivities.parent.id }}
-        </span>
-        <span class="value" v-else> <!-- NO CLASS-->
-        </span>
+        <span class="value"> {{ groupName }} </span>
       </div>
     </div>
 
@@ -22,10 +18,15 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { useStudentStore } from '@/stores/studentStore'
+import { useGroupsStore } from '@/stores/groupsStore';
 import BarChart from '@/components/BarChart.vue';
 
 const studentStore = useStudentStore();
+const groupsStore = useGroupsStore();
+
 const selectedStudent = computed(() => studentStore.selectedStudent);
+const groupId = computed(() => groupsStore.selectedGroupId);
+const groupName = computed(() => groupsStore.getGroupNameById(groupId.value));
 
 // Para el recuento de verbos
 const verbCount = ref({});

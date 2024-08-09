@@ -6,7 +6,7 @@ export const useStudentStore = defineStore('selectedStudent', {
     }),
 
     actions: {
-        updateSelectedStudent(selectedStudentData) {
+        setSelectedStudent(selectedStudentData) {
             this.selectedStudent = selectedStudentData;
         },
         clearSelectedStudent() {

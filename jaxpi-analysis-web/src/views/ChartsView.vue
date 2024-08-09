@@ -1,12 +1,5 @@
 <template>
   <div class="container">
-    <!-- <h1>Charts</h1>
-    <div v-if="groupId">
-      <h2>Viewing charts for group: {{ groupId }}</h2>
-    </div>
-    <div v-else>
-      <h2>Viewing general charts</h2>
-    </div> -->
     <h3 v-if="userType === 'dev' && selectedGame">Game ID: {{ selectedGame.id }}</h3>
     <h3 v-if="userType === 'dev' && selectedGame">Game name: {{ selectedGame.name }}</h3>
 
@@ -69,12 +62,14 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useStudentStore } from '@/stores/studentStore';
+import { useGroupsStore } from '@/stores/groupsStore';
 
 // const route = useRoute(); // To access route params
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const gamesStore = useGamesStore();
 const studentStore = useStudentStore();
+const groupsStore = useGroupsStore();
 
 // const groupId = computed(() => route.params.groupId); // Get groupId from route params 
 const userType = computed(() => authStore.userType);
@@ -91,7 +86,7 @@ const searchQueryTeacher = ref('')
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
 const dataTableFormat = ref([]); // De originalData preparo bien los campos de la tabla y se lo paso a DataTable
-const dataFilteredStudentDetail = ref([]); // Guardo studentName y sus statements, luego junto a selectedClassTeacher se lo paso a StudentDetailView.vue
+const dataStudentDetail = ref([]); // Guardo studentName y sus statements, luego junto a selectedClassTeacher se lo paso a StudentDetailsView.vue
 
 class JsonObject {
   constructor(data) {
@@ -104,8 +99,10 @@ class JsonObject {
 }
 
 const props = defineProps({
-  socket: Object // Receive the WebSocket connection as a prop
+  socket: Object, // Receive the WebSocket connection as a prop
+  groupId: String
 });
+
 const dataAttemptsPerLevelPlayer = ref([]);
 const initialData = ref(null);
 let timerId = null;
@@ -213,19 +210,20 @@ watch(originalData, (newValue) => {
   }
 });
 
-const filterDataStudentDetail = (studentName) => { // En dataFilteredStudentDetail: studentName y sus statements
-  dataFilteredStudentDetail.value = originalData.value.flatMap(item => item.actors)
+const filterDataStudentDetail = (studentName) => { // En dataStudentDetail: studentName y sus statements
+  dataStudentDetail.value = originalData.value.flatMap(item => item.actors)
                                                  .find(actor => actor.name === studentName);
 };
 
 function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
   filterDataStudentDetail(studentName);
   const selectedStudentData = {
-    studentData: dataFilteredStudentDetail.value
+    studentData: dataStudentDetail.value
   };
   console.log(selectedStudentData)
-  studentStore.updateSelectedStudent(selectedStudentData); // Le paso el name del estudiante y sus statements
-  router.push({ name: 'StudentDetailView', params: { name: studentName} }) // Go to StudentDetailView using useRouter
+  groupsStore.setSelectedGroupId(props.groupId); // Seteo el group seleccionado
+  studentStore.setSelectedStudent(selectedStudentData); // Seteo el name del estudiante y sus statements
+  router.push({ name: 'StudentDetailsView', params: { name: studentName} }) // Go to StudentDetailsView using useRouter
 }
 
 /**************************************************** For BarChart *******************************************************/

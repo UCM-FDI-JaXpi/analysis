@@ -19,15 +19,11 @@
 
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { useGroupsStore } from '@/stores/groupsStore';
 
 const groupsStore = useGroupsStore();
 const groups = computed(() => groupsStore.groups);
-
-onMounted(async () => {
-    await groupsStore.fetchGroups();
-});
 </script>
 
 <style scoped>

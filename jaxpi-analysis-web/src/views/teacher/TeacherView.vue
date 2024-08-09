@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useGroupsStore } from '@/stores/groupsStore';
@@ -127,6 +127,10 @@ const exportDataToCSV = () => {
     link.click(); // Simulamos un click para desencadenar la descarga
     document.body.removeChild(link); // Eliminamos link del documento
 };
+
+onMounted(async () => {
+  await gamesStore.fetchAllGames();
+});
 </script>
 
 <style scoped>

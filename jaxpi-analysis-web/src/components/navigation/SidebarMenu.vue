@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 
@@ -21,18 +21,12 @@ const authStore = useAuthStore();
 const groupsStore = useGroupsStore();
 
 const userType = computed(() => authStore.userType);
+const groups = computed(() => groupsStore.groups);
 const isTeacherGroupsSubmenuOpen = ref(false);
-const groups = computed(() => groupsStore.groups); // Si le quito computed mi sidebar sale vacio, porq no se actualiza bien en el template si no le pongo computed al state
 
 const toggleTeacherGroupsSubmenu = () => {
     isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
 };
-
-onMounted(async () => {
-    if (userType.value === 'teacher') {
-        await groupsStore.fetchGroups();
-    }
-});
 </script>
 
 <style scoped>

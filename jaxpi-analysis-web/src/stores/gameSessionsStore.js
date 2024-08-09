@@ -53,8 +53,8 @@ export const useGameSessionsStore = defineStore('gameSessions', {
         }
     },
     getters: {
-      getSessionById: (state) => (sessionId) => {
-        return state.gameSessions.find(session => session.sessionId === sessionId);
+      getGameSessionById: (state) => (gameSessionId) => {
+        return state.gameSessions.find(session => session.sessionId === gameSessionId);
       }
     }
 });

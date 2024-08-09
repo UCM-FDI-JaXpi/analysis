@@ -6,6 +6,7 @@ export const useGroupsStore = defineStore('groups', {
         groups: [],
         loading: false,
         error: null,
+        selectedGroupId: null,
     }),
     actions: {
         async createGroupManual(groupName, students) {
@@ -74,13 +75,20 @@ export const useGroupsStore = defineStore('groups', {
                 this.loading = false;
             }
         },
+        setSelectedGroupId(groupId) {
+            this.selectedGroupId = groupId;
+        }
     },
     getters: {
         getGroupById: (state) => {
             return (groupId) => state.groups.find((group) => group.id === groupId);
         },
-        getGroupNameById: (state) => {
+        /*getGroupNameById: (state) => {
             return (groupId) => state.groups.find((group) => group.id === groupId).name
+        },*/
+        getGroupNameById: (state) => (groupId) => {
+            const group = state.groups.find(group => group.id === groupId);
+            return group ? group.name : 'Unknown Group';
         }
     }
 });

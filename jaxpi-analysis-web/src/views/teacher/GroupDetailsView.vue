@@ -1,8 +1,6 @@
 <template>
     <div class="group-details" v-if="group">
         <h1>Group details for {{ group.name }}</h1>
-        <p><strong>Group id: </strong>{{ group.id }}</p>
-
         <div class="tabs">
             <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                 :class="{ 'active': activeTab === index }">
@@ -11,7 +9,7 @@
         </div>
 
         <div v-if="activeTab === 0" class="tab-content">
-            <ChartsView :socket="socket" />
+            <ChartsView :socket="socket" :groupId="group.id"/>
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
@@ -34,6 +32,7 @@ const group = computed(() => groupsStore.getGroupById(groupId.value));
 
 const tabs = ref(["Charts", "Game sessions"]);
 const activeTab = ref(0); // Define active tab
+
 const props = defineProps({
   socket: Object // Receive the WebSocket connection as a prop
 });

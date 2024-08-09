@@ -22,12 +22,16 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
+import { useGroupsStore } from '@/stores/groupsStore';
+import { useGamesStore } from '@/stores/gamesStore';
 import axios from 'axios';
 
 const email = ref('');
 const password = ref('');
 const router = useRouter();
 const authStore = useAuthStore();
+const groupsStore = useGroupsStore();
+const gamesStore = useGamesStore();
 
 const login = async () => {
 	try {
@@ -46,12 +50,15 @@ const login = async () => {
 
 			switch (userData.usr_type) {
 				case 'teacher':
+					groupsStore.fetchGroups();
+					gamesStore.fetchAllGames();
 					router.push('/teacher');
 					break;
 				case 'student':
 					router.push('/student');
 					break;
 				case 'dev':
+					gamesStore.fetchGames();
 					router.push('/dev');
 					break;
 				default:

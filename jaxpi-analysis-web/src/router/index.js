@@ -10,14 +10,14 @@ import GroupsView from '@/views/teacher/GroupsView.vue'
 import GroupDetailsView from '@/views/teacher/GroupDetailsView.vue'
 import StudentGameSessionKeyView from '@/views/teacher/StudentGameSessionKeyView.vue'
 import StudentView from '@/views/student/StudentView.vue'
-import StudentDetailView from '@/views/student/StudentDetailView.vue'
+import StudentDetailsView from '@/views/student/StudentDetailsView.vue'
 import DevView from '@/views/dev/DevView.vue'
 import GamesView from '@/views/dev/GamesView.vue'
 import GameDetailsView from '@/views/dev/GameDetailsView.vue'
 
 const routes = [
     { path: '/', name: 'HomeView', component: HomeView },
-    { path: '/charts/:groupId?', name: 'ChartsView', component: ChartsView, props: route => ({ groupId: route.params.groupId }) },
+    { path: '/charts', name: 'ChartsView', component: ChartsView },
     { path: '/about-us', name: 'AboutUsView', component: AboutUsView },
     { path: '/register', name: 'RegisterView', component: RegisterView },
     { path: '/login', name: 'LoginView', component: LoginView },
@@ -27,7 +27,7 @@ const routes = [
     { path: '/group-details/:groupId', name: 'GroupDetailsView', component: GroupDetailsView },
     { path: '/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
     { path: '/student', name: 'StudentView', component: StudentView }, /*************** Student **************/
-    { path: '/student-detail/:name', name: 'StudentDetailView', component: StudentDetailView},
+    { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
     { path: '/dev', name: 'DevView', component: DevView }, /*************** Dev **************/
     { path: '/games', name: 'GamesView', component: GamesView },
     { path: '/game-details/:gameId', name: 'GameDetailsView', component: GameDetailsView}

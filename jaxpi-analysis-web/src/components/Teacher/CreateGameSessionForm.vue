@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useGroupsStore } from '@/stores/groupsStore';
@@ -43,13 +43,6 @@ const gameSessionData = ref({
 });
 
 const selectedGroup = ref(null);
-
-onMounted(async () => {
-    // Load games
-    if (!gamesStore.games.length) {
-        await gamesStore.fetchAllGames();
-    }
-});
 
 const updateSelectedGroup = () => {
     gameSessionData.value.groupName = selectedGroup.value.name;

@@ -21,7 +21,7 @@
 <script setup>
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
 import GameList from '@/components/dev/GameList.vue';
 import AddGameForm from '@/components/dev/AddGameForm.vue';
 
@@ -39,9 +39,6 @@ const handleAddGame = async (gameData) => {
   showAddGameForm.value = false;
 };
 
-onMounted(async () => {
-  await gamesStore.fetchGames();
-});
 </script>
 
 <style scoped>
