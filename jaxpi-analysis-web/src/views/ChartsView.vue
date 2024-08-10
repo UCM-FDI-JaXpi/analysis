@@ -76,9 +76,11 @@ const userType = computed(() => authStore.userType);
 const selectedGame = gamesStore.getSelectedGame; // Obtener datos del juego seleccionado desde el store con el gameId
 //const selectedGame = computed(() => gamesStore.getSelectedGame); ???
 
-const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
+const tableColumnsTeacher = ['student','session', 'game', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
   student: 'Students',
+  session: 'Session',
+  game: 'Game',
   numberOfStatements: 'Number of statements',
   lastTimestamp: 'Last statement send'
 };
@@ -87,6 +89,7 @@ const searchQueryTeacher = ref('')
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
 const dataTableFormat = ref([]); // De originalData preparo bien los campos de la tabla y se lo paso a DataTable
 const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
+//const initialData = ref(null);
 
 class JsonObject {
   constructor(data) {
@@ -104,7 +107,6 @@ const props = defineProps({
 });
 
 const dataAttemptsPerLevelPlayer = ref([]);
-const initialData = ref(null);
 let timerId = null;
 
 const tabs = ref(["Table", "Charts", "Line Charts", "Bar Charts"]);
@@ -126,21 +128,43 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
   const verb = updatedData.verb.display['en-US'];
   verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
 
-  if (initialData.value) {
-    const realInitialData = initialData.value.data.map(proxy => { return proxy }); // Para poder usar concat
-    const updatedDataProxy = new Proxy(updatedData, {
-      // Define los handlers para el proxy si es necesario
-    });
-    initialData.value.data = realInitialData.concat(updatedDataProxy);
+  if (userType.value === 'teacher') {
+    let actorFound = false;
+    if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo)
+      if (originalData.value.length === 0) { // Si el array es vacio
+            //SI EN BACK NO HAY NADA, QUE HAGO? QUE POST Y GET ME DEUVELAN A BACK LA MISMA ESTRUCTURA? CREO Q ESO ES LO MJOR O HACER Q EN FRONT TENGA ESA ESTRUCTURA 
+      } else {
+        originalData.value.forEach(item => { // Si el array no es vacío, busca el actor adecuado
+          item.actors.forEach(actor => {
+            if (actor.session === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
+               // Verifica que updatedData tiene la estructura esperada (menos los campos internos de MongoDB _id(este si q me lo devuelve back, donde?) y __v) (???????no tendrian los mismos campos que los statements de originalData,q hacer?)
+              if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
+                actor.statements.push(updatedData);
+                actorFound = true;
+                console.log('Dato añadido al actor:', actor);
+              } else {
+                console.warn('updatedData tiene una estructura inesperada', updatedData);
+              }
+            }
+          });
+        });
+        if (!actorFound) {
+          console.warn('No se encontró el actor con la sesión proporcionada en los datos existentes.');
+        } else
+          console.log('Datos actualizados en originalData:', originalData.value);
+      }
+    } else {
+      console.warn('originalData.value no está definido o no es un array');
+    }
   
     if(!timerId){ 
       /* La primera traza que recibe, inicializa un temporizador de X segundos,
          y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
       timerId = setTimeout(() => {
-        dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
+        //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value);
 
-        const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-        dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
+        //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+        //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
 
         timerId = null;
       }, 10000);
@@ -165,8 +189,8 @@ const fetchDataFromMongoDB = async () => {
 
     if (userType.value === 'student') {
       console.log('Im student')
-      initialData.value = new JsonObject(response.data)
-      initialData.value.data.forEach(entry => {
+      originalData.value = new JsonObject(response.data)
+      originalData.value.data.forEach(entry => {
           const verb = entry.verb.display['en-US'];
           verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
       });
@@ -175,12 +199,15 @@ const fetchDataFromMongoDB = async () => {
       const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
       dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
 
-      dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(initialData.value.getData());
+      dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
 
     } else if (userType.value === 'teacher') {
       console.log('Im teacher')
       originalData.value = response.data;
-      console.log(response.data)
+      console.log(response.data);
+
+      if (originalData.value.length === 0)
+        console.log('No data found for teacher.');
 
     } else if (userType.value === 'dev'){
       console.log('Im dev')
@@ -191,6 +218,8 @@ const fetchDataFromMongoDB = async () => {
 };
 
 watch(originalData, (newValue) => {
+  console.log('Watcher triggered');
+  console.log('OriginalData changed:', newValue);
   if (newValue.length > 0) {
     dataTableFormat.value = newValue.flatMap(item => {
       return item.actors.map(actor => {
@@ -205,9 +234,9 @@ watch(originalData, (newValue) => {
         };
       });
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
-    console.log(dataTableFormat.value);
+    console.log('DataTableFormat updated:', dataTableFormat.value);
   }
-});
+}, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 
 const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
   dataStudentDetails.value = originalData.value.flatMap(item => item.actors)

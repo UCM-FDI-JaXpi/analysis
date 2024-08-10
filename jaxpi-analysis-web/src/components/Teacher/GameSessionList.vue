@@ -4,7 +4,7 @@
             <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">
                 <div class="game-session-info">
                     <h2>{{ gameSession.sessionName }}</h2>
-                    <p><strong>Game: </strong>{{ gameSession.gameId }}</p>
+                    <p><strong>Game: </strong>{{ gameSession.gameName }}</p>
                     <p><strong>Created on: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p>
                 </div>
                 <div class="card-actions">

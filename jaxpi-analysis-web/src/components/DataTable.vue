@@ -12,12 +12,12 @@
             </tr>
         </thead>
         <tbody v-if="filteredData.length">
-            <tr v-for="entry in filteredData" :key="entry.student"
+            <tr v-for="(entry, index) in filteredData" :key="index"
                 @click="showStudentDetail(entry.student)"
-                @mouseover="highlightRow = entry.student"
+                @mouseover="highlightRow = index"
                 @mouseleave="highlightRow = null"
-                :class="{ 'highlight': highlightRow === entry.student }">
-                <td v-for="key in columns" :key="`_${entry.student}_${key}`">
+                :class="{ 'highlight': highlightRow === index }">
+                <td v-for="key in columns" :key="`_${index}_${key}`">
                     {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }}
                 </td>
             </tr>

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { useGamesStore } from './gamesStore';
 
 export const useGameSessionsStore = defineStore('gameSessions', {
     state: () => ({
@@ -42,7 +43,14 @@ export const useGameSessionsStore = defineStore('gameSessions', {
                     withCredentials: true,
                 });
                 if (response.status === 200) {
-                    this.gameSessions = response.data;
+                    const gameSessions = response.data;
+                    const gamesStore = useGamesStore(); // Obtener instancia del store de juegos
+
+                    // Mapear las sesiones de juego para incluir el nombre del juego usando el gamesStore
+                    this.gameSessions = gameSessions.map(session => ({
+                        ...session,
+                        gameName: gamesStore.getGameNameById(session.gameId) // Usa el nombre del juego del gamesStore
+                    }));
                 }
             } catch (error) {
                 this.error = error.response?.data?.message || error.message;
