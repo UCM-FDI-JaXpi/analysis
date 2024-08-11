@@ -136,7 +136,7 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
       } else {
         originalData.value.forEach(item => { // Si el array no es vacío, busca el actor adecuado
           item.actors.forEach(actor => {
-            if (actor.session === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
+            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
                // Verifica que updatedData tiene la estructura esperada (menos los campos internos de MongoDB _id(este si q me lo devuelve back, donde?) y __v) (???????no tendrian los mismos campos que los statements de originalData,q hacer?)
               if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
                 actor.statements.push(updatedData);
@@ -218,7 +218,6 @@ const fetchDataFromMongoDB = async () => {
 };
 
 watch(originalData, (newValue) => {
-  console.log('Watcher triggered');
   console.log('OriginalData changed:', newValue);
   if (newValue.length > 0) {
     dataTableFormat.value = newValue.flatMap(item => {
@@ -229,6 +228,8 @@ watch(originalData, (newValue) => {
         const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
         return {
           student: actor.name,
+          session: actor.sessionName + " (" + actor.sessionId + ")",
+          game: actor.gameName,
           numberOfStatements: actor.statements.length,
           lastTimestamp: lastStatement
         };
