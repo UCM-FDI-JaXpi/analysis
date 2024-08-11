@@ -23,6 +23,9 @@
                   :filter-key="searchQueryTeacher"
                   @student-selected="handleStudentSelected"/>
       </div>
+      <div v-else>
+        <p>No data available for the selected class.</p>
+      </div>
     </div>
 
     <div v-if="activeTab === 1" class="tab-content">
@@ -202,9 +205,15 @@ const fetchDataFromMongoDB = async () => {
       dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
 
     } else if (userType.value === 'teacher') {
-      console.log('Im teacher')
-      originalData.value = response.data;
+      console.log('Im teacher');
+      let filteredData = response.data;
       console.log(response.data);
+      // Filtrar por groupId si existe, sino guarda lo que le paso back directamente, osea todos los groups
+      if (props.groupId) {
+        filteredData = filteredData.filter(item => item.groupId === props.groupId);
+      }
+      console.log(filteredData);
+      originalData.value = filteredData;
 
       if (originalData.value.length === 0)
         console.log('No data found for teacher.');
@@ -236,8 +245,17 @@ watch(originalData, (newValue) => {
       });
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
     console.log('DataTableFormat updated:', dataTableFormat.value);
+  }  else {
+    dataTableFormat.value = []; // Limpia la tabla si no hay datos
   }
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
+
+// Observamos los cambios en groupId y llamamos a fetchDataFromMongoDB cuando cambie
+watch(() => props.groupId, (newGroupId, oldGroupId) => {
+    if (newGroupId !== oldGroupId) {
+      fetchDataFromMongoDB(newGroupId);
+    }
+});
 
 const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
   dataStudentDetails.value = originalData.value.flatMap(item => item.actors)

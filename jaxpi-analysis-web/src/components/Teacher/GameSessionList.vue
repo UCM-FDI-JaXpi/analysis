@@ -1,6 +1,9 @@
 <template>
     <div class="game-session-list">
-        <div class="card-container">
+        <div v-if="gameSessions.length === 0" class="no-data">
+            <p>No game sessions available for this group.</p>
+        </div>
+        <div v-else class="card-container">
             <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">
                 <div class="game-session-info">
                     <h2>{{ gameSession.sessionName }}</h2>
@@ -46,6 +49,10 @@ watch(() => props.groupId, (newGroupId, oldGroupId) => {
 </script>
 
 <style scoped>
+.no-data {
+    padding: 15px;
+}
+
 .card-container {
     display: flex;
     flex-direction: column;
