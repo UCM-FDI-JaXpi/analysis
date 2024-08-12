@@ -9,14 +9,45 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         isAuthenticated: false,
         userData: null, // All user details
-        userType: ''
+        userType: '',
+        errorMessage: ''
     }),
     actions: {
-        login(user) {
+        loginStore(user) {
             this.isAuthenticated = true;
             this.userData = user;
             this.userType = user.usr_type;
-            console.log("Login successful")
+            this.errorMessage = '';
+        },
+        async login(credentials) {
+            try {
+                const response = await axios.post('http://localhost:3000/login',
+                    credentials, {
+                    withCredentials: true
+                });
+
+                if (response.status === 200) {
+                    console.log(response.data.message);  // Imprimir  mensaje del servidor (exito)
+                    const userDataResponse = await axios.get('http://localhost:3000/api/session', { // podria dar error??
+                        withCredentials: true
+                    });
+                    const userData = userDataResponse.data.user;
+                    console.log("Login successful, userData: ", userData);
+
+                    this.loginStore(userData);
+                    return userData;
+                } else {
+                    throw new Error('Unexpected response status');
+                }
+            } catch (error) {
+                if (error.response) // Error específico del back
+                    this.errorMessage = error.response.data.message || 'Login failed';
+                else
+                    this.errorMessage = 'Network error or unexpected error occurred'; // Error de red u otro tipo de error
+                
+                console.error('Error logging in:', error);
+                throw error; // Propaga el error al componente
+            }
         },
         async logout() {
             try {

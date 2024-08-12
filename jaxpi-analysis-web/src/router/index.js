@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import SelectRoleView from '@/views/SelectRoleView.vue'
+import StudentLoginView from '@/views/student/StudentLoginView.vue'
 import ChartsView from '@/views/ChartsView.vue'
 import AboutUsView from '@/views/AboutUsView.vue'
 import RegisterView from '@/views/RegisterView.vue'
@@ -17,10 +19,12 @@ import GameDetailsView from '@/views/dev/GameDetailsView.vue'
 
 const routes = [
     { path: '/', name: 'HomeView', component: HomeView },
+    { path: '/login', name: 'LoginView', component: LoginView },
+    { path: '/select-role', name: 'SelectRoleView', component: SelectRoleView },
+    { path: '/student-login', name: 'StudentLoginView', component: StudentLoginView },
     { path: '/charts', name: 'ChartsView', component: ChartsView },
     { path: '/about-us', name: 'AboutUsView', component: AboutUsView },
     { path: '/register', name: 'RegisterView', component: RegisterView },
-    { path: '/login', name: 'LoginView', component: LoginView },
     { path: '/:pathMatch(.*)*', name: 'NotFoundView', component: NotFoundView }, // For undefined routes
     { path: '/teacher', name: 'TeacherView', component: TeacherView }, /*************** Teacher **************/
     { path: '/groups', name: 'GroupsView', component: GroupsView },

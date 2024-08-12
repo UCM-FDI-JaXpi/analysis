@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="login-container">
 		<h1>Login</h1>
 
 		<form @submit.prevent="login">
@@ -15,6 +15,8 @@
 		</form>
 
 		<router-link to="/register" class="link">Register</router-link>
+
+		<p v-if="authStore.errorMessage" class="error-message">{{ authStore.errorMessage }}</p>
 	</div>
 </template>
 
@@ -24,7 +26,6 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useGamesStore } from '@/stores/gamesStore';
-import axios from 'axios';
 
 const email = ref('');
 const password = ref('');
@@ -35,53 +36,34 @@ const gamesStore = useGamesStore();
 
 const login = async () => {
 	try {
-		const response = await axios.post('http://localhost:3000/login', {
-			email: email.value,
-			password: password.value
-		}, { withCredentials: true });
-
-		if (response.status === 200) {
-			console.log(response.data.message); // Imprimir  mensaje del servidor (exito)
-			const userDataResponse = await axios.get('http://localhost:3000/api/session', { // podria dar error??
-				withCredentials: true
-			});
-			const userData = userDataResponse.data.user;
-			console.log("Login successful, userData: ", userData);
-
-			switch (userData.usr_type) {
-				case 'teacher':
-					groupsStore.fetchGroups();
-					gamesStore.fetchAllGames();
-					router.push('/teacher');
-					break;
-				case 'student':
-					router.push('/student');
-					break;
-				case 'dev':
-					gamesStore.fetchGames();
-					router.push('/dev');
-					break;
-				default:
-					router.push('/');
-			}
-			authStore.login(userData);
-		} else {
-			console.error('Login failed');
+		const userData = await authStore.login({ email: email.value, password: password.value });
+		switch (userData.usr_type) {
+			case 'teacher':
+				groupsStore.fetchGroups();
+				gamesStore.fetchAllGames();
+				router.push('/teacher');
+				break;
+			case 'dev':
+				gamesStore.fetchGames();
+				router.push('/dev');
+				break;
+			default:
+				console.error('Invalid user type or not authenticated');
+				break;
 		}
 	} catch (error) {
-		console.error('Error:', error);
+		console.error('Login failed:', error); // El error esta seteado en el store, este catch es por seguridad
 	}
 };
 </script>
 
 <style scoped>
-h1 {
-	font-size: 25px;
-	color: #333;
+.login-container {
+  padding: 1rem;
 }
 
-.link {
-	display: block;
-	margin-bottom: 10px;
+.error-message {
+    color: red;
+	font-weight: bold;
 }
 </style>

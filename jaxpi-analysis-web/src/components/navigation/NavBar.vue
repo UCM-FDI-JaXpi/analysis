@@ -7,7 +7,7 @@
         <router-link v-if="isStudent" class="nav-item" to="/student">Student View</router-link>
         <router-link v-if="isDev" class="nav-item" to="/games">Games</router-link>
         <router-link v-if="isDev" class="nav-item" to="/dev">Dev View</router-link>
-        <router-link v-if="!isLoggedIn" class="nav-item" to="/login">Login</router-link>
+        <router-link v-if="!isLoggedIn" class="nav-item" to="/select-role">Login</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>
         <a v-if="isLoggedIn" class="nav-item" @click="showLogoutModal = true">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
         <router-link class="nav-item" to="/about-us">About us</router-link>
@@ -39,7 +39,7 @@ const showLogoutModal = ref(false);
 
 const logout = () => {
   authStore.logout();
-  router.push('/login'); // Redirigir a la pagina de login
+  router.push('/select-role'); // Redirigir a la pagina de selección de rol después de cerrar sesión
   showLogoutModal.value = false;
 };
 </script>
