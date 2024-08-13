@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
@@ -55,6 +55,12 @@ const login = async () => {
 		console.error('Login failed:', error); // El error esta seteado en el store, este catch es por seguridad
 	}
 };
+
+onMounted(() => {
+  if (authStore.errorMessage) {
+    authStore.errorMessage = '';
+  }
+});
 </script>
 
 <style scoped>

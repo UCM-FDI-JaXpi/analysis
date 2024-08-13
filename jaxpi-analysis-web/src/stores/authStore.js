@@ -19,7 +19,30 @@ export const useAuthStore = defineStore('auth', {
             this.userType = user.usr_type;
             this.errorMessage = '';
         },
-        async login(credentials) {
+        async register(userDetails) {
+            try {
+                const response = await axios.post('http://localhost:3000/register',
+                    userDetails, {
+                    withCredentials: true
+                });
+
+                if (response.status === 200) {
+                    console.log(response.data.message);
+                    return response.data;
+                } else {
+                    throw new Error('Unexpected response status');
+                }
+            } catch (error) {
+                if (error.response)
+                    this.errorMessage = error.response.data.message || 'Registration failed';
+                else
+                    this.errorMessage = 'Network error or unexpected error occurred';
+                
+                console.error('Error registering:', error);
+                throw error; // Propaga el error al componente
+            }
+        },
+        async login(credentials) { // email and password when is a dev or a teacher, sessionKey when is a Student
             try {
                 const response = await axios.post('http://localhost:3000/login',
                     credentials, {

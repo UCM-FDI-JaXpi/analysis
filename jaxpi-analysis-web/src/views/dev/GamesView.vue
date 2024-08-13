@@ -10,6 +10,6 @@ import GameList from '@/components/dev/GameList.vue';
 
 <style scoped>
 .games {
-    padding: 10px;
+    padding: 1rem;
 }
 </style>

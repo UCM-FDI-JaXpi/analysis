@@ -3,7 +3,7 @@
         <h1>Student login</h1>
         <form @submit.prevent="login">
             <div>
-                <label for="sessionKey">Session key </label>
+                <label for="sessionKey">Key </label>
                 <input type="text" id="sessionKey" v-model="sessionKey" required>
             </div>
             <button type="submit">Login</button>
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -29,6 +29,12 @@ const login = async () => {
         console.error('Student login failed:', error);
     }
 };
+
+onMounted(() => {
+  if (authStore.errorMessage) {
+    authStore.errorMessage = '';
+  }
+});
 </script>
 
 <style scoped>

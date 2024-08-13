@@ -24,7 +24,7 @@
                   @student-selected="handleStudentSelected"/>
       </div>
       <div v-else>
-        <p>No data available for the selected class.</p>
+        <p>No data available for this table.</p>
       </div>
     </div>
 

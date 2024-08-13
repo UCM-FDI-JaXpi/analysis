@@ -29,7 +29,7 @@
             <p><strong>Game session name:</strong> {{ createdGameSession.sessionName }}</p>
             <p><strong>Game:</strong> {{ gameName }}</p>
             <p><strong>Group:</strong> {{ groupName }}</p>
-            <p><strong>Students and game session keys:</strong></p>
+            <p><strong>Students and keys:</strong></p>
             <ul>
                 <li v-for="student in createdGameSession.students" :key="student.key">
                         {{ student.name }} - {{ student.key }}</li>
@@ -112,7 +112,7 @@ const handleCreateGameSession = async (sessionData) => {
 
 const exportDataToCSV = () => {
     const students = createdGameSession.value.students;
-    let csvContent = "Name,GameSessionKey\n";
+    let csvContent = "Name,Key\n";
     students.forEach(student => {
         csvContent += `${student.name},${student.key}\n`;
     });
@@ -121,7 +121,7 @@ const exportDataToCSV = () => {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob); // Crea una URL temporal que apunta al Blob
     link.setAttribute("href", url);
-    link.setAttribute("download", "students_gameSessionKeys.csv"); // Nombre del archivo a descargar
+    link.setAttribute("download", "students_keys.csv"); // Nombre del archivo a descargar
     document.body.appendChild(link); // Añadimos temporalmente link al documento
 
     link.click(); // Simulamos un click para desencadenar la descarga

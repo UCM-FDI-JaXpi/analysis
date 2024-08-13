@@ -11,8 +11,8 @@
                 </th>
             </tr>
         </thead>
-        <tbody v-if="filteredData.length">
-            <tr v-for="(entry, index) in filteredData" :key="index"
+        <tbody v-if="paginatedData.length">
+            <tr v-for="(entry, index) in paginatedData" :key="index"
                 @click="showStudentDetail(entry.student)"
                 @mouseover="highlightRow = index"
                 @mouseleave="highlightRow = null"
@@ -31,26 +31,35 @@
         </tbody>
     </table>
     <p v-if="filteredData.length === 0">No matches found</p>
+
+    <PaginationComponent
+        :totalItems="filteredData.length" 
+        :itemsPerPage="itemsPerPage"
+        @page-changed="changePage"
+    />
 </template>
 
 <script setup>
-import { ref, computed, defineEmits } from 'vue'
+import { ref, computed, defineEmits } from 'vue';
+import PaginationComponent from '@/components/PaginationComponent.vue';
+import { usePaginationStore } from '@/stores/paginationStore';
 
 const emit = defineEmits(['student-selected']); // Definir evento personalizado
+const paginationStore = usePaginationStore();
 
 const props = defineProps({
     data: Array,
     columns: Array,
     columnTitles: Object,
     filterKey: String
-})
+});
+
 let highlightRow = ref(null)
-
-
 const sortKey = ref('')
 const sortOrders = ref(
     props.columns.reduce((o, key) => ((o[key] = 1), o), {})
-)
+);
+const itemsPerPage = ref(3); // 3 elementos por página
 
 const filteredData = computed(() => {
     let { data, filterKey } = props
@@ -72,7 +81,17 @@ const filteredData = computed(() => {
         })
     }
     return data
-})
+});
+
+const paginatedData = computed(() => {
+    const start = (paginationStore.currentPage - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return filteredData.value.slice(start, end);
+});
+
+function changePage(page) {
+    paginationStore.setPage(page);
+}
 
 function sortBy(key) {
     sortKey.value = key

@@ -1,6 +1,10 @@
 <template>
     <div class="game-list">
-        <div class="card-container">
+        <div v-if="games.length === 0" class="no-games-message">
+            <p>There are no games.</p>
+        </div>
+
+        <div v-else class="card-container">
             <div v-for="game in games" :key="game.id" class="card">
                 <div class="game-info">
                     <h2>{{ game.name }}</h2>
@@ -41,6 +45,12 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
 <style scoped>
 .game-list {
     padding: 20px;
+}
+
+.no-games-message {
+    text-align: center;
+    color: #666;
+    font-size: 1.125rem;
 }
 
 .card-container {

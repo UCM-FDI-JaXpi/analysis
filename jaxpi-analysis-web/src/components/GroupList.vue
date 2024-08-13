@@ -1,6 +1,10 @@
 <template>
     <div class="group-list">
-        <div class="card-container">
+        <div v-if="groups.length === 0" class="no-groups-message">
+            <p>There are no groups.</p>
+        </div>
+
+        <div v-else class="card-container">
             <div v-for="group in groups" :key="group.id" class="card">
                 <div class="group-info">
                     <h2>{{ group.name }}</h2>
@@ -29,6 +33,12 @@ const groups = computed(() => groupsStore.groups);
 <style scoped>
 .group-list {
     padding: 20px;
+}
+
+.no-groups-message {
+    text-align: center;
+    color: #666;
+    font-size: 1.125rem;
 }
 
 .card-container {

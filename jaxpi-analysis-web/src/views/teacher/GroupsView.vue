@@ -11,6 +11,6 @@ import GroupList from '@/components/GroupList.vue';
 
 <style scoped>
 .groups {
-    padding: 10px;
+    padding: 1rem;
 }
 </style>
