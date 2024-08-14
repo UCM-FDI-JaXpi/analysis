@@ -90,9 +90,11 @@ const dataTableColumnTitlesTeacher = {
 const searchQueryTeacher = ref('')
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
-const dataTableFormat = ref([]); // De originalData preparo bien los campos de la tabla y se lo paso a DataTable
+const filteredDataByGroupId = ref([]); // datos del filtrados por groupID de originalData
+const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
 //const initialData = ref(null);
+
 
 class JsonObject {
   constructor(data) {
@@ -133,38 +135,52 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
 
   if (userType.value === 'teacher') {
     let actorFound = false;
-    if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo)
-      if (originalData.value.length === 0) { // Si el array es vacio
-            //SI EN BACK NO HAY NADA, QUE HAGO? QUE POST Y GET ME DEUVELAN A BACK LA MISMA ESTRUCTURA? CREO Q ESO ES LO MJOR O HACER Q EN FRONT TENGA ESA ESTRUCTURA 
-      } else {
-        originalData.value.forEach(item => { // Si el array no es vacío, busca el actor adecuado
-          item.actors.forEach(actor => {
-            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
-               // Verifica que updatedData tiene la estructura esperada (menos los campos internos de MongoDB _id(este si q me lo devuelve back, donde?) y __v) (???????no tendrian los mismos campos que los statements de originalData,q hacer?)
-              if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
-                actor.statements.push(updatedData);
-                actorFound = true;
-                console.log('Dato añadido al actor:', actor);
-              } else {
-                console.warn('updatedData tiene una estructura inesperada', updatedData);
-              }
+    if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
+      const group = originalData.value.find(item => item.groupId ===  props.groupId);
+      if (group) {
+        group.actors.forEach(actor => {
+          if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
+            // Verifica que updatedData tiene la estructura esperada
+            if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
+              actor.statements.push(updatedData);
+              actorFound = true;
+              console.log('Dato añadido al actor:', actor);
+            } else {
+              console.warn('updatedData tiene una estructura inesperada', updatedData);
             }
-          });
+          }
         });
         if (!actorFound) {
-          console.warn('No se encontró el actor con la sesión proporcionada en los datos existentes.');
-        } else
+          console.log("Este estudiante no corresponde a este group");
+        } else {
           console.log('Datos actualizados en originalData:', originalData.value);
+        }
+      } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
+        console.log('No se encontró el group con groupId:', props.groupId);
+        let newGroup = {};
+        newGroup.groupId = updatedData.context.contextActivities.parent.id;
+        newGroup.groupName = groupsStore.getGroupNameById(props.groupId);
+        newGroup.actors = [];
+        let actor = {};
+        actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+        actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+        actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+        actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+        actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+        actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+        actor.statements = [updatedData];
+        newGroup.actors.push(actor);
+        originalData.value.push(newGroup);
       }
     } else {
-      console.warn('originalData.value no está definido o no es un array');
+      console.warn('originalData no está definido o no es un array');
     }
   
     if(!timerId){ 
       /* La primera traza que recibe, inicializa un temporizador de X segundos,
          y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
       timerId = setTimeout(() => {
-        //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value);
+        //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
 
         //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
         //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
@@ -206,16 +222,17 @@ const fetchDataFromMongoDB = async () => {
 
     } else if (userType.value === 'teacher') {
       console.log('Im teacher');
-      let filteredData = response.data;
+      originalData.value =  response.data;
+      console.log('originalData:' + response.data);
+      filteredDataByGroupId.value = response.data;
       console.log(response.data);
       // Filtrar por groupId si existe, sino guarda lo que le paso back directamente, osea todos los groups
       if (props.groupId) {
-        filteredData = filteredData.filter(item => item.groupId === props.groupId);
+        filteredDataByGroupId.value = filteredDataByGroupId.value.filter(item => item.groupId === props.groupId);
       }
-      console.log(filteredData);
-      originalData.value = filteredData;
+      console.log(filteredDataByGroupId.value);
 
-      if (originalData.value.length === 0)
+      if (filteredDataByGroupId.value.length === 0)
         console.log('No data found for teacher.');
 
     } else if (userType.value === 'dev'){
@@ -226,10 +243,16 @@ const fetchDataFromMongoDB = async () => {
   }
 };
 
-watch(originalData, (newValue) => {
-  console.log('OriginalData changed:', newValue);
-  if (newValue.length > 0) {
-    dataTableFormat.value = newValue.flatMap(item => {
+watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
+  if (props.groupId) {
+    filteredDataByGroupId.value = newValue.filter(item => item.groupId === props.groupId);
+  } else {
+    filteredDataByGroupId.value = newValue;
+  }
+
+  console.log('filteredDataByGroupId changed:', filteredDataByGroupId.value);
+  if (filteredDataByGroupId.value.length > 0) {
+    dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
       return item.actors.map(actor => {
         // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
         actor.statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -258,7 +281,7 @@ watch(() => props.groupId, (newGroupId, oldGroupId) => {
 });
 
 const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
-  dataStudentDetails.value = originalData.value.flatMap(item => item.actors)
+  dataStudentDetails.value = filteredDataByGroupId.value.flatMap(item => item.actors)
                                                  .find(actor => actor.name === studentName);
 };
 
