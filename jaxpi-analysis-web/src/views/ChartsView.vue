@@ -17,11 +17,12 @@
         <form id="search">
           Search <input name="query-teacher" v-model="searchQueryTeacher">
         </form>
-        <DataTable :data="dataTableFormat"
-                  :columns="tableColumnsTeacher"
-                  :columnTitles="dataTableColumnTitlesTeacher"
-                  :filter-key="searchQueryTeacher"
-                  @student-selected="handleStudentSelected"/>
+        <DataTable
+          :data="dataTableFormat" 
+          :columns="tableColumnsTeacher"
+          :columnTitles="dataTableColumnTitlesTeacher"
+          :filter-key="searchQueryTeacher"
+          @student-selected="handleStudentSelected" />
       </div>
       <div v-else>
         <p>No data available for this table.</p>
@@ -29,20 +30,34 @@
     </div>
 
     <div v-if="activeTab === 1" class="tab-content">
-      <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" :data="dataAttemptsPerLevelPlayer" chartId="stacked-bar-chart1"
-                    title="Number of attempts per level REAL" />
-      <BarChart v-if="dataVerbCount.length > 0" :data="dataVerbCount" chartId="bar-chart1" title="Verb count" />
-      <BarChart :data="dataLevelCompletionTimesMongoPlayer" chartId="bar-chart2" title="Completion time per level MONGO"
-                :colorPalette="colorPalettes[1]" />
+      <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" 
+        :data="dataAttemptsPerLevelPlayer"
+        chartId="stacked-bar-chart1"
+        title="Number of attempts per level REAL" />
+
+      <BarChart v-if="dataVerbCount.length > 0"
+        :data="dataVerbCount"
+        chartId="bar-chart1"
+        title="Verb count" />
+
+      <BarChart v-if="dataLevelCompletionTimes.length > 0"
+        :data="dataLevelCompletionTimes"
+        chartId="bar-chart2"
+        title="Completion time per level MONGO"
+        :colorPalette="colorPalettes[1]" /> <!---------------------------------THISSSSS------------------------->
     </div>
 
     <div v-if="activeTab === 2" class="tab-content">
-      <LineChart :data="dataScoreSessionPlayer" chartId="line-chart1" title="Score progression per session" />
+      <LineChart
+        :data="dataScoreSessionPlayer"
+        chartId="line-chart1"
+        title="Score progression per session" />
     </div>
 
     <div v-if="activeTab === 3" class="tab-content">
-      <BarChart :data="dataTimeLevelPlayer" chartId="bar-chart3"
-                :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
+      <BarChart :data="dataTimeLevelPlayer"
+        chartId="bar-chart3"
+        :title="'Playing time per level for ' + jsonDataTimeLevelPlayer.player" />
     </div>
   </div>
 </template>
@@ -54,7 +69,6 @@ import StackedBarChart from '../components/StackedBarChart.vue';
 import DataTable from '../components/DataTable.vue';
 
 import jsonDataTimeLevelPlayer from '../data/time-level-player.json';
-import jsonDataRecordsMongo from '../data/recordsMongo.json';
 import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
@@ -67,17 +81,17 @@ import { useGamesStore } from '@/stores/gamesStore';
 import { useStudentStore } from '@/stores/studentStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 
-// const route = useRoute(); // To access route params
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const gamesStore = useGamesStore();
 const studentStore = useStudentStore();
 const groupsStore = useGroupsStore();
 
-// const groupId = computed(() => route.params.groupId); // Get groupId from route params 
 const userType = computed(() => authStore.userType);
-const selectedGame = gamesStore.getSelectedGame; // Obtener datos del juego seleccionado desde el store con el gameId
-//const selectedGame = computed(() => gamesStore.getSelectedGame); ???
+const selectedGame = computed(() => gamesStore.getSelectedGame); // Obtener datos del juego seleccionado desde el store con el gameId
+
+const tabs = ref(["Table", "Charts", "Line Charts", "Bar Charts"]);
+const activeTab = ref(0);
 
 const tableColumnsTeacher = ['student','session', 'game', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
@@ -93,8 +107,17 @@ const originalData = ref([]); // Guardo todo lo que me da response.data cuando s
 const filteredDataByGroupId = ref([]); // datos del filtrados por groupID de originalData
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
-//const initialData = ref(null);
+// Para el primer barchart
+const dataLevelCompletionTimes = ref([]);
 
+
+
+const dataAttemptsPerLevelPlayer = ref([]);
+let timerId = null;
+
+// Para el recuento de verbos
+const verbCount = ref({});
+const dataVerbCount = ref([]);
 
 class JsonObject {
   constructor(data) {
@@ -110,16 +133,6 @@ const props = defineProps({
   socket: Object, // Receive the WebSocket connection as a prop
   groupId: String // No required
 });
-
-const dataAttemptsPerLevelPlayer = ref([]);
-let timerId = null;
-
-const tabs = ref(["Table", "Charts", "Line Charts", "Bar Charts"]);
-const activeTab = ref(0); // Define active tab
-
-// Para el recuento de verbos
-const verbCount = ref({});
-const dataVerbCount = ref([]);
 
 // Data received from server
 console.log(props)
@@ -169,6 +182,7 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
         actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
         actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
         actor.statements = [updatedData];
+
         newGroup.actors.push(actor);
         originalData.value.push(newGroup);
       }
@@ -222,21 +236,25 @@ const fetchDataFromMongoDB = async () => {
 
     } else if (userType.value === 'teacher') {
       console.log('Im teacher');
-      originalData.value =  response.data;
-      console.log('originalData:' + response.data);
-      filteredDataByGroupId.value = response.data;
-      console.log(response.data);
-      // Filtrar por groupId si existe, sino guarda lo que le paso back directamente, osea todos los groups
-      if (props.groupId) {
+      console.log('response.data:', response.data);
+      
+      originalData.value = response.data;
+      filteredDataByGroupId.value = response.data; // Le asigno toda la info de todos los groups, luego filtro por groupId si existe
+
+      if (props.groupId) { // Filtrar por groupId si existe
         filteredDataByGroupId.value = filteredDataByGroupId.value.filter(item => item.groupId === props.groupId);
       }
-      console.log(filteredDataByGroupId.value);
+      console.log('filteredDataByGroupId: ', filteredDataByGroupId.value);
 
-      if (filteredDataByGroupId.value.length === 0)
+      if (filteredDataByGroupId.value.length === 0) {
         console.log('No data found for teacher.');
+      } else {
+        dataLevelCompletionTimes.value = calculateLevelCompletionTimes(filteredDataByGroupId.value);
+      }
 
     } else if (userType.value === 'dev'){
-      console.log('Im dev')
+      console.log('Im dev');
+      console.log('response.data:', response.data);
     }
   } catch (error) {
     console.error('Error al obtener los datos de http://localhost:3000/records', error);
@@ -244,11 +262,10 @@ const fetchDataFromMongoDB = async () => {
 };
 
 watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
-  if (props.groupId) {
+  if (props.groupId)
     filteredDataByGroupId.value = newValue.filter(item => item.groupId === props.groupId);
-  } else {
+  else 
     filteredDataByGroupId.value = newValue;
-  }
 
   console.log('filteredDataByGroupId changed:', filteredDataByGroupId.value);
   if (filteredDataByGroupId.value.length > 0) {
@@ -303,8 +320,6 @@ function prepareDataForCharts(jsonData) {
   }));
 }
 const dataTimeLevelPlayer = prepareDataForCharts(jsonDataTimeLevelPlayer.levels) //For time-level-player.json
-const dataLevelCompletionTimesMongoPlayer = calculateLevelCompletionTimes(jsonDataRecordsMongo); //For recordsMongo.json
-
 /************************************************** For LineChart *******************************************************/
 const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) //For score-session-player.json - the data in the correct format
 </script>

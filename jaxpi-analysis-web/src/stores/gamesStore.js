@@ -71,11 +71,8 @@ export const useGamesStore = defineStore('games', {
             this.selectedGameId = gameId;
         }
     }, getters: {
-        getSelectedGameId() { // Quizas borrar ya que tengo el gameId en un Game, el setSelectedGameId si que hace falta
-            return this.selectedGameId;
-        },
-        getSelectedGame() {
-          return this.games.find(game => game.id === this.selectedGameId);
+        getSelectedGame: (state) => {
+          return state.games.find(game => game.id === state.selectedGameId);
         },
         getGameNameById: (state) => {
             return (gameId) => state.games.find((game) => game.id === gameId).name;
