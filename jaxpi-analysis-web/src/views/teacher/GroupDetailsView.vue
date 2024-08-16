@@ -9,7 +9,7 @@
         </div>
 
         <div v-if="activeTab === 0" class="tab-content">
-            <ChartsView :socket="socket" :groupId="group.id"/>
+            <ChartsView :groupId="group.id"/>
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
@@ -34,7 +34,6 @@ const tabs = ref(["Charts", "Game sessions"]);
 const activeTab = ref(0); // Define active tab
 
 const props = defineProps({
-  socket: Object // Receive the WebSocket connection as a prop
 });
 console.log(props);
 </script>

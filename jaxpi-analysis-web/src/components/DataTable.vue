@@ -59,7 +59,7 @@ const sortKey = ref('')
 const sortOrders = ref(
     props.columns.reduce((o, key) => ((o[key] = 1), o), {})
 );
-const itemsPerPage = ref(3); // 3 elementos por página
+const itemsPerPage = ref(10);
 
 const filteredData = computed(() => {
     let { data, filterKey } = props

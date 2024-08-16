@@ -12,7 +12,7 @@ export function calculateLevelCompletionTimes(jsonData) {
             return new Date(a.timestamp) - new Date(b.timestamp);
         });
     
-        console.log(sortedEvents)
+        //console.log(sortedEvents)
         sortedEvents.forEach(event => {
             const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con lo ultimo, el verb
             const objectName = event.object.definition.name["en-US"];

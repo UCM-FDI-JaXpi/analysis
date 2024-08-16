@@ -73,13 +73,14 @@ import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
 
 import { calculateLevelCompletionTimes, calculateAttemptsPerLevel } from '../utils/utilities.js';
 
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useStudentStore } from '@/stores/studentStore';
 import { useGroupsStore } from '@/stores/groupsStore';
+import socket from '@/socket';
 
 const router = useRouter(); // To navigate from one tab to another
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
@@ -113,7 +114,7 @@ const dataLevelCompletionTimes = ref([]);
 
 
 const dataAttemptsPerLevelPlayer = ref([]);
-let timerId = null;
+//let timerId = null;
 
 // Para el recuento de verbos
 const verbCount = ref({});
@@ -130,18 +131,31 @@ class JsonObject {
 }
 
 const props = defineProps({
-  socket: Object, // Receive the WebSocket connection as a prop
   groupId: String // No required
 });
 
-// Data received from server
-console.log(props)
-props.socket.on('message', (msg) => {
-  console.log('Message received from server:', msg);
+
+onMounted(async () => {
+  await fetchDataFromMongoDB();
+  //console.log("onMounted chartsview")
 });
 
-props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
-  console.log('Datos actualizados: ', updatedData);
+onUnmounted(() => {
+  //console.log("onUnmounted")
+  // Remove all listeners
+  socket.off('message');
+  socket.off('newStatement');
+});
+
+// Data received from server
+// console.log(props)
+// socket.on('message', (msg) => {
+//   console.log('Message received from server:', msg);
+// });
+
+socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
+  //console.log('Datos actualizados statement id: ', updatedData._id);
+  //console.log('socket id: ', socket.id);
 
   const verb = updatedData.verb.display['en-US'];
   verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
@@ -149,7 +163,13 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
   if (userType.value === 'teacher') {
     let actorFound = false;
     if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
-      const group = originalData.value.find(item => item.groupId ===  props.groupId);
+      let group = undefined;
+      if (props.groupId){
+        group = originalData.value.find(item => item.groupId ===  props.groupId);
+      } else {
+        group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
+      }
+
       if (group) {
         group.actors.forEach(actor => {
           if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
@@ -157,14 +177,23 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
             if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
               actor.statements.push(updatedData);
               actorFound = true;
-              console.log('Dato añadido al actor:', actor);
+              //console.log('Dato añadido al actor:', actor);
             } else {
               console.warn('updatedData tiene una estructura inesperada', updatedData);
             }
           }
         });
-        if (!actorFound) {
+        if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
           console.log("Este estudiante no corresponde a este group");
+          let actor = {};
+          actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+          actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+          actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+          actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+          actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+          actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+          actor.statements = [updatedData];
+          group.actors.push(actor);
         } else {
           console.log('Datos actualizados en originalData:', originalData.value);
         }
@@ -172,7 +201,11 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
         console.log('No se encontró el group con groupId:', props.groupId);
         let newGroup = {};
         newGroup.groupId = updatedData.context.contextActivities.parent.id;
-        newGroup.groupName = groupsStore.getGroupNameById(props.groupId);
+        if (props.groupId){
+          newGroup.groupName = groupsStore.getGroupNameById(props.groupId);
+        } else {
+          newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
+        }
         newGroup.actors = [];
         let actor = {};
         actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
@@ -185,33 +218,35 @@ props.socket.on('newStatement', (updatedData) => { // Recibe record a record, no
 
         newGroup.actors.push(actor);
         originalData.value.push(newGroup);
+        // // let tempo = originalData.value;
+        // originalData.value = [];
+        // // originalData.value = tempo;
+
       }
     } else {
       console.warn('originalData no está definido o no es un array');
     }
   
-    if(!timerId){ 
-      /* La primera traza que recibe, inicializa un temporizador de X segundos,
-         y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
-      timerId = setTimeout(() => {
-        //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
+    // if(!timerId){ 
+    //   console.log("timerId", timerId)
+    //   /* La primera traza que recibe, inicializa un temporizador de X segundos,
+    //      y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
+    //   timerId = setTimeout(() => {
+    //     //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
 
-        //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-        //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
-
-        timerId = null;
-      }, 10000);
-    }
+    //     //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+    //     //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
+    //     console.log("timerId dentro ", timerId)
+    //     timerId = null;
+    //   }, 10000);
+    // }
   }
 });
 
 // To send data to the server
 const hello = 'hello websocket'
-props.socket.emit('message', hello);
+socket.emit('message', hello);
 
-onMounted(async () => {
-  await fetchDataFromMongoDB();
-});
 
 // To load data from MongoDB server using Axios
 const fetchDataFromMongoDB = async () => {
@@ -235,7 +270,7 @@ const fetchDataFromMongoDB = async () => {
       dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
 
     } else if (userType.value === 'teacher') {
-      console.log('Im teacher');
+      //console.log('Im teacher');
       console.log('response.data:', response.data);
       
       originalData.value = response.data;
@@ -244,7 +279,7 @@ const fetchDataFromMongoDB = async () => {
       if (props.groupId) { // Filtrar por groupId si existe
         filteredDataByGroupId.value = filteredDataByGroupId.value.filter(item => item.groupId === props.groupId);
       }
-      console.log('filteredDataByGroupId: ', filteredDataByGroupId.value);
+      //console.log('filteredDataByGroupId: ', filteredDataByGroupId.value);
 
       if (filteredDataByGroupId.value.length === 0) {
         console.log('No data found for teacher.');
@@ -267,7 +302,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   else 
     filteredDataByGroupId.value = newValue;
 
-  console.log('filteredDataByGroupId changed:', filteredDataByGroupId.value);
+  //console.log('filteredDataByGroupId changed:', filteredDataByGroupId.value);
   if (filteredDataByGroupId.value.length > 0) {
     dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
       return item.actors.map(actor => {
@@ -284,7 +319,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         };
       });
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
-    console.log('DataTableFormat updated:', dataTableFormat.value);
+    //console.log('DataTableFormat updated:', dataTableFormat.value);
   }  else {
     dataTableFormat.value = []; // Limpia la tabla si no hay datos
   }

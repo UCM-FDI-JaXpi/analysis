@@ -16,7 +16,7 @@ const props = defineProps({
     totalItems: Number,
     itemsPerPage: {
         type: Number,
-        default: 3,
+        default: 5,
     }
 });
 

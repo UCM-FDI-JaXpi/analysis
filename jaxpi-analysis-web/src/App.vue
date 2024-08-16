@@ -5,7 +5,7 @@
     </header>
     <div class="main-container">
       <SidebarMenu v-if="showSidebar" />
-      <router-view :socket="socket"></router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -14,14 +14,12 @@
 import { onBeforeUnmount, watch, toRaw, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
-import io from "socket.io-client"
 import NavBar from './components/navigation/NavBar.vue';
 import SidebarMenu from './components/navigation/SidebarMenu.vue';
+import socket from './socket';
 
-const socket = io("http://localhost:3000"); // Create the Socket.io instance and send a 'connection' event to the server
 const route = useRoute();
 const authStore = useAuthStore(); // To use Pinia store 
-
 
 // Watch for changes in authStore.userData
 watch(() => authStore.userData,
