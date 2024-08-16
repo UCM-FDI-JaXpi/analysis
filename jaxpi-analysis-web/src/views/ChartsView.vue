@@ -105,7 +105,7 @@ const dataTableColumnTitlesTeacher = {
 const searchQueryTeacher = ref('')
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
-const filteredDataByGroupId = ref([]); // datos del filtrados por groupID de originalData
+const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
 // Para el primer barchart
@@ -134,57 +134,74 @@ const props = defineProps({
   groupId: String // No required
 });
 
-
 onMounted(async () => {
   await fetchDataFromMongoDB();
-  //console.log("onMounted chartsview")
-});
 
-onUnmounted(() => {
-  //console.log("onUnmounted")
-  // Remove all listeners
-  socket.off('message');
-  socket.off('newStatement');
-});
+  // EVENTOS DE SOCKET
+  // To send data to the server
+  // const hello = 'hello websocket'
+  // socket.emit('message', hello);
 
-// Data received from server
-// console.log(props)
-// socket.on('message', (msg) => {
-//   console.log('Message received from server:', msg);
-// });
+  // Data received from server
+  // console.log(props)
+  // socket.on('message', (msg) => {
+  //   console.log('Message received from server:', msg);
+  // });
+ 
+  socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
+    //console.log('Datos actualizados statement id: ', updatedData._id);
+    //console.log('socket id: ', socket.id);
 
-socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
-  //console.log('Datos actualizados statement id: ', updatedData._id);
-  //console.log('socket id: ', socket.id);
+    const verb = updatedData.verb.display['en-US'];
+    verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
 
-  const verb = updatedData.verb.display['en-US'];
-  verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+    if (userType.value === 'teacher') {
+      let actorFound = false;
+      if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
+        let group = undefined;
+        // if (props.groupId){
+        //   group = originalData.value.find(item => item.groupId ===  props.groupId);
+        // } else {
+          group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
+        // }
 
-  if (userType.value === 'teacher') {
-    let actorFound = false;
-    if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
-      let group = undefined;
-      if (props.groupId){
-        group = originalData.value.find(item => item.groupId ===  props.groupId);
-      } else {
-        group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
-      }
-
-      if (group) {
-        group.actors.forEach(actor => {
-          if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
-            // Verifica que updatedData tiene la estructura esperada
-            if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
-              actor.statements.push(updatedData);
-              actorFound = true;
-              //console.log('Dato añadido al actor:', actor);
-            } else {
-              console.warn('updatedData tiene una estructura inesperada', updatedData);
+        if (group) {
+          group.actors.forEach(actor => {
+            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
+              // Verifica que updatedData tiene la estructura esperada
+              if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
+                actor.statements.push(updatedData);
+                actorFound = true;
+                //console.log('Dato añadido al actor:', actor);
+              } else {
+                console.warn('updatedData tiene una estructura inesperada', updatedData);
+              }
             }
+          });
+          if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
+            console.log("Este estudiante no corresponde a este group");
+            let actor = {};
+            actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+            actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+            actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+            actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+            actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+            actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+            actor.statements = [updatedData];
+            group.actors.push(actor);
+          } else {
+            console.log('Datos actualizados en originalData:', originalData.value);
           }
-        });
-        if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
-          console.log("Este estudiante no corresponde a este group");
+        } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
+          console.log('No se encontró el group con groupId:', props.groupId);
+          let newGroup = {};
+          newGroup.groupId = updatedData.context.contextActivities.parent.id;
+          if (props.groupId){
+            newGroup.groupName = groupsStore.getGroupNameById(props.groupId);
+          } else {
+            newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
+          }
+          newGroup.actors = [];
           let actor = {};
           actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
           actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
@@ -193,60 +210,37 @@ socket.on('newStatement', (updatedData) => { // Recibe record a record, no un ar
           actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
           actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
           actor.statements = [updatedData];
-          group.actors.push(actor);
-        } else {
-          console.log('Datos actualizados en originalData:', originalData.value);
-        }
-      } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
-        console.log('No se encontró el group con groupId:', props.groupId);
-        let newGroup = {};
-        newGroup.groupId = updatedData.context.contextActivities.parent.id;
-        if (props.groupId){
-          newGroup.groupName = groupsStore.getGroupNameById(props.groupId);
-        } else {
-          newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
-        }
-        newGroup.actors = [];
-        let actor = {};
-        actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
-        actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
-        actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
-        actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
-        actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
-        actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
-        actor.statements = [updatedData];
 
-        newGroup.actors.push(actor);
-        originalData.value.push(newGroup);
-        // // let tempo = originalData.value;
-        // originalData.value = [];
-        // // originalData.value = tempo;
-
+          newGroup.actors.push(actor);
+          originalData.value.push(newGroup);
+        }
+      } else {
+        console.warn('originalData no está definido o no es un array');
       }
-    } else {
-      console.warn('originalData no está definido o no es un array');
-    }
-  
-    // if(!timerId){ 
-    //   console.log("timerId", timerId)
-    //   /* La primera traza que recibe, inicializa un temporizador de X segundos,
-    //      y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
-    //   timerId = setTimeout(() => {
-    //     //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
+    
+      // if(!timerId){ 
+      //   console.log("timerId", timerId)
+      //   /* La primera traza que recibe, inicializa un temporizador de X segundos,
+      //      y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
+      //   timerId = setTimeout(() => {
+      //     //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
 
-    //     //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-    //     //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
-    //     console.log("timerId dentro ", timerId)
-    //     timerId = null;
-    //   }, 10000);
-    // }
-  }
+      //     //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+      //     //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
+      //     console.log("timerId dentro ", timerId)
+      //     timerId = null;
+      //   }, 10000);
+      // }
+    }
+  });
 });
 
-// To send data to the server
-const hello = 'hello websocket'
-socket.emit('message', hello);
-
+onUnmounted(() => {
+  console.log("onUnmounted")
+  // Remove all socket listeners
+  socket.off('message');
+  socket.off('newStatement');
+});
 
 // To load data from MongoDB server using Axios
 const fetchDataFromMongoDB = async () => {
