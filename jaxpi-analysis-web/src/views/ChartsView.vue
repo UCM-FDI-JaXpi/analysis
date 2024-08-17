@@ -30,21 +30,21 @@
     </div>
 
     <div v-if="activeTab === 1" class="tab-content">
+      <BarChart v-if="dataLevelCompletionTimes.length > 0"
+        :data="dataLevelCompletionTimes"
+        chartId="bar-chart2"
+        title="Completion time per level"
+        :colorPalette="colorPalettes[1]" /> <!---------------------------------THISSSSS------------------------->
+      
+      <BarChart v-if="dataVerbCount.length > 0" 
+        :data="dataVerbCount"
+        chartId="bar-chart1"
+        title="Verb count" /> <!---------------------------------THISSSSS------------------------->
+
       <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" 
         :data="dataAttemptsPerLevelPlayer"
         chartId="stacked-bar-chart1"
         title="Number of attempts per level REAL" />
-
-      <BarChart v-if="dataVerbCount.length > 0"
-        :data="dataVerbCount"
-        chartId="bar-chart1"
-        title="Verb count" />
-
-      <BarChart v-if="dataLevelCompletionTimes.length > 0"
-        :data="dataLevelCompletionTimes"
-        chartId="bar-chart2"
-        title="Completion time per level MONGO"
-        :colorPalette="colorPalettes[1]" /> <!---------------------------------THISSSSS------------------------->
     </div>
 
     <div v-if="activeTab === 2" class="tab-content">
@@ -108,17 +108,16 @@ const originalData = ref([]); // Guardo todo lo que me da response.data cuando s
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
-// Para el primer barchart
+// Para el primer barchart (tiempo completado por nivel)
 const dataLevelCompletionTimes = ref([]);
+// Para el segundo barchart (recuento de verbos)
+const verbCount = ref({}); //¿?
+const dataVerbCount = ref([]);
 
 
 
 const dataAttemptsPerLevelPlayer = ref([]);
 //let timerId = null;
-
-// Para el recuento de verbos
-const verbCount = ref({});
-const dataVerbCount = ref([]);
 
 class JsonObject {
   constructor(data) {
@@ -152,8 +151,8 @@ onMounted(async () => {
     //console.log('Datos actualizados statement id: ', updatedData._id);
     //console.log('socket id: ', socket.id);
 
-    const verb = updatedData.verb.display['en-US'];
-    verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+    // const verb = updatedData.verb.display['en-US'];
+    // verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
 
     if (userType.value === 'teacher') {
       let actorFound = false;
@@ -257,8 +256,8 @@ const fetchDataFromMongoDB = async () => {
       });
 
       // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
-      const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-      dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
+      //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+      //dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
 
       dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
 
@@ -304,13 +303,16 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
     //console.log('DataTableFormat updated:', dataTableFormat.value);
   }  else {
-    dataTableFormat.value = []; // Limpia la tabla si no hay datos
+    // Limpia todas las var si no hay datos
+    dataTableFormat.value = []; 
+    dataVerbCount.value = [];
+    dataLevelCompletionTimes.value = [];
   }
 
 
 
 
-  // FORMATEAR DATOS PARA CHARTS
+  // FORMATEAR DATOS PARA EL PRIMER BARCHART
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
     if (props.groupId) {
       const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
@@ -337,12 +339,36 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
           }); 
         }
       });
+
+
+
+
+
+    // PARA EL SEGUNDO BARCHART - COUNTVERBS 
+    dataVerbCount.value = [];
+    dataGroup.forEach(actorInfo => {
+        const keysVerbs = Object.keys(actorInfo.actorData.verbs);
+        if (keysVerbs) { // [ 'started','jumped', ...]
+          keysVerbs.forEach(key => {
+            if (dataVerbCount.value.find(e => e.nameObject == key)) {
+              let times = actorInfo.actorData.verbs[key];
+              let previousData = dataVerbCount.value.find(e => e.nameObject == key);
+              const sumVerbs = previousData.value + times;
+              previousData.value = sumVerbs;
+            } else { // No esta el verb por primera vez
+              let times = actorInfo.actorData.verbs[key];
+              let count = { nameObject: key, value: times};
+              dataVerbCount.value.push(count); 
+            }
+          }); 
+        }
+      });
     }
-    console.log(dataLevelCompletionTimes.value);
     // else 
     // bucle for para cada grupo
+    console.log('dataLevelCompletionTimes', dataLevelCompletionTimes.value);
+    console.log('dataVerbCount', dataVerbCount.value);
   }
-
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 
 // Observamos los cambios en groupId y llamamos a fetchDataFromMongoDB cuando cambie

@@ -32,10 +32,6 @@ const group = computed(() => groupsStore.getGroupById(groupId.value));
 
 const tabs = ref(["Charts", "Game sessions"]);
 const activeTab = ref(0); // Define active tab
-
-const props = defineProps({
-});
-console.log(props);
 </script>
 
 <style scoped>
