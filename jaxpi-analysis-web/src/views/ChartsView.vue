@@ -236,7 +236,6 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  console.log("onUnmounted")
   // Remove all socket listeners
   socket.off('message');
   socket.off('newStatement');
@@ -264,22 +263,11 @@ const fetchDataFromMongoDB = async () => {
       dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
 
     } else if (userType.value === 'teacher') {
-      //console.log('Im teacher');
       console.log('response.data:', response.data);
-      
       originalData.value = response.data;
-      filteredDataByGroupId.value = response.data; // Le asigno toda la info de todos los groups, luego filtro por groupId si existe
 
-      if (props.groupId) { // Filtrar por groupId si existe
-        filteredDataByGroupId.value = filteredDataByGroupId.value.filter(item => item.groupId === props.groupId);
-      }
-      //console.log('filteredDataByGroupId: ', filteredDataByGroupId.value);
-
-      if (filteredDataByGroupId.value.length === 0) {
-        console.log('No data found for teacher.');
-      } else {
-        dataLevelCompletionTimes.value = calculateLevelCompletionTimes(filteredDataByGroupId.value);
-      }
+      if (originalData.value.length === 0)
+        console.log('No data for teacher');
 
     } else if (userType.value === 'dev'){
       console.log('Im dev');
@@ -296,14 +284,15 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   else 
     filteredDataByGroupId.value = newValue;
 
-  //console.log('filteredDataByGroupId changed:', filteredDataByGroupId.value);
+  // FORMATEAR DATOS PARA TABLE
   if (filteredDataByGroupId.value.length > 0) {
     dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
       return item.actors.map(actor => {
         // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
-        actor.statements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        let copyStatements = [...actor.statements];
+        copyStatements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
          // Comprueba si el actor tiene statements, si los tiene devuelve el primer timestamp que es el mas reciente, sino devuelve null
-        const lastStatement = actor.statements.length > 0 ? actor.statements[0].timestamp : null;
+        const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
         return {
           student: actor.name,
           session: actor.sessionName + " (" + actor.sessionId + ")",
@@ -317,6 +306,43 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   }  else {
     dataTableFormat.value = []; // Limpia la tabla si no hay datos
   }
+
+
+
+
+  // FORMATEAR DATOS PARA CHARTS
+  if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
+    if (props.groupId) {
+      const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
+      dataLevelCompletionTimes.value = [];
+      dataGroup.forEach(actorInfo => {
+        const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level'));
+        if (keys) { // [ 'level1','level2', ...]
+          keys.forEach(key => {
+            if (dataLevelCompletionTimes.value.find(e => e.nameObject == key)) {
+              let times = actorInfo.actorData[key];
+              let previousData = dataLevelCompletionTimes.value.find(e => e.nameObject == key);
+              const averageTime = (times.reduce((sum, num) => sum + num, 0) + previousData.sum) / (times.length + previousData.numElem);
+              previousData.completionTime = averageTime;
+              previousData.sum = times.reduce((sum, num) => sum + num, 0) + previousData.sum;
+              previousData.numElem = times.length + previousData.numElem;
+            } else {
+              let times = actorInfo.actorData[key];
+              if (times.length > 0) {
+                const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length;
+                let level = { nameObject: key, completionTime: averageTime, sum: times.reduce((sum, num) => sum + num, 0), numElem: times.length };
+                dataLevelCompletionTimes.value.push(level);
+              }
+            }
+          }); 
+        }
+      });
+    }
+    console.log(dataLevelCompletionTimes.value);
+    // else 
+    // bucle for para cada grupo
+  }
+
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 
 // Observamos los cambios en groupId y llamamos a fetchDataFromMongoDB cuando cambie

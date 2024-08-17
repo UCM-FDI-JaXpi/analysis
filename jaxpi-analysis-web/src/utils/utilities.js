@@ -1,104 +1,77 @@
-export function calculateLevelCompletionTimes(jsonData) {
-    // Función auxiliar para calcular el tiempo de finalización para el conjunto de statements de un actor
-    const calculateForStatements = (statements) => {
-        let timestamp;
-        let arrayFlagsStarted = []; // Para controlar si hubo un started antes de ciertos verbos
-        let arrayFlagsCompleted = []; // Para controlar si hubo un completed antes de ciertos verbos
-        let arrayTimes = []; // Para hacer operaciones auxiliares
-        let arrayTimesLoad = []; // Para guardar los tiempos de las partidas guardadas
-        let arrayFinalTimes = [];
-    
-        const sortedEvents = statements.sort((a, b) => {
-            return new Date(a.timestamp) - new Date(b.timestamp);
-        });
-    
-        //console.log(sortedEvents)
-        sortedEvents.forEach(event => {
-            const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con lo ultimo, el verb
-            const objectName = event.object.definition.name["en-US"];
-    
-            if (verbId === "started") {
-                arrayFlagsStarted[objectName] = true;
-                arrayFlagsCompleted[objectName] = false;
-                timestamp = new Date(event.timestamp);
-                arrayTimes[objectName] = 0;
-            } else if (verbId === "exited") {
-                if (arrayFlagsStarted[objectName]) // Guardar el tiempo entre started/loaded -> exited
-                    arrayTimes[objectName] += new Date(event.timestamp) - timestamp;
-            } else if (verbId === "loaded") {
-                if (arrayFlagsStarted[objectName]) {
-                    timestamp = new Date(event.timestamp);
-                    // Si nunca existió este load, guardo el tiempo hasta el punto guardado, si ya existia, mantengo ese tiempo
-                    if(arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]] === 0){ 
-                        // Guardar el tiempo desde el started hasta el punto de guardado
-                        arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]] = arrayTimes[objectName]
-                    }
-                } else if (arrayFlagsCompleted[objectName]) {
-                    arrayTimes[objectName] = arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]];
-                    arrayFlagsCompleted[objectName] = false;
-                }
-            } else if (verbId === "completed") {
-                if (arrayFlagsStarted[objectName]) {
-                    arrayTimes[objectName] += new Date(event.timestamp) - timestamp;
-                    arrayFlagsCompleted[objectName] = true;
-                    arrayFlagsStarted[objectName] = false;
-    
-                    if (arrayFinalTimes[objectName]) {
-                        // Como se puede completar varias veces un mismo nivel, elegimos el de menor tiempo
-                        if (arrayTimes[objectName] < arrayFinalTimes[objectName])
-                            arrayFinalTimes[objectName] = arrayTimes[objectName];
-                    } else {
-                        arrayFinalTimes[objectName] = arrayTimes[objectName];
-                    }
-                    arrayTimes[objectName] = 0;
-                }
-            } else if (verbId === "overloaded"){
-                 // Guardar el tiempo desde el started hasta el nuevo punto de guardado con el overloaded ya que pisamos el anterior punto de guardado
-                 arrayTimesLoad[event.object.definition.extensions["https://github.com/UCM-FDI-JaXpi/lib/id_load"]] = arrayTimes[objectName]
-            }
-        });
-    
-        return Object.keys(arrayFinalTimes).map(level => ({ // Devolver los resultados para este conjunto de statements
-            nameObject: level,
-            completionTime: arrayFinalTimes[level]
-        }));
-    }
-
-    const resultsByActor = jsonData[0].actors.map(actor => { // Proceso todos los actores
-        const actorCompletionTimes = calculateForStatements(actor.statements);
+export function calculateLevelCompletionTimes(groupData) {
+    const dataGroup = groupData.actors.map(actor => { // Proceso todos los actores
+        let copyStatements = [...actor.statements]; // Hago una copia para que no salte el watch
+        const sortedStatements = sortStatements(copyStatements);  // Por cada actor ordenamos sus statements
+        const actorData = calculateForStatements(sortedStatements);
         return {
             actorName: actor.name,
-            completionTimes: actorCompletionTimes
+            actorData: actorData
         };
     });
+    console.log('dataGroup:', dataGroup);
+    return dataGroup;
+}  
 
-    console.log('resultsByActor:', resultsByActor);
-    return calculateAverageCompletionTimes(resultsByActor);
+// Extrae la información de los statements de un actor (info para varias graficas)
+function calculateForStatements(sortedStatements) {
+    let timestamp = 0;
+    let starteds = [];
+    let completeds = [];
+    let result = {
+        verbs: {}
+    };
+    // modelo de resultado 
+    //  { 'level1': [ 3,4,5,6]
+    //    'level2': [ 3,4,5,6]
+    //     . 
+    //     . 
+    //     . 
+    //     verbs : {'v1' : X, 
+    //              'V2' : Y, 
+    //              .
+    //              .
+    //             }
+    //      starteds: [..]
+    //      completeds: [..]
+    //  }
+
+    sortedStatements.forEach(statement => {
+        // Contar verbos 
+        const verbId = statement.verb.id.substring(statement.verb.id.lastIndexOf("/") + 1); // Me quedo solo con lo ultimo (verb)
+        if (result.verbs[verbId])
+            result.verbs[verbId]++;
+        else 
+            result.verbs[verbId] = 1;
+        /////////////////////////////////////////////////////////////////////
+        const objectName = statement.object.definition.name["en-US"];
+        if (verbId === "started") {
+            if (!result[objectName])
+                result[objectName] = []; // Array de un level
+
+            completeds.push({level: 'incompleted'});
+            starteds.push({level: objectName});
+            timestamp = new Date(statement.timestamp);
+        }
+         else if (verbId === "completed" && objectName != "Prince of JS") { // No tenemos en cuenta completed game
+            if (timestamp != 0) { // Sí está el started
+                 result[objectName].push(new Date(statement.timestamp) - timestamp);
+                 timestamp = 0; // Lo dejamos a 0 para que espere el nuevo started
+                 completeds[completeds.length-1].level = objectName;
+            }
+        }
+    });
+    result['starteds'] = starteds;
+    result['completeds'] = completeds;
+    console.log('result:', result);
+    return result;
 }
 
-function calculateAverageCompletionTimes(resultsByActor) {
-    let aggregatedTimes = {}; // Unificar los resultados de todos los actores
-    
-    resultsByActor.forEach(result => {
-        result.completionTimes.forEach(time => {
-            const { nameObject, completionTime } = time;
-            if (!aggregatedTimes[nameObject]) {
-                aggregatedTimes[nameObject] = [];
-            }
-            aggregatedTimes[nameObject].push(completionTime);
-        });
+// Recibe un array de statements y los ordena por fecha
+export function sortStatements(statements) { 
+    const sortedStatements = statements.sort((a, b) => {
+        return new Date(a.timestamp) - new Date(b.timestamp);
     });
-
-    const averageTimes = Object.keys(aggregatedTimes).map(level => { // Calcular la media
-        const times = aggregatedTimes[level];
-        const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length; // 0 es el valor inicial de sum
-        return {
-            nameObject: level,
-            completionTime: averageTime
-        };
-    });
-
-    return averageTimes;
+    return sortedStatements;
 }
 
 export function calculateAttemptsPerLevel(jsonData) {
