@@ -1,6 +1,6 @@
 <template>
     <div class="group-details" v-if="group">
-        <h1>Group details for {{ group.name }}</h1>
+        <h1>Details of {{ group.name }}</h1>
         <div class="tabs">
             <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                 :class="{ 'active': activeTab === index }">
@@ -13,7 +13,11 @@
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
-            <GameSessionsList :groupId="group.id" />
+            <GameSessionList :groupId="group.id" />
+        </div>
+
+        <div v-if="activeTab === 2" class="tab-content">
+            <StudentList :groupId="group.id"/>
         </div>
     </div>
 </template>
@@ -23,14 +27,15 @@ import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
 import ChartsView from '../ChartsView.vue';
-import GameSessionsList from '@/components/teacher/GameSessionList.vue'
+import GameSessionList from '@/components/teacher/GameSessionList.vue';
+import StudentList from '@/components/teacher/StudentList.vue';
 
 const route = useRoute();
 const groupsStore = useGroupsStore();
 const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
 
-const tabs = ref(["Charts", "Game sessions"]);
+const tabs = ref(["Charts", "Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
 </script>
 

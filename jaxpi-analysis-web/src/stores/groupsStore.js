@@ -80,15 +80,16 @@ export const useGroupsStore = defineStore('groups', {
         }
     },
     getters: {
-        getGroupById: (state) => {
-            return (groupId) => state.groups.find((group) => group.id === groupId);
+        getGroupById: (state) => (groupId) => {
+            return state.groups.find((group) => group.id === groupId);
         },
-        /*getGroupNameById: (state) => {
-            return (groupId) => state.groups.find((group) => group.id === groupId).name
-        },*/
         getGroupNameById: (state) => (groupId) => {
             const group = state.groups.find(group => group.id === groupId);
             return group ? group.name : 'Unknown Group';
-        }
+        },
+        getStudentsByGroupId: (state) => (groupId) => {
+            const group = state.groups.find(group => group.id === groupId);
+            return group ? group.students : [];
+        }        
     }
 });
