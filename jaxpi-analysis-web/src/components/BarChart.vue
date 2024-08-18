@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h2>{{ title }}</h2>
+  <div class="chart-container">
+    <h2 class="chart-title">{{ title }}</h2>
     <div :id="chartId"></div>
   </div>
 </template>
@@ -99,4 +99,7 @@ const drawBarChart = (data, chartId) => {
 </script>
 
 <style scoped>
+.chart-title {
+  text-align: center; /* Centra el texto dentro del h2 */
+}
 </style>

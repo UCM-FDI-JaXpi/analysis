@@ -41,6 +41,14 @@
         chartId="bar-chart1"
         title="Verb count" /> <!---------------------------------THISSSSS------------------------->
 
+      <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+        :data="dataPieChartGamesStartedCompleted"
+        chartId="pie-chart1"
+        title="Games started and completed" /> <!---------------------------------THISSSSS------------------------->
+
+
+
+
       <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" 
         :data="dataAttemptsPerLevelPlayer"
         chartId="stacked-bar-chart1"
@@ -67,6 +75,7 @@ import BarChart from '../components/BarChart.vue';
 import LineChart from '../components/LineChart.vue';
 import StackedBarChart from '../components/StackedBarChart.vue';
 import DataTable from '../components/DataTable.vue';
+import PieChart from '@/components/PieChart.vue'
 
 import jsonDataTimeLevelPlayer from '../data/time-level-player.json';
 import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
@@ -113,6 +122,8 @@ const dataLevelCompletionTimes = ref([]);
 // Para el segundo barchart (recuento de verbos)
 const verbCount = ref({}); //¿?
 const dataVerbCount = ref([]);
+// Para el primer piechart (juegos empezados y completados)
+const dataPieChartGamesStartedCompleted = ref([]);
 
 
 
@@ -158,15 +169,11 @@ onMounted(async () => {
       let actorFound = false;
       if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
         let group = undefined;
-        // if (props.groupId){
-        //   group = originalData.value.find(item => item.groupId ===  props.groupId);
-        // } else {
-          group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
-        // }
+        group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
 
         if (group) {
           group.actors.forEach(actor => {
-            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // me viene de back deshaseada
+            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // Me viene de back deshaseada
               // Verifica que updatedData tiene la estructura esperada
               if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
                 actor.statements.push(updatedData);
@@ -303,16 +310,17 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
     //console.log('DataTableFormat updated:', dataTableFormat.value);
   }  else {
-    // Limpia todas las var si no hay datos
+    // Limpia todas las stats var si no hay datos
     dataTableFormat.value = []; 
     dataVerbCount.value = [];
     dataLevelCompletionTimes.value = [];
+    dataPieChartGamesStartedCompleted.value = [];
   }
 
 
 
 
-  // FORMATEAR DATOS PARA EL PRIMER BARCHART
+  // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
     if (props.groupId) {
       const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
@@ -343,31 +351,59 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 
 
 
+      // PARA EL SEGUNDO BARCHART - COUNTVERBS 
+      dataVerbCount.value = [];
+      dataGroup.forEach(actorInfo => {
+          const keysVerbs = Object.keys(actorInfo.actorData.verbs);
+          if (keysVerbs) { // [ 'started','jumped', ...]
+            keysVerbs.forEach(key => {
+              if (dataVerbCount.value.find(e => e.nameObject == key)) {
+                let times = actorInfo.actorData.verbs[key];
+                let previousData = dataVerbCount.value.find(e => e.nameObject == key);
+                const sumVerbs = previousData.value + times;
+                previousData.value = sumVerbs;
+              } else { // No esta el verb por primera vez
+                let times = actorInfo.actorData.verbs[key];
+                let count = { nameObject: key, value: times};
+                dataVerbCount.value.push(count); 
+              }
+            }); 
+          }
+        });
 
-    // PARA EL SEGUNDO BARCHART - COUNTVERBS 
-    dataVerbCount.value = [];
-    dataGroup.forEach(actorInfo => {
-        const keysVerbs = Object.keys(actorInfo.actorData.verbs);
-        if (keysVerbs) { // [ 'started','jumped', ...]
-          keysVerbs.forEach(key => {
-            if (dataVerbCount.value.find(e => e.nameObject == key)) {
-              let times = actorInfo.actorData.verbs[key];
-              let previousData = dataVerbCount.value.find(e => e.nameObject == key);
-              const sumVerbs = previousData.value + times;
-              previousData.value = sumVerbs;
-            } else { // No esta el verb por primera vez
-              let times = actorInfo.actorData.verbs[key];
-              let count = { nameObject: key, value: times};
-              dataVerbCount.value.push(count); 
-            }
-          }); 
-        }
-      });
+
+
+
+      // PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
+      dataPieChartGamesStartedCompleted.value = [];
+      dataGroup.forEach(actorInfo => {
+          // actorInfo.actorData.starteds = > [{"level": "level 1"},{"level": "level 2"}]
+          let levels1 = actorInfo.actorData.starteds.filter( start => start.level == 'level 1')
+          let completeds14 = actorInfo.actorData.completeds.filter( completed => completed.level == 'level 14')
+          if (levels1.length == 0 && completeds14.length == 0) { // No pinto el piechart si no hay datos
+            dataPieChartGamesStartedCompleted.value = [];
+          } else {
+            if (dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started')) {
+                let previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started');
+                const sumStarted = previousData.value + (levels1.length - completeds14.length);  // No completados 
+                previousData.value = sumStarted;
+                previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'completed');
+                const sumCompleted = previousData.value + completeds14.length;
+                previousData.value = sumCompleted;
+              } else { // No hay datos aun 
+                let countStarted = { nameObject: 'started', value: levels1.length - completeds14.length};
+                let countCompleted = { nameObject: 'completed', value: completeds14.length};
+                dataPieChartGamesStartedCompleted.value.push(countStarted); 
+                dataPieChartGamesStartedCompleted.value.push(countCompleted); 
+              }
+          }
+        });
     }
     // else 
     // bucle for para cada grupo
-    console.log('dataLevelCompletionTimes', dataLevelCompletionTimes.value);
-    console.log('dataVerbCount', dataVerbCount.value);
+    console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
+    console.log('dataVerbCount:', dataVerbCount.value);
+    console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
   }
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 
@@ -401,7 +437,6 @@ function prepareDataForCharts(jsonData) {
   }));
 }
 const dataTimeLevelPlayer = prepareDataForCharts(jsonDataTimeLevelPlayer.levels) //For time-level-player.json
-/************************************************** For LineChart *******************************************************/
 const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) //For score-session-player.json - the data in the correct format
 </script>
 
@@ -411,9 +446,9 @@ const dataScoreSessionPlayer = prepareDataForCharts(jsonDataScoreSessionPlayer) 
   background-color: #bfdbf3;
 }
 
-#bar-chart1, #bar-chart2, #bar-chart3, #stacked-bar-chart1, #line-chart1 {
+#bar-chart1, #bar-chart2, #bar-chart3, #pie-chart1, #stacked-bar-chart1, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
-  min-width: 415px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
+  min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
 /* Add styling for tabs */

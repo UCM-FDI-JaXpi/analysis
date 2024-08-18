@@ -53,10 +53,12 @@ function calculateForStatements(sortedStatements) {
             timestamp = new Date(statement.timestamp);
         }
          else if (verbId === "completed" && objectName != "Prince of JS") { // No tenemos en cuenta completed game
-            if (timestamp != 0) { // Sí está el started
-                 result[objectName].push(new Date(statement.timestamp) - timestamp);
-                 timestamp = 0; // Lo dejamos a 0 para que espere el nuevo started
-                 completeds[completeds.length-1].level = objectName;
+            if (timestamp != 0) { // Si está el started
+                if (result[objectName]){
+                    result[objectName].push(new Date(statement.timestamp) - timestamp);
+                    timestamp = 0; // Lo dejamos a 0 para que espere el nuevo started
+                    completeds[completeds.length-1].level = objectName;
+                } 
             }
         }
     });
