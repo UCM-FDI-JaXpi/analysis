@@ -13,4 +13,7 @@ h1 {
   font-size: 25px;
   color: #333;
 }
+.container {
+  padding: 1rem;
+}
 </style>

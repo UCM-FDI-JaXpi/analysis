@@ -9,10 +9,5 @@
 <script setup></script>
 
 
-<style>
-h1 {
-    font-size: 25px;
-    color: #333;
-}
-
+<style scoped>
 </style>

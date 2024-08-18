@@ -9,7 +9,7 @@
         </div>
 
         <div v-if="activeTab === 0" class="tab-content">
-            <ChartsView :groupId="group.id"/>
+            <ChartsComponent :groupId="group.id"/>
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
@@ -20,13 +20,18 @@
             <StudentList :groupId="group.id"/>
         </div>
     </div>
+
+    <div v-else>
+        <h1>General charts</h1>
+        <ChartsComponent/>
+    </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
-import ChartsView from '../ChartsView.vue';
+import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
 import StudentList from '@/components/teacher/StudentList.vue';
 
@@ -37,6 +42,10 @@ const group = computed(() => groupsStore.getGroupById(groupId.value));
 
 const tabs = ref(["Charts", "Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
+
+
+
+
 </script>
 
 <style scoped>

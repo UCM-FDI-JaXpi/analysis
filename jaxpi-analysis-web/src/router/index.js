@@ -28,7 +28,7 @@ const routes = [
     { path: '/:pathMatch(.*)*', name: 'NotFoundView', component: NotFoundView }, // For undefined routes
     { path: '/teacher', name: 'TeacherView', component: TeacherView }, /*************** Teacher **************/
     { path: '/groups', name: 'GroupsView', component: GroupsView },
-    { path: '/group-details/:groupId', name: 'GroupDetailsView', component: GroupDetailsView },
+    { path: '/group-details/:groupId?', name: 'GroupDetailsView', component: GroupDetailsView },
     { path: '/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
     { path: '/student', name: 'StudentView', component: StudentView }, /*************** Student **************/
     { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
