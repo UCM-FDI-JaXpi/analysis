@@ -4,7 +4,7 @@
         <p><strong>Game: </strong>{{ gameName }}</p>
         <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
         <div class="student-list">
-            <h2>Students:</h2>
+            <h2>Students</h2>
             <BaseTable 
                 :headers="['Name', 'Key']"
                 :rows="session.students"
@@ -42,7 +42,7 @@ onMounted(async () => {
 
 <style scoped>
 .student-game-session-key {
-    padding: 10px;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 10px;

@@ -41,7 +41,7 @@ const activeTab = ref(0); // Define active tab
 
 <style scoped>
 .group-details {
-    padding: 10px;
+    padding: 1rem;
 }
 /* Add styling for tabs */
 .tabs {
@@ -63,7 +63,7 @@ const activeTab = ref(0); // Define active tab
     display: flex;
     flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
     gap: 50px; /* Espacio entre los elementos */
-    padding: 10px;
+    padding: 1rem;
     background-color: #79c1fd;
 }
 </style>

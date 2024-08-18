@@ -42,8 +42,17 @@ const showSidebar = computed(() => { // In these views we don't want to have Sid
 });
 </script>
 
-<style scoped>
-#app {
-  font-family: Arial, sans-serif;
-}
+<style>
+  html, body, #app {
+    height: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  #app {
+    font-family: Arial, sans-serif;
+    /* display: flex;
+    flex-direction: column;
+    height: 100%; */
+  }
 </style>

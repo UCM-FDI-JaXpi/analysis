@@ -135,7 +135,7 @@ onMounted(async () => {
 
 <style scoped>
 .teacher-view {
-    padding: 10px;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 20px;
