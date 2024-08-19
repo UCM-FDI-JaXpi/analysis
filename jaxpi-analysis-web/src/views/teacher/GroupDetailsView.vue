@@ -9,7 +9,16 @@
         </div>
 
         <div v-if="activeTab === 0" class="tab-content">
-            <ChartsComponent :groupId="group.id"/>
+            <ChartsComponent :groupId="group.id"
+                             :originalData="originalData"
+                             :filteredDataByGroupId ="filteredDataByGroupId"
+                             :dataTableFormat="dataTableFormat"
+                             :dataStudentDetails="dataStudentDetails"
+                             :dataLevelCompletionTimes="dataLevelCompletionTimes"
+                             :verbCount="verbCount"
+                             :dataVerbCount="dataVerbCount"
+                             :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
+                             :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"/>
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
@@ -23,27 +32,333 @@
 
     <div v-else>
         <h1>General charts</h1>
-        <ChartsComponent/>
+        <ChartsComponent 
+            :originalData="originalData"
+            :filteredDataByGroupId ="filteredDataByGroupId"
+            :dataTableFormat="dataTableFormat"
+            :dataStudentDetails="dataStudentDetails"
+            :dataLevelCompletionTimes="dataLevelCompletionTimes"
+            :verbCount="verbCount"
+            :dataVerbCount="dataVerbCount"
+            :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
+            :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"/>
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
+import { useAuthStore } from '@/stores/authStore';
+
 import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
 import StudentList from '@/components/teacher/StudentList.vue';
+import axios from 'axios';
+import socket from '@/socket';
+
+import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 
 const route = useRoute();
 const groupsStore = useGroupsStore();
+const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
+
 const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
 
 const tabs = ref(["Charts", "Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
 
+const userType = computed(() => authStore.userType);
 
+// variables 
+const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
+const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
+const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
+const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
+const dataLevelCompletionTimes = ref([]);
+const verbCount = ref({}); //¿?
+const dataVerbCount = ref([]);
+const dataPieChartGamesStartedCompleted = ref([]);
+const dataAttemptsPerLevelPlayer = ref([]);
+
+class JsonObject {
+    constructor(data) {
+      this.data = data;
+    }
+  
+    getData() {
+      return this.data;
+    }
+}
+
+  watch(() => groupId.value, (newGroupId, oldGroupId) => {
+      if (newGroupId !== oldGroupId) {
+        fetchDataFromMongoDB(newGroupId);
+      }
+  });
+onMounted(async () => {
+    await fetchDataFromMongoDB();
+  
+    // EVENTOS DE SOCKET
+    // To send data to the server
+    // const hello = 'hello websocket'
+    // socket.emit('message', hello);
+  
+    // Data received from server
+    // console.log(props)
+    // socket.on('message', (msg) => {
+    //   console.log('Message received from server:', msg);
+    // });
+   
+    socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
+      //console.log('Datos actualizados statement id: ', updatedData._id);
+      //console.log('socket id: ', socket.id);
+  
+      // const verb = updatedData.verb.display['en-US'];
+      // verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+  
+      if (userType.value === 'teacher') {
+        let actorFound = false;
+        if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
+          let group = undefined;
+          group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
+  
+          if (group) {
+            group.actors.forEach(actor => {
+              if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // Me viene de back deshaseada
+                // Verifica que updatedData tiene la estructura esperada
+                if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
+                  actor.statements.push(updatedData);
+                  actorFound = true;
+                  //console.log('Dato añadido al actor:', actor);
+                } else {
+                  console.warn('updatedData tiene una estructura inesperada', updatedData);
+                }
+              }
+            });
+            if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
+              console.log("Este estudiante no corresponde a este group");
+              let actor = {};
+              actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+              actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+              actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+              actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+              actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+              actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+              actor.statements = [updatedData];
+              group.actors.push(actor);
+            } else {
+              console.log('Datos actualizados en originalData:', originalData.value);
+            }
+          } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
+            console.log('No se encontró el group con groupId:', groupId);
+            let newGroup = {};
+            newGroup.groupId = updatedData.context.contextActivities.parent.id;
+            if (groupId.value){
+              newGroup.groupName = groupsStore.getGroupNameById(groupId);
+            } else {
+              newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
+            }
+            newGroup.actors = [];
+            let actor = {};
+            actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+            actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+            actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+            actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+            actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+            actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+            actor.statements = [updatedData];
+  
+            newGroup.actors.push(actor);
+            originalData.value.push(newGroup);
+          }
+        } else {
+          console.warn('originalData no está definido o no es un array');
+        }
+      
+        // if(!timerId){ 
+        //   console.log("timerId", timerId)
+        //   /* La primera traza que recibe, inicializa un temporizador de X segundos,
+        //      y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
+        //   timerId = setTimeout(() => {
+        //     //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
+  
+        //     //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+        //     //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
+        //     console.log("timerId dentro ", timerId)
+        //     timerId = null;
+        //   }, 10000);
+        // }
+      }
+    });
+  });
+  
+  onUnmounted(() => {
+    // Remove all socket listeners
+    socket.off('message');
+    socket.off('newStatement');
+  });
+
+  const fetchDataFromMongoDB = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/records', {
+        withCredentials: true
+      });
+  
+      if (userType.value === 'student') {
+        console.log('Im student')
+        originalData.value = new JsonObject(response.data)
+        originalData.value.data.forEach(entry => {
+            const verb = entry.verb.display['en-US'];
+            verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+        });
+  
+        // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
+        //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
+        //dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
+  
+        //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
+  
+      } else if (userType.value === 'teacher') {
+        console.log('response.data:', response.data);
+        originalData.value = response.data;
+  
+        if (originalData.value.length === 0)
+          console.log('No data for teacher');
+  
+      } else if (userType.value === 'dev'){
+        console.log('Im dev');
+        console.log('response.data:', response.data);
+      }
+    } catch (error) {
+      console.error('Error al obtener los datos de http://localhost:3000/records', error);
+    }
+  };
+  
+  watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
+    if (groupId.value)
+      filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
+    else 
+      filteredDataByGroupId.value = newValue;
+  
+    // FORMATEAR DATOS PARA TABLE
+    if (filteredDataByGroupId.value.length > 0) {
+      dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
+        return item.actors.map(actor => {
+          // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
+          let copyStatements = [...actor.statements];
+          copyStatements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+           // Comprueba si el actor tiene statements, si los tiene devuelve el primer timestamp que es el mas reciente, sino devuelve null
+          const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
+          return {
+            student: actor.name,
+            session: actor.sessionName + " (" + actor.sessionId + ")",
+            game: actor.gameName,
+            numberOfStatements: actor.statements.length,
+            lastTimestamp: lastStatement
+          };
+        });
+      }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
+      //console.log('DataTableFormat updated:', dataTableFormat.value);
+    }  else {
+      // Limpia todas las stats var si no hay datos
+      dataTableFormat.value = []; 
+      dataVerbCount.value = [];
+      dataLevelCompletionTimes.value = [];
+      dataPieChartGamesStartedCompleted.value = [];
+    }
+  
+  
+  
+  
+    // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
+    if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
+      if (groupId.value) {
+        const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
+        dataLevelCompletionTimes.value = [];
+        dataGroup.forEach(actorInfo => {
+          const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level'));
+          if (keys) { // [ 'level1','level2', ...]
+            keys.forEach(key => {
+              if (dataLevelCompletionTimes.value.find(e => e.nameObject == key)) {
+                let times = actorInfo.actorData[key];
+                let previousData = dataLevelCompletionTimes.value.find(e => e.nameObject == key);
+                const averageTime = (times.reduce((sum, num) => sum + num, 0) + previousData.sum) / (times.length + previousData.numElem);
+                previousData.completionTime = averageTime;
+                previousData.sum = times.reduce((sum, num) => sum + num, 0) + previousData.sum;
+                previousData.numElem = times.length + previousData.numElem;
+              } else {
+                let times = actorInfo.actorData[key];
+                if (times.length > 0) {
+                  const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length;
+                  let level = { nameObject: key, completionTime: averageTime, sum: times.reduce((sum, num) => sum + num, 0), numElem: times.length };
+                  dataLevelCompletionTimes.value.push(level);
+                }
+              }
+            }); 
+          }
+        });
+  
+  
+  
+  
+        // PARA EL SEGUNDO BARCHART - COUNTVERBS 
+        dataVerbCount.value = [];
+        dataGroup.forEach(actorInfo => {
+            const keysVerbs = Object.keys(actorInfo.actorData.verbs);
+            if (keysVerbs) { // [ 'started','jumped', ...]
+              keysVerbs.forEach(key => {
+                if (dataVerbCount.value.find(e => e.nameObject == key)) {
+                  let times = actorInfo.actorData.verbs[key];
+                  let previousData = dataVerbCount.value.find(e => e.nameObject == key);
+                  const sumVerbs = previousData.value + times;
+                  previousData.value = sumVerbs;
+                } else { // No esta el verb por primera vez
+                  let times = actorInfo.actorData.verbs[key];
+                  let count = { nameObject: key, value: times};
+                  dataVerbCount.value.push(count); 
+                }
+              }); 
+            }
+          });
+  
+  
+  
+  
+        // PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
+        dataPieChartGamesStartedCompleted.value = [];
+        dataGroup.forEach(actorInfo => {
+            // actorInfo.actorData.starteds = > [{"level": "level 1"},{"level": "level 2"}]
+            let levels1 = actorInfo.actorData.starteds.filter( start => start.level == 'level 1')
+            let completeds14 = actorInfo.actorData.completeds.filter( completed => completed.level == 'level 14')
+            if (levels1.length == 0 && completeds14.length == 0) { // No pinto el piechart si no hay datos
+              dataPieChartGamesStartedCompleted.value = [];
+            } else {
+              if (dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started')) {
+                  let previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started');
+                  const sumStarted = previousData.value + (levels1.length - completeds14.length);  // No completados 
+                  previousData.value = sumStarted;
+                  previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'completed');
+                  const sumCompleted = previousData.value + completeds14.length;
+                  previousData.value = sumCompleted;
+                } else { // No hay datos aun 
+                  let countStarted = { nameObject: 'started', value: levels1.length - completeds14.length};
+                  let countCompleted = { nameObject: 'completed', value: completeds14.length};
+                  dataPieChartGamesStartedCompleted.value.push(countStarted); 
+                  dataPieChartGamesStartedCompleted.value.push(countCompleted); 
+                }
+            }
+          });
+      }
+      // else 
+      // bucle for para cada grupo
+      console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
+      console.log('dataVerbCount:', dataVerbCount.value);
+      console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
+    }
+  }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
+  
 
 
 </script>
