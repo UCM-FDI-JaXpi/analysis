@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="charts-view-container">
     <GroupDetailsView />
   </div>
 </template>
@@ -8,6 +8,8 @@
 import GroupDetailsView from './teacher/GroupDetailsView.vue';
 </script>
 
-<style>
-
+<style scoped>
+.charts-view-container{
+  padding: 1rem;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="charts-container">
       <div class="tabs">
         <button v-for="(tab, index) in tabs" :key="index" 
                   @click="activeTab = index" 

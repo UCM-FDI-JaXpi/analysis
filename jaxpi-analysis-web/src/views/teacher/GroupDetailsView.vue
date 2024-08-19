@@ -26,11 +26,12 @@
         </div>
 
         <div v-if="activeTab === 2" class="tab-content">
-            <StudentList :groupId="group.id"/>
+            <StudentList :groupId="group.id"
+                         :dataStudentList = "dataTableFormat"/>
         </div>
     </div>
 
-    <div v-else>
+    <div class="group-details-general-charts" v-else>
         <h1>General charts</h1>
         <ChartsComponent 
             :originalData="originalData"
@@ -48,14 +49,14 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import axios from 'axios';
+import socket from '@/socket';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
 
 import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
 import StudentList from '@/components/teacher/StudentList.vue';
-import axios from 'axios';
-import socket from '@/socket';
 
 import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 
@@ -65,11 +66,10 @@ const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 
 const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
+const userType = computed(() => authStore.userType);
 
 const tabs = ref(["Charts", "Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
-
-const userType = computed(() => authStore.userType);
 
 // variables 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
@@ -92,11 +92,12 @@ class JsonObject {
     }
 }
 
-  watch(() => groupId.value, (newGroupId, oldGroupId) => {
-      if (newGroupId !== oldGroupId) {
-        fetchDataFromMongoDB(newGroupId);
-      }
-  });
+watch(() => groupId.value, (newGroupId, oldGroupId) => {
+    if (newGroupId !== oldGroupId) {
+      fetchDataFromMongoDB(newGroupId);
+    }
+});
+
 onMounted(async () => {
     await fetchDataFromMongoDB();
   
@@ -192,51 +193,51 @@ onMounted(async () => {
         // }
       }
     });
-  });
+});
   
-  onUnmounted(() => {
-    // Remove all socket listeners
-    socket.off('message');
-    socket.off('newStatement');
-  });
+onUnmounted(() => {
+  // Remove all socket listeners
+  socket.off('message');
+  socket.off('newStatement');
+});
 
-  const fetchDataFromMongoDB = async () => {
+const fetchDataFromMongoDB = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/records', {
+        const response = await axios.get('http://localhost:3000/records', {
         withCredentials: true
-      });
-  
-      if (userType.value === 'student') {
+        });
+
+        if (userType.value === 'student') {
         console.log('Im student')
         originalData.value = new JsonObject(response.data)
         originalData.value.data.forEach(entry => {
             const verb = entry.verb.display['en-US'];
             verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
         });
-  
+
         // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
         //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
         //dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
-  
+
         //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
-  
-      } else if (userType.value === 'teacher') {
+
+        } else if (userType.value === 'teacher') {
         console.log('response.data:', response.data);
         originalData.value = response.data;
-  
+
         if (originalData.value.length === 0)
-          console.log('No data for teacher');
-  
-      } else if (userType.value === 'dev'){
+            console.log('No data for teacher');
+
+        } else if (userType.value === 'dev'){
         console.log('Im dev');
         console.log('response.data:', response.data);
-      }
+        }
     } catch (error) {
-      console.error('Error al obtener los datos de http://localhost:3000/records', error);
+        console.error('Error al obtener los datos de http://localhost:3000/records', error);
     }
-  };
+};
   
-  watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
+watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     if (groupId.value)
       filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
     else 
@@ -357,14 +358,15 @@ onMounted(async () => {
       console.log('dataVerbCount:', dataVerbCount.value);
       console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
     }
-  }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
-  
-
-
+}, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 </script>
 
 <style scoped>
 .group-details {
+    padding: 1rem;
+}
+
+.grroup-details-general-charts {
     padding: 1rem;
 }
 /* Add styling for tabs */
