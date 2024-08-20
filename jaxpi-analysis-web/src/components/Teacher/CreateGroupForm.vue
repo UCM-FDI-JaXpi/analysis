@@ -76,7 +76,7 @@ const addGroup = async () => {
         }
         if(createdGroup){
             console.log('Group created successfully!');
-            console.log(createdGroup);
+            console.log('Group created: ', createdGroup);
             resetForm();
             emit('submit', createdGroup);
         }else{

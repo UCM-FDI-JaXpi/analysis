@@ -59,7 +59,7 @@ const addGameSession = async () => {
 
             if (response) {
                 console.log('Game session created successfully!');
-                console.log(response);
+                console.log('Game session created:', response);
                 resetForm();
                 emit('submit', response);
             } else {
