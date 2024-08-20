@@ -13,7 +13,8 @@
                 @mouseover="highlightRow = rowIndex"
                 @mouseleave="highlightRow = null"
                 :class="{ 'highlight': highlightRow === rowIndex }">
-                <td v-for="(key, colIndex) in rowKeys" :key="colIndex">
+                <td v-for="(key, colIndex) in rowKeys" :key="colIndex"
+                    :class="cellClasses ? cellClasses[rowIndex] ? cellClasses[rowIndex][key] : '' : ''">
                     {{ row[key] }}
                 </td>
             </tr>
@@ -36,6 +37,10 @@ const props = defineProps({
     rowKeys: {
         type: Array,
         required: true
+    },
+    cellClasses: {
+        type: Array,
+        default: () => []
     }
 });
 

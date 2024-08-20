@@ -8,6 +8,7 @@
                 :headers="['Name', 'Last interaction']"
                 :rows="formattedStudents"
                 :rowKeys="['name', 'lastInteraction']"
+                :cellClasses="computedCellClasses"
                 @student-selected="handleStudentSelected"
             />
         </div>
@@ -15,7 +16,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref } from 'vue';
+import { onMounted, watch, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useStudentStore } from '@/stores/studentStore';
@@ -97,11 +98,6 @@ watch(() => props.dataStudentList, (newGroupId, oldGroupId) => {
     }
 });
 
-// To format the timestamp in a readable format
-function formatTimestamp(timestamp) {
-    return new Date(timestamp).toLocaleString();
-}
-
 // const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
 //     dataStudentDetails.value = props.filteredDataByGroupId.flatMap(item => item.actors)
 //                                                    .filter(actor => actor.name === studentName.name);
@@ -119,7 +115,61 @@ function handleStudentSelected(studentName) { // When you click on a row in the 
 
     router.push({ name: 'StudentDetailsView', params: { name: studentName.name} }) // Go to StudentDetailsView using useRouter
 }
+
+// Show how long ago was the last move of a student
+function formatTimestamp(timestamp) {
+    const now = new Date();
+    const timeDiff = now - new Date(timestamp);
+
+    const seconds = Math.floor(timeDiff / 1000);
+    const minutes = Math.floor(timeDiff / (1000 * 60));
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const weeks = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 7));
+
+    if (seconds < 60) {
+        return `${seconds} second${seconds !== 1 ? 's' : ''} ago`;
+    } else if (minutes < 60) {
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+    } else if (hours < 24) {
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    } else if (days < 7) {
+        return `${days} day${days !== 1 ? 's' : ''} ago`;
+    } else if (weeks < 4) {
+        return `${weeks} week${weeks !== 1 ? 's' : ''} ago`;
+    } else {
+        return 'More than 1 month ago';
+    }
+}
+
+// To apply colors to the times in the BaseTable
+const computedCellClasses = computed(() => {
+    return formattedStudents.value.map(student => {
+        const lastInteraction = student.lastInteraction;
+        let classes = {};
+
+        if (lastInteraction === 'Never') {
+            classes['lastInteraction'] = 'never-connected';
+        } else if (lastInteraction.includes('More than 1 month ago') || lastInteraction.includes('week') || lastInteraction.includes('day')) {
+            classes['lastInteraction'] = 'long-time-ago';
+        } else if (lastInteraction.includes('hour') || lastInteraction.includes('minute') || lastInteraction.includes('second')) {
+            classes['lastInteraction'] = 'recent-activity';
+        }
+        return classes;
+    });
+});
 </script>
 
-<style scoped>
+<style>
+.never-connected {
+    color: red;
+}
+
+.long-time-ago {
+    color: #e19200;
+}
+
+.recent-activity {
+    color: #25CC64;
+}
 </style>
