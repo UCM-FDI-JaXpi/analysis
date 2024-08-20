@@ -44,7 +44,7 @@ const emit = defineEmits(['student-selected']); // Definir evento personalizado
 
 function showStudentDetail(studentName) {
     console.log(studentName)
-    emit('student-selected', studentName); // Emitir evento personalizado con el nombre del estudiante
+    emit('student-selected', studentName); // Emitir evento personalizado con la info del estudiante
 }
 </script>
 

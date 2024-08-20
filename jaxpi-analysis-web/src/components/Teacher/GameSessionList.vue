@@ -21,31 +21,11 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from 'vue';
+import { computed} from 'vue';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
-
-const props = defineProps({
-    groupId: {
-        type: String,
-        required: true
-    }
-});
 
 const gameSessionsStore = useGameSessionsStore();
 const gameSessions = computed(() => gameSessionsStore.gameSessions);
-
-const fetchGameSessions = async (groupId) => {
-    await gameSessionsStore.fetchGameSessions(groupId);
-};
-
-onMounted(() => fetchGameSessions(props.groupId));
-
-// Observamos los cambios en groupId y llamamos a fetchGameSessions cuando cambie
-watch(() => props.groupId, (newGroupId, oldGroupId) => {
-    if (newGroupId !== oldGroupId) {
-        fetchGameSessions(newGroupId);
-    }
-});
 </script>
 
 <style scoped>

@@ -13,7 +13,7 @@ export function calculateLevelCompletionTimes(groupData) {
 }  
 
 // Extrae la información de los statements de un actor (info para varias graficas)
-function calculateForStatements(sortedStatements) {
+export function calculateForStatements(sortedStatements) {
     let timestamp = 0;
     let starteds = [];
     let completeds = [];

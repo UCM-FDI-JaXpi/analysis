@@ -18,9 +18,7 @@
             :data="dataTableFormat" 
             :columns="tableColumnsTeacher"
             :columnTitles="dataTableColumnTitlesTeacher"
-            :filter-key="searchQueryTeacher"
-            />
-            <!-- @student-selected="handleStudentSelected" -->
+            :filter-key="searchQueryTeacher"/>
         </div>
         <div v-else>
           <p>No data available for this table.</p>
@@ -76,14 +74,10 @@
   import jsonDataScoreSessionPlayer from '../data/score-session-player.json';
   
   import { ref } from 'vue';
-  // import { useRouter } from 'vue-router';
   // import { useGamesStore } from '@/stores/gamesStore';
-  // import { useStudentStore } from '@/stores/studentStore';
   // import { useGroupsStore } from '@/stores/groupsStore';
   
-  // const router = useRouter(); // To navigate from one tab to another
   // const gamesStore = useGamesStore();
-  // const studentStore = useStudentStore();
   // const groupsStore = useGroupsStore();
   
   // const selectedGame = computed(() => gamesStore.getSelectedGame); // Obtener datos del juego seleccionado desde el store con el gameId
@@ -106,28 +100,12 @@
   const props = defineProps({
     filteredDataByGroupId: Array,
     dataTableFormat: Array,
-    dataStudentDetails: Array,
     dataLevelCompletionTimes: Array,
     verbCount: Object,
     dataVerbCount: Array,
     dataPieChartGamesStartedCompleted: Array,
     dataAttemptsPerLevelPlayer: Array,
   });
-  
-  
-//   const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
-//     dataStudentDetails.value = filteredDataByGroupId.value.flatMap(item => item.actors)
-//                                                    .find(actor => actor.name === studentName);
-//   };
-  
-  // function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
-  //   filterdataStudentDetails(studentName);
-  //   const selectedStudentData = dataStudentDetails.value;
-  //   console.log(selectedStudentData)
-  //   groupsStore.setSelectedGroupId(props.groupId); // Seteo el group seleccionado
-  //   studentStore.setSelectedStudent(selectedStudentData); // Seteo el name del estudiante y sus statements
-  //   router.push({ name: 'StudentDetailsView', params: { name: studentName} }) // Go to StudentDetailsView using useRouter
-  // }
   
   /**************************************************** For BarChart *******************************************************/
   const colorPalettes = [['#65DB1C'], ['#6B8CFF']];

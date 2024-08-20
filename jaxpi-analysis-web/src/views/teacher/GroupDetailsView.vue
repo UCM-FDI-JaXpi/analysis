@@ -13,7 +13,6 @@
                              :originalData="originalData"
                              :filteredDataByGroupId ="filteredDataByGroupId"
                              :dataTableFormat="dataTableFormat"
-                             :dataStudentDetails="dataStudentDetails"
                              :dataLevelCompletionTimes="dataLevelCompletionTimes"
                              :verbCount="verbCount"
                              :dataVerbCount="dataVerbCount"
@@ -22,12 +21,13 @@
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
-            <GameSessionList :groupId="group.id" />
+            <GameSessionList />
         </div>
 
         <div v-if="activeTab === 2" class="tab-content">
             <StudentList :groupId="group.id"
-                         :dataStudentList = "dataTableFormat"/>
+                         :dataStudentList = "dataTableFormat"
+                         :filteredDataByGroupId ="filteredDataByGroupId"/>
         </div>
     </div>
 
@@ -37,7 +37,6 @@
             :originalData="originalData"
             :filteredDataByGroupId ="filteredDataByGroupId"
             :dataTableFormat="dataTableFormat"
-            :dataStudentDetails="dataStudentDetails"
             :dataLevelCompletionTimes="dataLevelCompletionTimes"
             :verbCount="verbCount"
             :dataVerbCount="dataVerbCount"
@@ -53,6 +52,7 @@ import axios from 'axios';
 import socket from '@/socket';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 
 import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
@@ -63,6 +63,7 @@ import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 const route = useRoute();
 const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
+const gameSessionsStore = useGameSessionsStore();
 
 const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
@@ -75,93 +76,55 @@ const activeTab = ref(0); // Define active tab
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
-const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
 const dataLevelCompletionTimes = ref([]);
 const verbCount = ref({}); //¿?
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 const dataAttemptsPerLevelPlayer = ref([]);
 
-class JsonObject {
-    constructor(data) {
-      this.data = data;
-    }
-  
-    getData() {
-      return this.data;
-    }
-}
-
-watch(() => groupId.value, (newGroupId, oldGroupId) => {
-    if (newGroupId !== oldGroupId) {
-      fetchDataFromMongoDB(newGroupId);
-    }
-});
-
 onMounted(async () => {
-    await fetchDataFromMongoDB();
+  await fetchDataFromMongoDB();
+  fetchGameSessions(groupId.value); // Al cambiar a esta vista y montarla, llamo a los gamesessions del group dado
+
+  // EVENTOS DE SOCKET
+  // To send data to the server
+  // const hello = 'hello websocket'
+  // socket.emit('message', hello);
+
+  // Data received from server
+  // console.log(props)
+  // socket.on('message', (msg) => {
+  //   console.log('Message received from server:', msg);
+  // });
   
-    // EVENTOS DE SOCKET
-    // To send data to the server
-    // const hello = 'hello websocket'
-    // socket.emit('message', hello);
-  
-    // Data received from server
-    // console.log(props)
-    // socket.on('message', (msg) => {
-    //   console.log('Message received from server:', msg);
-    // });
-   
-    socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
-      //console.log('Datos actualizados statement id: ', updatedData._id);
-      //console.log('socket id: ', socket.id);
-  
-      // const verb = updatedData.verb.display['en-US'];
-      // verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-  
-      if (userType.value === 'teacher') {
-        let actorFound = false;
-        if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
-          let group = undefined;
-          group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
-  
-          if (group) {
-            group.actors.forEach(actor => {
-              if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // Me viene de back deshaseada
-                // Verifica que updatedData tiene la estructura esperada
-                if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
-                  actor.statements.push(updatedData);
-                  actorFound = true;
-                  //console.log('Dato añadido al actor:', actor);
-                } else {
-                  console.warn('updatedData tiene una estructura inesperada', updatedData);
-                }
+  socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
+    //console.log('Datos actualizados statement id: ', updatedData._id);
+    //console.log('socket id: ', socket.id);
+
+    // const verb = updatedData.verb.display['en-US'];
+    // verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+
+    if (userType.value === 'teacher') {
+      let actorFound = false;
+      if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
+        let group = undefined;
+        group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
+
+        if (group) {
+          group.actors.forEach(actor => {
+            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // Me viene de back deshaseada
+              // Verifica que updatedData tiene la estructura esperada
+              if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
+                actor.statements.push(updatedData);
+                actorFound = true;
+                //console.log('Dato añadido al actor:', actor);
+              } else {
+                console.warn('updatedData tiene una estructura inesperada', updatedData);
               }
-            });
-            if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
-              console.log("Este estudiante no corresponde a este group");
-              let actor = {};
-              actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
-              actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
-              actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
-              actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
-              actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
-              actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
-              actor.statements = [updatedData];
-              group.actors.push(actor);
-            } else {
-              console.log('Datos actualizados en originalData:', originalData.value);
             }
-          } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
-            console.log('No se encontró el group con groupId:', groupId);
-            let newGroup = {};
-            newGroup.groupId = updatedData.context.contextActivities.parent.id;
-            if (groupId.value){
-              newGroup.groupName = groupsStore.getGroupNameById(groupId);
-            } else {
-              newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
-            }
-            newGroup.actors = [];
+          });
+          if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
+            console.log("Este estudiante no corresponde a este group");
             let actor = {};
             actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
             actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
@@ -170,29 +133,37 @@ onMounted(async () => {
             actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
             actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
             actor.statements = [updatedData];
-  
-            newGroup.actors.push(actor);
-            originalData.value.push(newGroup);
+            group.actors.push(actor);
+          } else {
+            console.log('Datos actualizados en originalData:', originalData.value);
           }
-        } else {
-          console.warn('originalData no está definido o no es un array');
+        } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
+          console.log('No se encontró el group con groupId:', groupId);
+          let newGroup = {};
+          newGroup.groupId = updatedData.context.contextActivities.parent.id;
+          if (groupId.value){
+            newGroup.groupName = groupsStore.getGroupNameById(groupId);
+          } else {
+            newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
+          }
+          newGroup.actors = [];
+          let actor = {};
+          actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+          actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+          actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+          actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+          actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+          actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+          actor.statements = [updatedData];
+
+          newGroup.actors.push(actor);
+          originalData.value.push(newGroup);
         }
-      
-        // if(!timerId){ 
-        //   console.log("timerId", timerId)
-        //   /* La primera traza que recibe, inicializa un temporizador de X segundos,
-        //      y realizamos la funcion una unica vez con todos los datos que teniamos mas los nuevos */
-        //   timerId = setTimeout(() => {
-        //     //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(filteredDataByGroupId.value);
-  
-        //     //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-        //     //dataVerbCount.value = prepareDataForCharts(verbChartDataArray);
-        //     console.log("timerId dentro ", timerId)
-        //     timerId = null;
-        //   }, 10000);
-        // }
+      } else {
+        console.warn('originalData no está definido o no es un array');
       }
-    });
+    }
+  });
 });
   
 onUnmounted(() => {
@@ -200,6 +171,14 @@ onUnmounted(() => {
   socket.off('message');
   socket.off('newStatement');
 });
+
+
+const fetchGameSessions = async (groupId) => {
+  if (groupId) // Si tengo groupdId, cogo sus gamesessions sino, limpio gamesessions []
+    await gameSessionsStore.fetchGameSessions(groupId);
+  else
+    gameSessionsStore.$reset();
+};
 
 const fetchDataFromMongoDB = async () => {
     try {
@@ -209,7 +188,7 @@ const fetchDataFromMongoDB = async () => {
 
         if (userType.value === 'student') {
         console.log('Im student')
-        originalData.value = new JsonObject(response.data)
+        originalData.value = response.data;
         originalData.value.data.forEach(entry => {
             const verb = entry.verb.display['en-US'];
             verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
@@ -359,6 +338,13 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
       console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
     }
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
+
+watch(() => groupId.value, (newGroupId, oldGroupId) => {
+    if (newGroupId !== oldGroupId) {
+      fetchDataFromMongoDB(newGroupId);
+      fetchGameSessions(newGroupId);
+    }
+});
 </script>
 
 <style scoped>

@@ -8,6 +8,7 @@
                 :headers="['Name', 'Last interaction']"
                 :rows="formattedStudents"
                 :rowKeys="['name', 'lastInteraction']"
+                @student-selected="handleStudentSelected"
             />
         </div>
     </div>
@@ -15,8 +16,14 @@
 
 <script setup>
 import { onMounted, watch, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useGroupsStore } from '@/stores/groupsStore';
+import { useStudentStore } from '@/stores/studentStore';
+
 import BaseTable from '@/components/BaseTable.vue';
+
+const router = useRouter(); // To navigate from one tab to another
+const studentStore = useStudentStore();
 
 const props = defineProps({
     groupId: {
@@ -27,10 +34,15 @@ const props = defineProps({
         type: Array,
         required: true
     },
+    filteredDataByGroupId: {
+        type: Array,
+        required: true
+    },
 });
 
 const groupsStore = useGroupsStore();
 const formattedStudents = ref([]);
+// const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
 
 // Convertir una lista de nombres a una lista de objetos (formato que espera BaseTable)
 const getFormattedStudents = () => {
@@ -88,6 +100,24 @@ watch(() => props.dataStudentList, (newGroupId, oldGroupId) => {
 // To format the timestamp in a readable format
 function formatTimestamp(timestamp) {
     return new Date(timestamp).toLocaleString();
+}
+
+// const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
+//     dataStudentDetails.value = props.filteredDataByGroupId.flatMap(item => item.actors)
+//                                                    .filter(actor => actor.name === studentName.name);
+// };
+  
+function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
+    // filterdataStudentDetails(studentName);
+    // const selectedStudentData = dataStudentDetails.value;
+    // console.log(selectedStudentData)
+    groupsStore.setSelectedGroupId(props.groupId); // Seteo el group seleccionado
+
+
+    // if(dataStudentDetails.value.length === 0)
+    studentStore.setSelectedStudent(studentName.name); // Seteo el name del estudiante
+
+    router.push({ name: 'StudentDetailsView', params: { name: studentName.name} }) // Go to StudentDetailsView using useRouter
 }
 </script>
 

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useStudentStore = defineStore('selectedStudent', {
     state: () => ({
-        selectedStudent: null // All info like class, studentData(statements and studentName)
+        selectedStudent: null // studentName
     }),
 
     actions: {
