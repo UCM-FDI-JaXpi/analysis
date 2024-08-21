@@ -7,6 +7,7 @@ export const useGameSessionsStore = defineStore('gameSessions', {
         gameSessions: [],
         loading: false,
         error: null,
+        selectedGameSessionId: null,
     }),
     actions: {
         async createGameSession(gameSessionName, groupId, gameId) {
@@ -58,6 +59,9 @@ export const useGameSessionsStore = defineStore('gameSessions', {
             } finally {
                 this.loading = false;
             }
+        },
+        setSelectedGameSessionId(gameSessionId) {
+            this.selectedGameSessionId = gameSessionId;
         }
     },
     getters: {

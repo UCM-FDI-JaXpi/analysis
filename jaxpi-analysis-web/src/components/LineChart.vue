@@ -8,7 +8,7 @@
 <script setup>
 import c3 from 'c3';
 import 'c3/c3.css';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
     data: {
@@ -37,12 +37,16 @@ onUnmounted(() => {
     }
 });
 
+watch(() => props.data, (newData) => {
+    drawLineChart(newData, props.chartId);
+});
+
 const drawLineChart = (data, chartId) => {
     const xAxisData = data.map(item => item.nameObject);
     const yAxisData = data.map(item => item.value);
 
     const names = {
-        'line-chart1': 'Score'
+        'line-chart1': 'Statements'
     };
 
     const chartData = [
@@ -54,6 +58,7 @@ const drawLineChart = (data, chartId) => {
         bindto: `#${chartId}`,
         data: {
             x: 'x',
+            xFormat: '%d/%m/%Y', // Formato de las fechas de entrada
             columns: chartData,
             colors: {
                 [names[chartId]]: '#00C206',
@@ -61,8 +66,9 @@ const drawLineChart = (data, chartId) => {
         },
         axis: {
             x: {
-                type: 'category',
+                type: 'timeseries',
                 tick: {
+                    format: '%d/%m/%Y',
                     rotate: -25,
                     multiline: false
                 },
@@ -82,6 +88,9 @@ const drawLineChart = (data, chartId) => {
         },
         legend: {
             show: false
+        },
+        zoom: {
+            enabled: true
         }
     });
 }

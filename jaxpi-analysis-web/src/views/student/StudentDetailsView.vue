@@ -1,13 +1,11 @@
 <template>
 	<div class="student-details-container" v-if="selectedStudent">
     <div class="student-info">
-      <div class="info-pair">
-        <span class="title">Student:</span> 
-        <span class="value">{{ selectedStudent }}</span>
+      <div class="student-name">
+        <p><strong>Student: </strong> {{ selectedStudent }}</p>
       </div>
-      <div  v-if="groupId" class="info-pair">
-        <span class="title">Class:</span> 
-        <span class="value"> {{ groupName }} </span>
+      <div v-if="groupId" class="student-class">
+        <p><strong>Class: </strong> {{ groupName }}</p>
       </div>
     </div>
 
@@ -32,17 +30,17 @@
       <BarChart v-if="dataLevelCompletionTimes.length > 0"
         :data="dataLevelCompletionTimes"
         chartId="bar-chart2"
-        title="Completion time per level" /> <!---------------------------------THISSSSS------------------------->
+        title="Completion time per level" />
 
       <BarChart v-if="dataVerbCount.length > 0" 
         :data="dataVerbCount"
         chartId="bar-chart1"
-        title="Verb count" /> <!---------------------------------THISSSSS------------------------->
+        title="Verb count" />
 
       <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
         :data="dataPieChartGamesStartedCompleted"
         chartId="pie-chart1"
-        title="Games started and completed" /> <!---------------------------------THISSSSS------------------------->
+        title="Games started and completed" />
     </div>
 
     <div v-else>
@@ -115,11 +113,10 @@ const handleGameSessionChange = (gameSessionId) => {
   setDataVerbCount();
   setDataPieChartGamesStartedCompleted();
 
-  if (gameSessionId === 'all') {
+  if (gameSessionId === 'all')
     console.log('All game sessions selected');
-  } else {
+  else
     console.log('Selected game session ID:', gameSessionId);
-  }
 };
 
 watch(selectedGameSession, (newValue) => {
@@ -374,33 +371,12 @@ function setDataPieChartGamesStartedCompleted(){ // Recibo gameSessionId (all o 
 
 function cleanData(){
   dataTableFormat.value = []; 
+  dataLevelCompletionTimes.value = []; 
+  dataGroup.value = []; 
+  dataVerbCount.value = []; 
+  dataPieChartGamesStartedCompleted.value = []; 
 }
 </script>
 
-<style>
-.student-info {
-  background-color: #f5f5f5;
-  border: 2px solid #000000;
-  border-radius: 8px;
-  padding: 10px;
-  max-width: max-content; /* ajustar el ancho máximo según tus preferencias */
-}
-
-.info-pair {
-  margin-bottom: 5px; /* Añade espacio entre los pares de información */
-}
-
-.title {
-  font-weight: bold;
-  margin-right: 5px; /* Espacio entre el título y el valor */
-}
-
-.value {
-  display: inline-block; /* Asegura que el valor esté en la misma línea que el título */
-}
-
-#bar-chart-student-detail1 {
-  background-color: rgba(255, 255, 255, 0.8);
-  min-width: 415px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
-}
+<style scoped>
 </style>

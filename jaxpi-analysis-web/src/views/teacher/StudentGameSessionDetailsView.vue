@@ -1,17 +1,9 @@
 <template>
     <div class="student-game-session-key" v-if="session">
-        <h1>{{ session.sessionName }}</h1>
-        <p><strong>Game: </strong>{{ session.gameName }}</p>
-        <p><strong>Group: </strong>{{ groupName }}</p>
+        <p><strong>Student: </strong>{{ selectedStudent }}</p>
+        <p><strong>Game session: </strong>{{ session.sessionName }}</p>
         <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
-        <div class="student-list">
-            <h2>Students</h2>
-            <BaseTable 
-                :headers="['Name', 'Key']"
-                :rows="session.students"
-                :rowKeys="['name', 'key']"
-                @student-selected="handleStudentSelected" />
-        </div>
+        <p><strong>Group: </strong>{{ groupName }}</p>
 
         <div class="more-student" v-if="isStatements">
             <div v-if="dataTableFormat.length > 0" class="search-table">
@@ -47,8 +39,7 @@
     </div>
 </template>
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted} from 'vue';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -58,25 +49,21 @@ import { sortStatements, calculateForStatements } from '../../utils/utilities.js
 
 import axios from 'axios';
 // import socket from '@/socket';
-import BaseTable from '@/components/BaseTable.vue';
 import DataTable from '@/components/DataTable.vue';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
 
-const route = useRoute();
-const router = useRouter(); // To navigate from one tab to another
-
 const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
-const studentStore = useStudentStore();
 const gameSessionsStore = useGameSessionsStore();
+const studentStore = useStudentStore();
 
 const groupId = computed(() => groupsStore.selectedGroupId); 
 const groupName = computed(() => groupsStore.getGroupNameById(groupId.value));
 const userType = computed(() => authStore.userType);
+const selectedStudent = computed(() => studentStore.selectedStudent);
 const session = computed(() => {
-    const gameSessionId = route.params.gameSessionId;
-    return gameSessionsStore.getGameSessionById(gameSessionId);
+    return gameSessionsStore.getGameSessionById(gameSessionsStore.selectedGameSessionId);
 });
 
 const originalData = ref([]); // Guardo todo lo que me da response.data
@@ -102,7 +89,7 @@ onMounted(async () => {
     }
     await fetchDataFromMongoDB();
 });
-  
+
 // onUnmounted(() => {
 //   // Remove all socket listeners
 //   socket.off('message');
@@ -141,7 +128,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 function setDataTableFormat(){
     if (filteredDataByGroupId.value.length > 0) {
       dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
-          return item.actors.filter(e=> e.sessionId === session.value.sessionId).map(actor => {
+          return item.actors.filter(e=> e.sessionId === session.value.sessionId && e.name === selectedStudent.value).map(actor => {
             let copyStatements = [...actor.statements];
             isStatements.value = copyStatements.length > 0;
             copyStatements.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -162,7 +149,7 @@ function setDataTableFormat(){
 function setLevelCompletionTimes(){
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
     
-      dataGroup.value = filteredDataByGroupId.value[0].actors.filter(e=>e.sessionId === session.value.sessionId).map(actor => { // Proceso todos los actores
+      dataGroup.value = filteredDataByGroupId.value[0].actors.filter(e=>e.sessionId === session.value.sessionId && e.name === selectedStudent.value).map(actor => { // Proceso todos los actores
         let copyStatements = [...actor.statements]; // Hago una copia para que no salte el watch
         const sortedStatements = sortStatements(copyStatements);  // Por cada actor ordenamos sus statements
         const actorData = calculateForStatements(sortedStatements);
@@ -255,11 +242,6 @@ function cleanData(){
   dataGroup.value = []; 
   dataVerbCount.value = []; 
   dataPieChartGamesStartedCompleted.value = []; 
-}
-
-function handleStudentSelected(student) { // When you click on a row in the table selecting a student
-    studentStore.setSelectedStudent(student.name); // Seteo el name del estudiante
-    router.push({ name: 'StudentGameSessionDetailsView' }) // Go to StudentGameSessionDetailsView using useRouter
 }
 </script>
 

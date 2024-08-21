@@ -56,9 +56,36 @@
 
         <p v-if="!teacher">Please log in as a teacher to view teacher details.</p>
     </div>
+
+  <div class="filter-container">
+    <div class="button-group">
+      <button 
+        v-for="category in categories" 
+        :key="category"
+        :class="{'active': selectedCategory === category}" 
+        @click="selectCategory(category)">
+        {{ category }}
+      </button>
+      <button 
+        :class="{'active': selectedCategory === ''}" 
+        @click="selectCategory('')">
+        All Categories
+      </button>
+    </div>
+
+    <div class="items-list">
+      <div v-for="item in filteredItems" :key="item.id" class="item-card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.description }}</p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
+
+
+
 import { computed, ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
@@ -77,6 +104,38 @@ const showConfirmationCreatedGroup = ref(false);
 const showConfirmationCreatedGameSession = ref(false);
 const createdGroup = ref({});
 const createdGameSession = ref({});
+
+
+
+
+
+
+
+// Data para el ejemplo (puedes obtener esto de una API)
+const categories = ref(['Technology', 'Science', 'Health', 'Education']);
+const items = ref([
+  { id: 1, title: 'Tech Article 1', description: 'Description of tech article 1', category: 'Technology' },
+  { id: 2, title: 'Science Article 1', description: 'Description of science article 1', category: 'Science' },
+  { id: 3, title: 'Health Article 1', description: 'Description of health article 1', category: 'Health' },
+  { id: 4, title: 'Education Article 1', description: 'Description of education article 1', category: 'Education' },
+  { id: 5, title: 'Tech Article 2', description: 'Description of tech article 2', category: 'Technology' },
+]);
+
+// Estado reactivo
+const selectedCategory = ref('');
+
+// Propiedad computada para filtrar los elementos según la categoría seleccionada
+const filteredItems = computed(() => {
+  if (selectedCategory.value === '') {
+    return items.value; // Si no se selecciona ninguna categoría, mostrar todos los elementos
+  }
+  return items.value.filter(item => item.category === selectedCategory.value);
+});
+
+// Método para manejar la selección de categoría
+const selectCategory = (category) => {
+  selectedCategory.value = category;
+};
 
 const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teacher', sino, null
     const teacherData = authStore.userData
@@ -186,5 +245,55 @@ onMounted(async () => {
 
 h1 {
     margin-bottom: 0;
+}
+.filter-container {
+  margin: 20px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1976D2;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-group button.active {
+  background-color: #0056a3;
+}
+
+.button-group button:hover {
+  background-color: #0056a3;
+}
+
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.item-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.item-card h3 {
+  margin: 0 0 10px;
+}
+
+.item-card p {
+  margin: 0;
 }
 </style>

@@ -11,7 +11,9 @@
                     <p><strong>Created on: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p>
                 </div>
                 <div class="card-actions">
-                    <router-link :to="{ name: 'StudentGameSessionKeyView', params: { gameSessionId: gameSession.sessionId } }" class="details-button">
+                    <router-link :to="{ name: 'StudentGameSessionKeyView', params: { gameSessionId: gameSession.sessionId } }" 
+                                 class="details-button"
+                                 @click="selectSession(gameSession.sessionId)">
                         View Students
                     </router-link>
                 </div>
@@ -21,11 +23,15 @@
 </template>
 
 <script setup>
-import { computed} from 'vue';
+import { computed } from 'vue';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 
 const gameSessionsStore = useGameSessionsStore();
 const gameSessions = computed(() => gameSessionsStore.gameSessions);
+
+const selectSession = (sessionId) => {
+  gameSessionsStore.setSelectedGameSessionId(sessionId);
+};
 </script>
 
 <style scoped>

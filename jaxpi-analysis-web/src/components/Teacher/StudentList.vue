@@ -9,8 +9,7 @@
                 :rows="formattedStudents"
                 :rowKeys="['name', 'lastInteraction']"
                 :cellClasses="computedCellClasses"
-                @student-selected="handleStudentSelected"
-            />
+                @student-selected="handleStudentSelected" />
         </div>
     </div>
 </template>
@@ -25,6 +24,9 @@ import BaseTable from '@/components/BaseTable.vue';
 
 const router = useRouter(); // To navigate from one tab to another
 const studentStore = useStudentStore();
+const groupsStore = useGroupsStore();
+
+const formattedStudents = ref([]);
 
 const props = defineProps({
     groupId: {
@@ -41,9 +43,22 @@ const props = defineProps({
     },
 });
 
-const groupsStore = useGroupsStore();
-const formattedStudents = ref([]);
-// const dataStudentDetails = ref([]); // Guardo studentName y sus statements y se lo paso a StudentDetailsView.vue
+// To apply colors to the times in the BaseTable
+const computedCellClasses = computed(() => {
+    return formattedStudents.value.map(student => {
+        const lastInteraction = student.lastInteraction;
+        let classes = {};
+
+        if (lastInteraction === 'Never') {
+            classes['lastInteraction'] = 'never-connected';
+        } else if (lastInteraction.includes('More than 1 month ago') || lastInteraction.includes('week') || lastInteraction.includes('day')) {
+            classes['lastInteraction'] = 'long-time-ago';
+        } else if (lastInteraction.includes('hour') || lastInteraction.includes('minute') || lastInteraction.includes('second')) {
+            classes['lastInteraction'] = 'recent-activity';
+        }
+        return classes;
+    });
+});
 
 // Convertir una lista de nombres a una lista de objetos (formato que espera BaseTable)
 const getFormattedStudents = () => {
@@ -98,21 +113,9 @@ watch(() => props.dataStudentList, (newGroupId, oldGroupId) => {
     }
 });
 
-// const filterdataStudentDetails = (studentName) => { // En dataStudentDetails: studentName y sus statements
-//     dataStudentDetails.value = props.filteredDataByGroupId.flatMap(item => item.actors)
-//                                                    .filter(actor => actor.name === studentName.name);
-// };
-  
 function handleStudentSelected(studentName) { // When you click on a row in the table selecting a student
-    // filterdataStudentDetails(studentName);
-    // const selectedStudentData = dataStudentDetails.value;
-    // console.log(selectedStudentData)
     groupsStore.setSelectedGroupId(props.groupId); // Seteo el group seleccionado
-
-
-    // if(dataStudentDetails.value.length === 0)
     studentStore.setSelectedStudent(studentName.name); // Seteo el name del estudiante
-
     router.push({ name: 'StudentDetailsView', params: { name: studentName.name} }) // Go to StudentDetailsView using useRouter
 }
 
@@ -141,23 +144,6 @@ function formatTimestamp(timestamp) {
         return 'More than 1 month ago';
     }
 }
-
-// To apply colors to the times in the BaseTable
-const computedCellClasses = computed(() => {
-    return formattedStudents.value.map(student => {
-        const lastInteraction = student.lastInteraction;
-        let classes = {};
-
-        if (lastInteraction === 'Never') {
-            classes['lastInteraction'] = 'never-connected';
-        } else if (lastInteraction.includes('More than 1 month ago') || lastInteraction.includes('week') || lastInteraction.includes('day')) {
-            classes['lastInteraction'] = 'long-time-ago';
-        } else if (lastInteraction.includes('hour') || lastInteraction.includes('minute') || lastInteraction.includes('second')) {
-            classes['lastInteraction'] = 'recent-activity';
-        }
-        return classes;
-    });
-});
 </script>
 
 <style>

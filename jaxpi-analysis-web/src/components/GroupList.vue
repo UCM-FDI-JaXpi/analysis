@@ -12,7 +12,9 @@
                         {{ group.students.length === 1 ? 'student' : 'students' }}</p>
                 </div>
                 <div class="card-actions">
-                    <router-link :to="{ name: 'GroupDetailsView', params: { groupId: group.id } }" class="details-button">
+                    <router-link :to="{ name: 'GroupDetailsView', params: { groupId: group.id } }"
+                                 class="details-button"
+                                 @click="selectGroup(group.id)">
                         View Details
                     </router-link>
                 </div>
@@ -28,6 +30,10 @@ import { useGroupsStore } from '@/stores/groupsStore';
 
 const groupsStore = useGroupsStore();
 const groups = computed(() => groupsStore.groups);
+
+const selectGroup = (groupId) => {
+  groupsStore.setSelectedGroupId(groupId);
+};
 </script>
 
 <style scoped>

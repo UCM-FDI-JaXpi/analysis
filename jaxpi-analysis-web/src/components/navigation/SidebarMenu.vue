@@ -10,7 +10,8 @@
                 v-for="group in groups"
                 :key="group.id" 
                 :to="`/group-details/${group.id}`"
-                :class="['submenu-link', { active: isActiveRoute(`/group-details/${group.id}`) }]">
+                :class="['submenu-link', { active: isActiveRoute(`/group-details/${group.id}`) }]"
+                @click="selectGroup(group.id)">
                 {{ group.name }}
             </router-link>
         </div>
@@ -48,6 +49,10 @@ const userType = computed(() => authStore.userType);
 const groups = computed(() => groupsStore.groups);
 const isTeacherGroupsSubmenuOpen = ref(false);
 const isCreateMenuOpen = ref(false);
+
+const selectGroup = (groupId) => {
+  groupsStore.setSelectedGroupId(groupId);
+};
 
 const toggleTeacherGroupsSubmenu = () => {
     isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
