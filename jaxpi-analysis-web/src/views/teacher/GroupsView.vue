@@ -1,6 +1,6 @@
 <template>
     <div class="groups">
-        <h1>Groups</h1>
+        <h1>Classes</h1>
         <GroupList />
     </div>
 </template>

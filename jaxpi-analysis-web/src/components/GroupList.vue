@@ -1,7 +1,7 @@
 <template>
     <div class="group-list">
         <div v-if="groups.length === 0" class="no-groups-message">
-            <p>There are no groups.</p>
+            <p>There are no classes.</p>
         </div>
 
         <div v-else class="card-container">

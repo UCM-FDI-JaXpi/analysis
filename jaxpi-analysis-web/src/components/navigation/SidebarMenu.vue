@@ -2,7 +2,7 @@
     <div v-if="userType === 'teacher'" class="sidebar"> <!--Ni Dev ni Student tienen sidebar-->
         <!-- Existing Groups Menu -->
         <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
-            Groups
+            Classes
             <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
         </div>
         <div v-if="isTeacherGroupsSubmenuOpen" class="submenu">
@@ -23,7 +23,7 @@
         </div>
         <div v-if="isCreateMenuOpen" class="submenu">
             <div class="submenu-link create" @click="navigateToCreateGroup" :class="{ active: isActiveRoute('/create-group') }">
-                Create group
+                Create class
             </div>
             <div class="submenu-link create" @click="navigateToCreateGameSession" :class="{ active: isActiveRoute('/create-game-session') }">
                 Create game session

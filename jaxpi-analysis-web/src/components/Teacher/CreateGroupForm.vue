@@ -1,7 +1,7 @@
 <template>
-    <h2>Create group</h2>
+    <h2>Create class</h2>
     <form @submit.prevent="addGroup">
-        <label for="groupName">Group name *</label>
+        <label for="groupName">Class name *</label>
         <input type="text" v-model="groupData.groupName" id="groupName" required />
 
         <label for="generationType">Choose generation method</label>

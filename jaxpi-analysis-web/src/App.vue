@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, watch, toRaw, computed } from 'vue';
+import { onBeforeUnmount, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import NavBar from './components/navigation/NavBar.vue';
@@ -25,7 +25,6 @@ const authStore = useAuthStore(); // To use Pinia store
 watch(() => authStore.userData,
   (newValue) => {
     if (newValue) {
-      console.log("Datos del usuario (Pinia):", toRaw(newValue)); // Convertir el objeto Proxy en un objeto plano mas legible que la estructura proxy
       socket.emit('authenticate', newValue.name);
     }
   },

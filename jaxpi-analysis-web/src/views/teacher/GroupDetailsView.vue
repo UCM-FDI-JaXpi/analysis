@@ -190,12 +190,13 @@ const fetchDataFromMongoDB = async () => {
         });
 
         if (userType.value === 'student') {
-        console.log('Im student')
+        console.log('response.data:', response.data);
+
         originalData.value = response.data;
-        originalData.value.data.forEach(entry => {
-            const verb = entry.verb.display['en-US'];
-            verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-        });
+        // originalData.value.data.forEach(entry => {
+        //     const verb = entry.verb.display['en-US'];
+        //     verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
+        // });
 
         // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
         //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));

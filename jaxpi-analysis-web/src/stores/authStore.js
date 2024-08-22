@@ -4,6 +4,8 @@ import { useGameSessionsStore } from './gameSessionsStore';
 import { useGamesStore } from './gamesStore';
 import { useGroupsStore } from './groupsStore';
 import { useStudentStore } from './studentStore';
+import { useRouteStore } from './routeStore';
+import { usePaginationStore } from './paginationStore';
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -50,7 +52,7 @@ export const useAuthStore = defineStore('auth', {
                 });
 
                 if (response.status === 200) {
-                    console.log(response.data.message);  // Imprimir  mensaje del servidor (exito)
+                    console.log(response.data.message);  // Imprimir mensaje del servidor (exito)
                     const userDataResponse = await axios.get('http://localhost:3000/api/session', { // podria dar error??
                         withCredentials: true
                     });
@@ -92,6 +94,12 @@ export const useAuthStore = defineStore('auth', {
 
                     const studentStore = useStudentStore();
                     studentStore.$reset(); // Limpiar studentStore
+
+                    const routeStore = useRouteStore();
+                    routeStore.$reset(); // Limpiar routeStore
+
+                    const paginationStore = usePaginationStore();
+                    paginationStore.$reset(); // Limpiar paginationStore
 
                     console.log(response.data.message); // Imprimir mensaje del servidor (exito)
                 }
