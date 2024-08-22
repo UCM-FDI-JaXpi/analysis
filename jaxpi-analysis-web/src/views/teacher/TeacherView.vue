@@ -23,7 +23,7 @@
             <CreateGameSessionForm @cancel="showCreateGameSessionForm = false" @submit="handleCreateGameSession" />
         </div>
 
-        <!-- Mensaje de información de sesión creada -->
+        <!-- Mensaje de información de game sesion creada -->
         <div v-if="showConfirmationCreatedGameSession" class="confirmation">
             <h3>Game session created</h3>
             <p><strong>Game session name:</strong> {{ createdGameSession.sessionName }}</p>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <!-- Mensaje de información de sesión creada -->
+        <!-- Mensaje de información de group creado -->
         <div v-if="showConfirmationCreatedGroup" class="confirmation">
             <h3>Group Created</h3>
             <p><strong>Institution:</strong> {{ createdGroup.institution }}</p>

@@ -17,7 +17,9 @@
                              :verbCount="verbCount"
                              :dataVerbCount="dataVerbCount"
                              :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-                             :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"/>
+                             :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"
+                             :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
+                             :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
         </div>
 
         <div v-if="activeTab === 1" class="tab-content">
@@ -41,7 +43,8 @@
             :verbCount="verbCount"
             :dataVerbCount="dataVerbCount"
             :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-            :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"/>
+            :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"
+            :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel "/>
     </div>
 </template>
 
@@ -69,10 +72,9 @@ const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
 const userType = computed(() => authStore.userType);
 
-const tabs = ref(["Charts", "Game sessions", "Students"]);
+const tabs = ref(["Stats", "Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
 
-// variables 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
@@ -81,6 +83,8 @@ const verbCount = ref({}); //¿?
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 const dataAttemptsPerLevelPlayer = ref([]);
+const dataBestCompletionTimePerLevelPerGroup = ref([]);
+const dataAttemptTimesForStudentLevel  = ref([]);
 
 onMounted(async () => {
   await fetchDataFromMongoDB();
@@ -172,7 +176,6 @@ onUnmounted(() => {
   socket.off('newStatement');
 });
 
-
 const fetchGameSessions = async (groupId) => {
   if (groupId) // Si tengo groupdId, cogo sus gamesessions sino, limpio gamesessions []
     await gameSessionsStore.fetchGameSessions(groupId);
@@ -240,16 +243,13 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
           };
         });
       }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
-      //console.log('DataTableFormat updated:', dataTableFormat.value);
-    }  else {
-      // Limpia todas las stats var si no hay datos
+    }  else { // Limpia todas las stats var si no hay datos
       dataTableFormat.value = []; 
       dataVerbCount.value = [];
       dataLevelCompletionTimes.value = [];
       dataPieChartGamesStartedCompleted.value = [];
+      dataBestCompletionTimePerLevelPerGroup.value = [];
     }
-  
-  
   
   
     // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
@@ -279,10 +279,39 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
             }); 
           }
         });
-  
-  
-  
-  
+
+        // PARA PRIMER BARCHART DEL TAB COMPLETION TIME (el mejor tiempo por nivel del grupo)
+        dataBestCompletionTimePerLevelPerGroup.value = [];
+        dataGroup.forEach(actorInfo => {
+          const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level') && key != 'level 15' && actorInfo.actorData[key].length > 0); // [ 'level1','level2', ...] menos el level 15 y los levels que no tienen tiempos de completado
+          if(keys){
+            keys.forEach(key => {
+                if (dataBestCompletionTimePerLevelPerGroup.value.find(e => e.nameObject == key)) {
+                  let resTempo = dataBestCompletionTimePerLevelPerGroup.value.find(e => e.nameObject == key);
+                  let minTime;
+                  let times = actorInfo.actorData[key];
+                    if (times.length > 0){
+                      minTime = Math.min(...times);
+                      if ( minTime < resTempo.value || resTempo.value === 0){
+                        resTempo.value = minTime;
+                        resTempo.student = actorInfo.actorName;
+                      }
+                    }
+                } else {
+                    let times = actorInfo.actorData[key];
+                    let minTime;
+                    if (times.length > 0)
+                      minTime = Math.min(...times);
+                    else minTime = 0;
+                    let level = { nameObject: key, value: minTime, student: actorInfo.actorName};
+                    dataBestCompletionTimePerLevelPerGroup.value.push(level);
+                }
+            });
+          }
+        }); 
+
+        console.log('dataBestCompletionTimePerLevelPerGroup', dataBestCompletionTimePerLevelPerGroup.value);
+
         // PARA EL SEGUNDO BARCHART - COUNTVERBS 
         dataVerbCount.value = [];
         dataGroup.forEach(actorInfo => {
@@ -302,9 +331,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
               }); 
             }
           });
-  
-  
-  
   
         // PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
         dataPieChartGamesStartedCompleted.value = [];
@@ -374,7 +400,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 .tab-content {
     display: flex;
     flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-    gap: 50px; /* Espacio entre los elementos */
+    gap: 50px;
     padding: 1rem;
     background-color: #79c1fd;
 }

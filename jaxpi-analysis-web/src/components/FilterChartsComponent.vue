@@ -1,6 +1,6 @@
 <template>
     <div class="filters">
-        <h2>Filtrar por estudiante</h2>
+        <h2>{{ title }}</h2>
         <div class="elements">
             <button v-for="elem in data" :key="elem.id"
                 :class="{ selected: elem.id === selectedElem?.id }" @click="selectElem(elem)">
@@ -18,6 +18,10 @@ const props = defineProps({
   data: {
     type: Array, // [ { id: X, name: Y}]
     required: false
+  },
+  title: {
+    type: String,
+    default: ''
   }
 });
 const selectedElem = ref('');
@@ -32,7 +36,7 @@ const selectElem = (elem) => {
 watch(() => props.data, (newData) => {
     if (newData.length > 0) {
         selectedElem.value = newData[0];
-        emit('selectElem', newData[0].name);
+        emit('selectElem', newData[0].id);
     }
 }, { immediate: true });
 </script>
