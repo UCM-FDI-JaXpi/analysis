@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar">
         <router-link class="nav-item" to="/">Home</router-link>
-        <router-link v-if="isDev || isTeacher || isStudent" class="nav-item" to="/charts">Charts</router-link>
+        <router-link v-if="isDev || isTeacher" class="nav-item" to="/charts">Charts</router-link>
         <router-link v-if="isTeacher" class="nav-item" to="/groups">Classes</router-link>
         <router-link v-if="isTeacher" class="nav-item" to="/teacher">Teacher View</router-link>
         <router-link v-if="isStudent" class="nav-item" to="/student">Student View</router-link>

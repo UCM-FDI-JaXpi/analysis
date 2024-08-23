@@ -43,7 +43,7 @@ const showSidebar = computed(() => { // In these views we don't want to have Sid
 
 <style>
   html, body, #app {
-    height: 100%;
+    height: 100vh;
     margin: 0;
     box-sizing: border-box;
   }

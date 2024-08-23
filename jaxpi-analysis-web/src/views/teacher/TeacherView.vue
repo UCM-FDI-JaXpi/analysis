@@ -1,14 +1,14 @@
 <template>
     <div class="teacher-view">
-        <h1>Teacher's view</h1>
+        <h1 v-if="!teacher">Teacher's view</h1>
+        <p v-if="!teacher">Please log in as a teacher to view teacher details.</p>
+
         <div class="teacher-details" v-if="teacher">
-            <h3>Teacher details</h3>
-            <p><strong>Name:</strong> {{ teacher.name }}</p>
+            <h3 class="teacher-name">{{ teacher.name }}</h3>
+            <p class="teacher-role">Role: {{ teacher.usr_type }}</p>
             <p><strong>Email:</strong> {{ teacher.email }}</p>
             <p><strong>Institution:</strong> {{ teacher.institution }}</p>  
-            <router-link to="/charts">View Charts</router-link>
         </div>
-        <p v-if="!teacher">Please log in as a teacher to view teacher details.</p>
   </div>
 </template>
 
@@ -44,5 +44,15 @@ h1 {
 
 .teacher-details > * {
     margin: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
+}
+
+.teacher-name {
+    font-size: 1.5rem; /* Tamaño más grande para resaltar el nombre */
+}
+
+.teacher-role {
+    font-size: 0.9rem; /* Tamaño más pequeño para los detalles */
+    color: #727171; /* Color gris claro para los detalles */
+    font-weight: bold;
 }
 </style>

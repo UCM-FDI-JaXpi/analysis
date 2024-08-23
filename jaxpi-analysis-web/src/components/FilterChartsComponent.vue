@@ -45,13 +45,11 @@ watch(() => props.data, (newData) => {
 .filters {
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 .elements button {
-    background-color: #eee;
-    border-radius: 4px;
-    border: none;
+    background-color: #E9E9E9;
+    border: 0.7px solid #d1d1d1;
     padding: 10px;
     text-align: start;
     width: 100%;
@@ -60,11 +58,12 @@ watch(() => props.data, (newData) => {
 
 .elements button.selected,
 .elements button.selected:hover {
-    background-color: lightgreen;
-
+    background-color: #ffa400;
+    color:white;
 }
 
 .elements button:hover {
-    background-color: #bdbcbc;
+    background-color: #f2cd88;
+    transform: scale(1.005);
 }
 </style>
