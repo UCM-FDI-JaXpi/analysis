@@ -1,6 +1,6 @@
 <template>
     <div v-if="userType === 'teacher'" class="sidebar"> <!--Ni Dev ni Student tienen sidebar-->
-        <!-- New Create Menu (group and game session) -->
+        <!-- New create menu (group and game session) -->
         <div class="menu-item create-menu-item" @click="toggleCreateMenu">
             Create
             <span>{{ isCreateMenuOpen ? '-' : '+' }}</span>
@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        <!-- Existing Groups Menu -->
+        <!-- Existing groups menu -->
         <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
             Classes
             <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
@@ -30,32 +30,68 @@
             </router-link>
         </div>
     </div>
+
+    <div v-if="userType === 'dev'" class="sidebar">
+        <!-- Add game-->
+        <div class="menu-item create-menu-item" @click="navigateToCreateGame">
+            Add game
+        </div>
+
+        <!-- Existing games menu -->
+        <div class="menu-item" @click="toggleDevGamesSubmenu">
+            Games
+            <span>{{ isDevGamesSubmenuOpen ? '-' : '+' }}</span>
+        </div>
+        <div v-if="isDevGamesSubmenuOpen" class="submenu">
+            <router-link 
+                v-for="game in games"
+                :key="game.id" 
+                :to="`/game-details/${game.id}`"
+                :class="['submenu-link', { active: isActiveRoute(`/game-details/${game.id}`) }]"
+                @click="selectGame(game.id)">
+                {{ game.name }}
+            </router-link>
+        </div>
+    </div>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue';
+import { useRoute, useRouter  } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useRouteStore } from '@/stores/routeStore';
-import { useRoute, useRouter  } from 'vue-router';
+import { useGamesStore } from '@/stores/gamesStore';
 
 const authStore = useAuthStore();
 const groupsStore = useGroupsStore();
 const routeStore = useRouteStore();
+const gamesStore = useGamesStore();
 const router = useRouter();
 const route = useRoute();
 
 const userType = computed(() => authStore.userType);
 const groups = computed(() => groupsStore.groups);
+const games = computed(() => gamesStore.games);
 const isTeacherGroupsSubmenuOpen = ref(false);
 const isCreateMenuOpen = ref(false);
+
+const isDevGamesSubmenuOpen = ref(false);
 
 const selectGroup = (groupId) => {
   groupsStore.setSelectedGroupId(groupId);
 };
 
+const selectGame = (gameId) => {
+  gamesStore.setSelectedGameId(gameId);
+};
+
 const toggleTeacherGroupsSubmenu = () => {
     isTeacherGroupsSubmenuOpen.value = !isTeacherGroupsSubmenuOpen.value;
+};
+
+const toggleDevGamesSubmenu = () => {
+    isDevGamesSubmenuOpen.value = !isDevGamesSubmenuOpen.value;
 };
 
 const toggleCreateMenu = () => {
@@ -74,6 +110,11 @@ const navigateToCreateGroup = () => {
 const navigateToCreateGameSession = () => {
     routeStore.setOriginalRoute(route.fullPath);
     router.push('/create-game-session');
+};
+
+const navigateToCreateGame = () => {
+    routeStore.setOriginalRoute(route.fullPath);
+    router.push('/create-game');
 };
 </script>
 

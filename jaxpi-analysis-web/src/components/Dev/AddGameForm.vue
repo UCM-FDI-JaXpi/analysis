@@ -16,6 +16,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useGamesStore } from '@/stores/gamesStore';
+
+const gamesStore = useGamesStore();
 
 const emit = defineEmits(['submit', 'cancel']); // Definir los eventos que el componente puede emitir
 
@@ -24,10 +27,23 @@ const gameData = ref({
     description: '',
 });
 
-const addGame = () => {
+const addGame = async () => {
     const gameToAdd = { ...gameData.value };
-    resetForm();
-    emit('submit', gameToAdd); // Emitir evento 'submit' con los datos del juego al padre DevView para añadir el juego
+    try {
+        let createdGame;
+        createdGame = await gamesStore.addGame(gameToAdd);
+        if(createdGame){
+            console.log('Game added successfully!');
+            console.log('Game added: ', createdGame);
+            resetForm();
+            emit('submit', createdGame);
+        }else{
+            //aqui seteariamos para mostrar mensaje de error ya 
+            //que queremos mostrar el mensaje, y que el form siga abierto
+        }
+    } catch (error) {
+        console.error('Error no controlado: ', error);
+    }
 };
 
 const resetForm = () => {
