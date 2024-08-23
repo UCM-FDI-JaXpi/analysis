@@ -1,5 +1,19 @@
 <template>
     <div v-if="userType === 'teacher'" class="sidebar"> <!--Ni Dev ni Student tienen sidebar-->
+        <!-- New Create Menu (group and game session) -->
+        <div class="menu-item create-menu-item" @click="toggleCreateMenu">
+            Create
+            <span>{{ isCreateMenuOpen ? '-' : '+' }}</span>
+        </div>
+        <div v-if="isCreateMenuOpen" class="submenu">
+            <div class="submenu-link create" @click="navigateToCreateGroup" :class="{ active: isActiveRoute('/create-group') }">
+                Create class
+            </div>
+            <div class="submenu-link create" @click="navigateToCreateGameSession" :class="{ active: isActiveRoute('/create-game-session') }">
+                Create game session
+            </div>
+        </div>
+
         <!-- Existing Groups Menu -->
         <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
             Classes
@@ -14,20 +28,6 @@
                 @click="selectGroup(group.id)">
                 {{ group.name }}
             </router-link>
-        </div>
-
-        <!-- New Create Menu (group and game session) -->
-        <div class="menu-item create-menu-item" @click="toggleCreateMenu">
-            Create
-            <span>{{ isCreateMenuOpen ? '-' : '+' }}</span>
-        </div>
-        <div v-if="isCreateMenuOpen" class="submenu">
-            <div class="submenu-link create" @click="navigateToCreateGroup" :class="{ active: isActiveRoute('/create-group') }">
-                Create class
-            </div>
-            <div class="submenu-link create" @click="navigateToCreateGameSession" :class="{ active: isActiveRoute('/create-game-session') }">
-                Create game session
-            </div>
         </div>
     </div>
 </template>
