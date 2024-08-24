@@ -284,7 +284,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #bfdbf3;
 }
   
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #stacked-bar-chart1, #line-chart1 {
+#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }

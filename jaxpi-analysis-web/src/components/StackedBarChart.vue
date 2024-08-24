@@ -37,31 +37,46 @@ onUnmounted(() => {
     }
 });
 
-// Watch for changes in the data prop
 watch(() => props.data, (newData) => {
     drawBarChart(newData, props.chartId);
 });
 
 const drawBarChart = (data, chartId) => {
-    const levels = data.map(item => item.nameObject);
-    const successedAttempts = data.map(item => item.successedAttempts);
-    const failedAttempts = data.map(item => item.failedAttempts);
+    const columns = [];
+    const categories = ['x'];
+
+    data.forEach((item, index) => {
+        if (index === 0) {
+            if (props.chartId == "stacked-bar-chart1")
+                categories.push(...item.value.map((_, i) => `Level ${i + 1}`));
+            else if (props.chartId == "stacked-bar-chart2")
+                categories.push(...item.interactions.map((e) => `${e}`));
+        }
+        columns.push([item.nameObject, ...item.value]);
+    });
+
+    // Ensure columns have the same length as the categories
+    columns.forEach(column => {
+        while (column.length < categories.length) {
+            column.push(0);
+        }
+    });
 
     chart.value = c3.generate({
         bindto: '#' + chartId,
         data: {
             x: 'x',
-            columns: [
-                ['x'].concat(levels),
-                ['Successed Attempts'].concat(successedAttempts),
-                ['Failed Attempts'].concat(failedAttempts)
-            ],
+            columns:  [categories, ...columns],
             type: 'bar',
-            groups: [['Successed Attempts', 'Failed Attempts']]
+            groups: [columns.map(col => col[0])]
         },
         axis: {
             x: {
-                type: 'category'
+                type: 'category',
+                tick: {
+                rotate: 45,
+                multiline: false
+                }
             },
             y: {
                 tick: {

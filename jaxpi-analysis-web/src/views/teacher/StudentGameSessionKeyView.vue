@@ -14,6 +14,16 @@
         </div>
 
         <div class="more-student" v-if="isStatements">
+            <StackedBarChart v-if="dataObjectCount.length > 0"
+                :data="dataObjectCount"
+                chartId="stacked-bar-chart2"
+                title="Interaction of items" />
+
+            <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
+                :data="dataCompletedLevelsCount"
+                chartId="stacked-bar-chart1"
+                title="Number of completed levels by student" />
+
             <div v-if="dataTableFormat.length > 0" class="search-table">
                 <h2>Last statements received</h2>
                 <form id="search">
@@ -62,6 +72,7 @@ import BaseTable from '@/components/BaseTable.vue';
 import DataTable from '@/components/DataTable.vue';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
+import StackedBarChart from '@/components/StackedBarChart.vue';
 
 const route = useRoute();
 const router = useRouter(); // To navigate from one tab to another
@@ -83,9 +94,12 @@ const originalData = ref([]); // Guardo todo lo que me da response.data
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataLevelCompletionTimes = ref([]);
-const dataGroup = ref([]); ////////////////////////////////////// FOR CHARTS
+const dataGroup = ref([]);
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
+
+const dataCompletedLevelsCount = ref([]);
+const dataObjectCount = ref([]);
 
 const isStatements = ref('false');
 const searchQueryTeacher = ref('')
@@ -162,18 +176,42 @@ function setDataTableFormat(){
 function setLevelCompletionTimes(){
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
     
-      dataGroup.value = filteredDataByGroupId.value[0].actors.filter(e=>e.sessionId === session.value.sessionId).map(actor => { // Proceso todos los actores
-        let copyStatements = [...actor.statements]; // Hago una copia para que no salte el watch
-        const sortedStatements = sortStatements(copyStatements);  // Por cada actor ordenamos sus statements
-        const actorData = calculateForStatements(sortedStatements);
-        return {
-            actorName: actor.name,
-            actorData: actorData
-        };
-      });
+    dataGroup.value = filteredDataByGroupId.value[0].actors.filter(e => e.sessionId === session.value.sessionId).map(actor => { // Proceso todos los actores
+      let copyStatements = [...actor.statements]; // Hago una copia para que no salte el watch
+      const sortedStatements = sortStatements(copyStatements);  // Por cada actor ordenamos sus statements
+      const actorData = calculateForStatements(sortedStatements);
+      return {
+          actorName: actor.name,
+          actorData: actorData
+      };
+    });
     
     dataLevelCompletionTimes.value = [];
+    let res = []
+    let resInteractions = [];
+
+    let objects = [...new Set(dataGroup.value.flatMap( e => e.actorData.interactions.map( f => f.object)))]; 
     dataGroup.value.forEach(actorInfo => {
+      let objInteraction = {nameObject : actorInfo.actorName, interactions: objects};
+      let info = [];
+      objects.forEach(element => {
+        let interaction = actorInfo.actorData.interactions.find( e => e.object == element);
+        if  (interaction){
+          info.push(interaction.count);
+        } else {
+          info.push(0);
+        }
+        
+      });
+      objInteraction.value = info;
+      resInteractions.push(objInteraction);
+      ///////////////////////////////////////////////////////////////
+      let obj = {
+        nameObject: actorInfo.actorName,
+        value: actorInfo.actorData.countCompletedLevel  //[]
+      };
+      res.push(obj);
+      /////////////////////////////////////////////////////////
       const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level'));
       if (keys) { // [ 'level1','level2', ...]
         keys.forEach(key => {
@@ -195,6 +233,8 @@ function setLevelCompletionTimes(){
         }); 
       }
     });
+    dataCompletedLevelsCount.value = res;
+    dataObjectCount.value = resInteractions;
   } else {
       cleanData()
     }

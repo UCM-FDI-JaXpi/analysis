@@ -33,6 +33,8 @@ export function calculateForStatements(sortedStatements) {
     //             }
     //      starteds: [..]
     //      completeds: [..]
+    //      countCompletedLevel: [...]
+    //      interactions: [ { object: 'fighter', count: X} ...]
     //  }
 
     sortedStatements.forEach(statement => {
@@ -62,8 +64,41 @@ export function calculateForStatements(sortedStatements) {
             }
         }
     });
+    
+    // Calcula cuantas veces se ha completado cada nivel
+    let res = [];
+    const keys = Object.keys(result).filter(key => key.includes('level') && key != 'level 15');
+    if (keys) { // [ 'level1','level2', ...]
+        keys.forEach(key => {
+            if (result[key].length > 0)
+                res.push(result[key].length);
+        }); 
+    }
+
+    // Calcula las interaccciones con los objetos del juego
+    let interactionsTempo = []
+    sortedStatements.forEach(statement => {
+        // Contar verbos 
+        const verbId = statement.verb.id.substring(statement.verb.id.lastIndexOf("/") + 1); // Me quedo solo con lo ultimo (verb)
+        if(verbId != 'started' && verbId != 'completed' && verbId !='jumped' && verbId !='died'){
+            const obj = interactionsTempo.find(e => e.object == statement.object.definition.name["en-US"]);
+            if (obj){
+                obj.count++;
+            } else {
+                let data = {
+                    object: statement.object.definition.name["en-US"],
+                    count: 1
+                }
+                interactionsTempo.push(data);
+            }
+        }
+    });
+
     result['starteds'] = starteds;
     result['completeds'] = completeds;
+    result['countCompletedLevel'] = res;
+    result['interactions'] = interactionsTempo;
+
     console.log('result:', result);
     return result;
 }
@@ -75,75 +110,6 @@ export function sortStatements(statements) {
     });
     return sortedStatements;
 }
-
-// export function calculateAttemptsPerLevel(jsonData) {
-//     let attemptsObject = {};
-//     let arrayFlagsStarted = [];
-//     const failedAttempts = new Proxy([], {
-//         get: function (target, prop) {
-//             if (!(prop in target)) {
-//                 target[prop] = 0; // Si la posición no está definida, se inicializa a cero
-//             }
-//             return target[prop];
-//         }
-//     });
-//     const successedAttempts = new Proxy([], {
-//         get: function (target, prop) {
-//             if (!(prop in target)) {
-//                 target[prop] = 0;
-//             }
-//             return target[prop];
-//         }
-//     });
-
-//     // Extraer los objetos del array Proxy
-//     const realObjects = jsonData.map(proxy => { return proxy });
-//     const sortedEvents = realObjects.sort((a, b) => {
-//         return new Date(a.timestamp) - new Date(b.timestamp);
-//     });
-
-//     sortedEvents.forEach(event => {
-//         const verbId = event.verb.id.substring(event.verb.id.lastIndexOf("/") + 1); // Me quedo solo con verb
-//         const objectName = event.object.definition.name["en-US"];
-
-//         if (verbId === "started") {
-//             failedAttempts[objectName]++;
-//             arrayFlagsStarted[objectName] = true;
-//         } else if (verbId === "completed" && arrayFlagsStarted[objectName]) {
-//             successedAttempts[objectName]++;
-//             arrayFlagsStarted[objectName] = false;
-//             failedAttempts[objectName]--;
-//         }
-//     });
-
-//     attemptsObject = Object.keys(successedAttempts).map(level => ({
-//         nameObject: level,
-//         successedAttempts: successedAttempts[level],
-//         failedAttempts: failedAttempts[level]
-//     }));
-
-//     // Añade las posiciones de failedAttempts que no están en successedAttempts
-//     Object.keys(failedAttempts)
-//         .filter(level => !successedAttempts.hasOwnProperty.call(successedAttempts, level))
-//         .forEach(level => {
-//             attemptsObject.push({
-//                 nameObject: level,
-//                 successedAttempts: 0,
-//                 failedAttempts: failedAttempts[level]
-//             });
-//         });
-
-//     // Sort attemptsObject by nameObject
-//     attemptsObject = attemptsObject.sort((a, b) => {
-//         if (a.nameObject < b.nameObject)
-//             return -1;
-//         if (a.nameObject > b.nameObject)
-//             return 1;
-//         return 0;
-//     });
-
-//     return attemptsObject;
-// }
 
 // Unused function yet, to calculate score/level or score/session or score/day
 export function calculateScorePerLevel(jsonData) { //Para un completed level

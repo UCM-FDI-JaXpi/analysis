@@ -1,6 +1,11 @@
 <template>
     <div class="group-details" v-if="group">
         <h1>Details of {{ group.name }}</h1>
+        <p>Total students: {{ group.students.length }}</p>
+        <p>Active students: {{ activeUsers }}</p>
+        <p>No active students: {{ group.students.length - activeUsers }}</p>
+
+
         <div class="tabs">
             <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                 :class="{ 'active': activeTab === index }">
@@ -79,6 +84,7 @@ const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 const dataBestCompletionTimePerLevelPerGroup = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
+const activeUsers  = ref(0);
 
 onMounted(async () => {
   await fetchDataFromMongoDB();
@@ -205,6 +211,10 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   
     // FORMATEAR DATOS PARA TABLE
     if (filteredDataByGroupId.value.length > 0) {
+      ///////////////////////////////////////////////////////////////////////////////////////////// CALCULAR USUARIOS ACTIVOS DEL GRUPO
+      let dataTempo = filteredDataByGroupId.value[0].actors.map( e => e.name);
+      activeUsers.value = [...new Set(dataTempo)].length;
+      /////////////////////////////////////////////////////////////////////////////////////////////
       dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
         return item.actors.map(actor => {
           // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
@@ -227,6 +237,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
       dataLevelCompletionTimes.value = [];
       dataPieChartGamesStartedCompleted.value = [];
       dataBestCompletionTimePerLevelPerGroup.value = [];
+      activeUsers.value = 0;
     }
   
     // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
@@ -354,7 +365,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
     padding: 1rem;
 }
 
-.grroup-details-general-charts {
+.group-details-general-charts {
     padding: 1rem;
 }
 /* Add styling for tabs */

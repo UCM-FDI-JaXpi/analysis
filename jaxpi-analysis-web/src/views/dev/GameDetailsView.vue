@@ -1,10 +1,14 @@
 <template>
-    <div class="game-details" v-if="game">
+    <div class="game-details-view" v-if="game">
         <div class="header">
             <h1>Game details for {{ game.name }}</h1>
             <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
         </div>
-        <p><strong>Game id:</strong> {{ game.id }}</p>
+        <div class="game-details" v-if="game">
+            <p><strong>Game id:</strong> {{ game.id }}</p>
+            <p><strong>Users:</strong>100</p>
+            <p><strong>Users who have completed the game:</strong>80</p>
+        </div>
         <div class="tabs">
             <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                 :class="{ 'active': activeTab === index }">
@@ -74,15 +78,15 @@ const handleSuccessModalOk = () => {
 </script>
 
 <style scoped>
-.game-details {
-    padding: 20px;
+.game-details-view {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
     background-color: #f9f9f9;
-    max-width: 900px; /* Aumentado para un mejor uso del espacio */
-    margin: 0 auto;
-}
 
-.game-details p {
-    margin-top: 0;
+}
+.game-details > p {
+    margin-top: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
 }
 
 .header {
