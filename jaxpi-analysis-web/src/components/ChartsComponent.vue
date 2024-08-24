@@ -60,7 +60,7 @@
             :columnTitles="dataTableColumnTitlesTeacher"
             :filter-key="searchQueryTeacher"/>
         </div>
-        <div v-else>
+        <div v-else class="no-data-charts">
           <p>No data available for this table.</p>
         </div>
 
@@ -82,11 +82,6 @@
           chartId="bar-chart2"
           title="Completion time per level"
           :colorPalette="colorPalettes[1]" />
-  
-        <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" 
-          :data="dataAttemptsPerLevelPlayer"
-          chartId="stacked-bar-chart1"
-          title="Number of attempts per level REAL" />
       </div>
       <div v-if="activeTab === 2" class="tab-content"> <!-------------------------------------VERB COUNTS TAB-->
         <BarChart v-if="dataVerbCount.length > 0" 
@@ -102,7 +97,6 @@ import { ref, computed, watch } from 'vue';
 import { useGroupsStore } from '@/stores/groupsStore';
 import BarChart from '../components/BarChart.vue';
 import LineChart from '../components/LineChart.vue';
-import StackedBarChart from '../components/StackedBarChart.vue';
 import DataTable from '../components/DataTable.vue';
 import PieChart from '@/components/PieChart.vue';
 import FilterChartsComponent from '@/components/FilterChartsComponent.vue';
@@ -142,7 +136,6 @@ const props = defineProps({
   verbCount: Object,
   dataVerbCount: Array,
   dataPieChartGamesStartedCompleted: Array,
-  dataAttemptsPerLevelPlayer: Array,
   dataBestCompletionTimePerLevelPerGroup: Array,
   dataAttemptTimesForStudentLevel : Array
 });
@@ -372,5 +365,11 @@ form#search {
   flex: 1; /* El gráfico ocupará el resto del espacio disponible */
   padding: 1rem;
   box-sizing: border-box; /* Incluye padding y border en el ancho total */
+}
+
+.no-data-charts {
+    text-align: center;
+    color: #666;
+    font-size: 1.125rem;
 }
 </style>

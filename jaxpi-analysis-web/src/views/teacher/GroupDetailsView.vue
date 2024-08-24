@@ -14,10 +14,8 @@
                              :filteredDataByGroupId ="filteredDataByGroupId"
                              :dataTableFormat="dataTableFormat"
                              :dataLevelCompletionTimes="dataLevelCompletionTimes"
-                             :verbCount="verbCount"
                              :dataVerbCount="dataVerbCount"
                              :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-                             :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"
                              :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
                              :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
         </div>
@@ -40,10 +38,8 @@
             :filteredDataByGroupId ="filteredDataByGroupId"
             :dataTableFormat="dataTableFormat"
             :dataLevelCompletionTimes="dataLevelCompletionTimes"
-            :verbCount="verbCount"
             :dataVerbCount="dataVerbCount"
             :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-            :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"
             :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel "/>
     </div>
 </template>
@@ -79,10 +75,8 @@ const originalData = ref([]); // Guardo todo lo que me da response.data cuando s
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataLevelCompletionTimes = ref([]);
-const verbCount = ref({}); //¿?
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
-const dataAttemptsPerLevelPlayer = ref([]);
 const dataBestCompletionTimePerLevelPerGroup = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
 
@@ -102,12 +96,6 @@ onMounted(async () => {
   // });
   
   socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
-    //console.log('Datos actualizados statement id: ', updatedData._id);
-    //console.log('socket id: ', socket.id);
-
-    // const verb = updatedData.verb.display['en-US'];
-    // verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-
     if (userType.value === 'teacher') {
       let actorFound = false;
       if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
@@ -190,30 +178,19 @@ const fetchDataFromMongoDB = async () => {
         });
 
         if (userType.value === 'student') {
-        console.log('response.data:', response.data);
-
-        originalData.value = response.data;
-        // originalData.value.data.forEach(entry => {
-        //     const verb = entry.verb.display['en-US'];
-        //     verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-        // });
-
-        // Convertir el objeto contador de verbos en un array de objetos con la estructura adecuada y prepararlos para enviar al componente
-        //const verbChartDataArray = Object.entries(verbCount.value).map(([name, value]) => ({ name, value }));
-        //dataVerbCount.value = prepareDataForCharts(verbChartDataArray); // esto se podria quitar ya que arriba lo pondria en formato estandar
-
-        //dataAttemptsPerLevelPlayer.value = calculateAttemptsPerLevel(originalData.value.getData());
+          console.log('response.data:', response.data);
+          originalData.value = response.data;
 
         } else if (userType.value === 'teacher') {
-        console.log('response.data:', response.data);
-        originalData.value = response.data;
+          console.log('response.data:', response.data);
+          originalData.value = response.data;
 
         if (originalData.value.length === 0)
             console.log('No data for teacher');
 
         } else if (userType.value === 'dev'){
-        console.log('Im dev');
-        console.log('response.data:', response.data);
+          console.log('Im dev');
+          console.log('response.data:', response.data);
         }
     } catch (error) {
         console.error('Error al obtener los datos de http://localhost:3000/records', error);
@@ -251,7 +228,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
       dataPieChartGamesStartedCompleted.value = [];
       dataBestCompletionTimePerLevelPerGroup.value = [];
     }
-  
   
     // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
     if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
@@ -310,7 +286,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
             });
           }
         }); 
-
         console.log('dataBestCompletionTimePerLevelPerGroup', dataBestCompletionTimePerLevelPerGroup.value);
 
         // PARA EL SEGUNDO BARCHART - COUNTVERBS 

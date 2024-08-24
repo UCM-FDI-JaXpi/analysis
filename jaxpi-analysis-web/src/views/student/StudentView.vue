@@ -6,11 +6,6 @@
         <div class="student-details" v-if="student">
             <h3 class="student-name">{{ student.name }}</h3>
             <p class="student-role">Role: {{ student.usr_type }}</p>
-            <p><strong>Keys: </strong> 
-                <span v-for="(key, index) in student.session_keys" :key="index">
-                    {{ key }}<span v-if="index < student.session_keys.length - 1">, </span>
-                </span>
-            </p>
         </div>
 
         <div class="content-container" v-if="student">
@@ -28,7 +23,6 @@
                                         :dataLevelCompletionTimes="dataLevelCompletionTimes"
                                         :dataVerbCount="dataVerbCount"
                                         :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-                                        :dataAttemptsPerLevelPlayer="dataAttemptsPerLevelPlayer"
                                         :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
                                         :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
             </div>
@@ -41,9 +35,10 @@
 </template>
 
 <script setup>
-import { computed, ref, watch, onMounted } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
-// import socket from '@/socket';
+import { useGameSessionsStore } from '@/stores/gameSessionsStore.js';
+import socket from '@/socket';
 import axios from 'axios';
 import ChartsStudentComponent from '@/components/student/ChartsStudentComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
@@ -51,6 +46,7 @@ import GameSessionList from '@/components/teacher/GameSessionList.vue';
 import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 
 const authStore = useAuthStore();
+const gameSessionsStore = useGameSessionsStore();
 
 const userType = computed(() => authStore.userType);
 const student = computed(() => { // Devuelve todos los datos si usr_type = 'student', sino, null
@@ -67,91 +63,59 @@ const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de ori
 const dataLevelCompletionTimes = ref([]);
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
-const dataAttemptsPerLevelPlayer = ref([]);
 const dataBestCompletionTimePerLevelPerGroup = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
 
 onMounted(async () => {
   await fetchDataFromMongoDB();
 
-  // EVENTOS DE SOCKET
-  // To send data to the server
-  // const hello = 'hello websocket'
-  // socket.emit('message', hello);
+  socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
+    if (userType.value === 'student') {
+      if (originalData.value[0] && (updatedData.context.contextActivities.parent.id == originalData.value[0].groupId) 
+          && student.value.session_keys.find( e => e == updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) ) {
+        let actorFound = false;
+        if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
+          let group = undefined;
+          group = originalData.value[0];
 
-  // Data received from server
-  // console.log(props)
-  // socket.on('message', (msg) => {
-  //   console.log('Message received from server:', msg);
-  // });
-  
-//   socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
-//     //console.log('Datos actualizados statement id: ', updatedData._id);
-//     //console.log('socket id: ', socket.id);
+          if (group) {
+            group.actors.forEach(actor => {
+              if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) {
+                // Verifica que updatedData tiene la estructura esperada
+                if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
+                  actor.statements.push(updatedData);
+                  actorFound = true;
+                } else {
+                  console.warn('updatedData tiene una estructura inesperada', updatedData);
+                }
+              }
+            });
+            if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
+              let actor = {};
+              actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
+              actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
+              actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
+              actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
+              actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
+              actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
+              actor.statements = [updatedData];
+              group.actors.push(actor);
+            } else {
+              console.log('Datos actualizados en originalData:', originalData.value);
+            }
+          }
+        } else {
+          console.warn('originalData no está definido o no es un array');
+        }
+      }
+    }
+  });
+});
 
-//     // const verb = updatedData.verb.display['en-US'];
-//     // verbCount.value[verb] = (verbCount.value[verb] || 0) + 1;
-
-//     if (userType.value === 'teacher') {
-//       let actorFound = false;
-//       if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
-//         let group = undefined;
-//         group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
-
-//         if (group) {
-//           group.actors.forEach(actor => {
-//             if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // Me viene de back deshaseada
-//               // Verifica que updatedData tiene la estructura esperada
-//               if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
-//                 actor.statements.push(updatedData);
-//                 actorFound = true;
-//                 //console.log('Dato añadido al actor:', actor);
-//               } else {
-//                 console.warn('updatedData tiene una estructura inesperada', updatedData);
-//               }
-//             }
-//           });
-//           if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
-//             console.log("Este estudiante no corresponde a este group");
-//             let actor = {};
-//             actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
-//             actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
-//             actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
-//             actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
-//             actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
-//             actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
-//             actor.statements = [updatedData];
-//             group.actors.push(actor);
-//           } else {
-//             console.log('Datos actualizados en originalData:', originalData.value);
-//           }
-//         } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
-//           console.log('No se encontró el group con groupId:', groupId);
-//           let newGroup = {};
-//           newGroup.groupId = updatedData.context.contextActivities.parent.id;
-//           if (groupId.value){
-//             newGroup.groupName = groupsStore.getGroupNameById(groupId);
-//           } else {
-//             newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
-//           }
-//           newGroup.actors = [];
-//           let actor = {};
-//           actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
-//           actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
-//           actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
-//           actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
-//           actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
-//           actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
-//           actor.statements = [updatedData];
-
-//           newGroup.actors.push(actor);
-//           originalData.value.push(newGroup);
-//         }
-//       } else {
-//         console.warn('originalData no está definido o no es un array');
-//       }
-//     }
-//   });
+onUnmounted(() => {
+  // Remove all socket listeners
+  socket.off('message');
+  socket.off('newStatement');
 });
 
 const fetchDataFromMongoDB = async () => {
@@ -163,12 +127,6 @@ const fetchDataFromMongoDB = async () => {
       if (userType.value === 'student') {
         groupId.value = response.data[0].groupId;
         originalData.value = response.data;
-      } 
-      else if (userType.value === 'teacher') {
-        console.log('Im teacher');
-      } 
-      else if (userType.value === 'dev'){
-        console.log('Im dev');
       }
   } catch (error) {
       console.error('Error al obtener los datos de http://localhost:3000/records', error);
@@ -207,9 +165,8 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     dataBestCompletionTimePerLevelPerGroup.value = [];
   }
 
-
   // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
-  if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
+  if (filteredDataByGroupId.value.length > 0) {
     if (groupId.value) {
       const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
       dataLevelCompletionTimes.value = [];
@@ -315,6 +272,12 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
   }
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
+
+watch(activeTab, async (newTab) => {
+    if (newTab === 1) { // Si es la pestaña de "Game sessions"
+      await gameSessionsStore.fetchGameSessionsByStudentName(student.value.name);
+    }
+});
 </script>
 
 <style scoped>
@@ -348,7 +311,7 @@ h1 {
     color: #727171; /* Color gris claro para los detalles */
     font-weight: bold;
 }
-/*****************************************************************************************/
+
 .content-container {
     /* overflow-y: auto; Habilita el scroll si el contenido es muy grande */
     padding: 1rem;

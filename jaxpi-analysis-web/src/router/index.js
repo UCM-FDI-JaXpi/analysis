@@ -20,6 +20,7 @@ import CreateGroupView from '@/views/teacher/CreateGroupView.vue'
 import CreateGameSessionView from '@/views/teacher/CreateGameSessionView.vue'
 import StudentGameSessionDetailsView from '@/views/teacher/StudentGameSessionDetailsView.vue'
 import CreateGameView from '@/views/dev/CreateGameView.vue'
+import GameSessionDetailsByStudentView from '@/views/student/GameSessionDetailsByStudentView.vue'
 
 const routes = [
     { path: '/', name: 'HomeView', component: HomeView },
@@ -39,6 +40,7 @@ const routes = [
     { path: '/create-game-session', name: 'CreateGameSessionView', component: CreateGameSessionView },
     { path: '/student', name: 'StudentView', component: StudentView }, /*************** Student **************/
     { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
+    { path: '/game-session-details-student/:gameSessionId', name: 'GameSessionDetailsByStudentView', component: GameSessionDetailsByStudentView},
     { path: '/dev', name: 'DevView', component: DevView }, /*************** Dev **************/
     { path: '/games', name: 'GamesView', component: GamesView },
     { path: '/game-details/:gameId', name: 'GameDetailsView', component: GameDetailsView},

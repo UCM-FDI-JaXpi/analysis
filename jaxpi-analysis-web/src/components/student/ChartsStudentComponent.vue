@@ -31,7 +31,7 @@
             </div>
             <div class="chart-content-barchart">
               <BarChart
-                :data="dataAttemptTimesForStudentLevel "
+                :data="dataAttemptTimesForStudentLevel"
                 chartId="bar-chart10"
                 title="Time per Attempt (Student per Level)" />
             </div>
@@ -61,19 +61,14 @@
         <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
           :data="dataBestCompletionTimePerLevelPerGroup"
           chartId="bar-chart4"
-          title="Best completion time per level per this group" 
+          title="Your best completion time per level" 
           :customTooltip="true"/>
 
         <BarChart v-if="dataLevelCompletionTimes.length > 0"
           :data="dataLevelCompletionTimes"
           chartId="bar-chart2"
-          title="Completion time per level"
+          title="Your average completion time per level"
           :colorPalette="colorPalettes[1]" />
-  
-        <StackedBarChart v-if="dataAttemptsPerLevelPlayer.length > 0" 
-          :data="dataAttemptsPerLevelPlayer"
-          chartId="stacked-bar-chart1"
-          title="Number of attempts per level REAL" />
       </div>
       <div v-if="activeTab === 2" class="tab-content"> <!-------------------------------------VERB COUNTS TAB-->
         <BarChart v-if="dataVerbCount.length > 0" 
@@ -89,7 +84,6 @@ import { ref, watch, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore'
 import BarChart from '@/components/BarChart.vue';
 import LineChart from '@/components/LineChart.vue';
-import StackedBarChart from '@/components/StackedBarChart.vue';
 import DataTable from '@/components/DataTable.vue';
 import PieChart from '@/components/PieChart.vue';
 import FilterChartsComponent from '@/components/FilterChartsComponent.vue';
@@ -99,16 +93,14 @@ import { calculateLevelCompletionTimes, sortStatements } from '@/utils/utilities
 const authStore = useAuthStore();
 const studentName = authStore.userData.name;
 
-const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
-
 const tabs = ref(["Overview", "Completion Times", "Verb counts"]);
 const activeTab = ref(0);
 const searchQueryTeacher = ref('');
 const dataStatementsByTimestamp = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
-const dataGroup  = ref([]);
-const name  = ref([]);
-// const dataFirstFilter  = ref([]);
+const dataGroup = ref([]);
+const name = ref([]);
+const arrayLevelsPerStudent = ref([]);// Para el filtro
 
 const colorPalettes = [['#65DB1C'], ['#6B8CFF']];
 const tableColumnsTeacher = ['student','session', 'game', 'numberOfStatements', 'lastTimestamp']
@@ -128,11 +120,9 @@ const props = defineProps({
   dataLevelCompletionTimes: Array,
   dataVerbCount: Array,
   dataPieChartGamesStartedCompleted: Array,
-  dataAttemptsPerLevelPlayer: Array,
   dataBestCompletionTimePerLevelPerGroup: Array,
   dataAttemptTimesForStudentLevel: Array
 });
-
 
 onMounted(() => {
   getDataStatementsByTimestamp(studentName);

@@ -1,5 +1,5 @@
 <template>
-    <div class="game-session-list">
+    <div v-if="isTeacher" class="game-session-list">
         <div v-if="gameSessions.length === 0" class="no-data">
             <p>No game sessions available for this group.</p>
         </div>
@@ -20,13 +20,41 @@
             </div>
         </div>
     </div>
+
+    <div v-if="isStudent" class="game-session-list">
+        <div v-if="gameSessions.length === 0" class="no-data">
+            <p>No game sessions available.</p>
+        </div>
+        <div v-else class="card-container">
+            <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">
+                <div class="game-session-info">
+                    <h2>{{ gameSession.sessionName }}</h2>
+                    <p><strong>Game: </strong>{{ gameSession.gameName }}</p>
+                    <p><strong>Created on: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p> <br>
+                    <p><strong>Your key: </strong>{{ gameSession.key }}</p>
+                </div>
+                <div class="card-actions">
+                    <router-link :to="{ name: 'GameSessionDetailsByStudentView', params: { gameSessionId: gameSession.sessionId } }" 
+                                 class="details-button"
+                                 @click="selectSession(gameSession.sessionId)">
+                        View details
+                    </router-link>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 
+const authStore = useAuthStore();
 const gameSessionsStore = useGameSessionsStore();
+
+const isTeacher = computed(() => authStore.userType === 'teacher');
+const isStudent = computed(() => authStore.userType === 'student');
 const gameSessions = computed(() => gameSessionsStore.gameSessions);
 
 const selectSession = (sessionId) => {
@@ -36,7 +64,9 @@ const selectSession = (sessionId) => {
 
 <style scoped>
 .no-data {
-    padding: 15px;
+    text-align: center;
+    color: #666;
+    font-size: 1.125rem;
 }
 
 .card-container {

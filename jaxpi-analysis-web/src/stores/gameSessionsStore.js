@@ -60,6 +60,23 @@ export const useGameSessionsStore = defineStore('gameSessions', {
                 this.loading = false;
             }
         },
+        async fetchGameSessionsByStudentName(studentName) {
+            this.loading = true;
+            this.error = null;
+            try {
+                const response = await axios.get(`http://localhost:3000/student/get-game-sessions/${studentName}`, {
+                    withCredentials: true
+                });
+                if (response.status === 200) {
+                    this.gameSessions = response.data;
+                }
+            } catch (error) {
+                this.error = error.response?.data?.message || error.message;
+                console.error('Error fetching game sessions:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
         setSelectedGameSessionId(gameSessionId) {
             this.selectedGameSessionId = gameSessionId;
         }
