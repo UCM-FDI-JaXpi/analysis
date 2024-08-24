@@ -98,8 +98,11 @@ const toggleCreateMenu = () => {
     isCreateMenuOpen.value = !isCreateMenuOpen.value;
 };
 
+// const isActiveRoute = (path) => { // Para comprobar si estamos en la misma ruta que la opcion seleccionada para pintarla
+//     return route.path === path;
+// };
 const isActiveRoute = (path) => { // Para comprobar si estamos en la misma ruta que la opcion seleccionada para pintarla
-    return route.path === path;
+    return route.path.startsWith(path) || route.path.includes(path);
 };
 
 const navigateToCreateGroup = () => {
@@ -121,7 +124,8 @@ const navigateToCreateGame = () => {
 <style scoped>
 .sidebar {
     width: 200px;
-    background-color: #f5f5f5;;
+    min-width: 200px;
+    background-color: #FFFFFF;;
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -180,7 +184,7 @@ const navigateToCreateGame = () => {
 
 
 .create-menu-item {
-    background-color: #3eaf2a; /* Blue background for Create button */
+    background-color: #3eaf2a;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

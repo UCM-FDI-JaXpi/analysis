@@ -34,7 +34,7 @@ const routes = [
     { path: '/teacher', name: 'TeacherView', component: TeacherView }, /*************** Teacher **************/
     { path: '/groups', name: 'GroupsView', component: GroupsView },
     { path: '/group-details/:groupId?', name: 'GroupDetailsView', component: GroupDetailsView },
-    { path: '/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
+    { path: '/group-details/:groupId/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
     { path: '/student-game-session-details', name: 'StudentGameSessionDetailsView', component: StudentGameSessionDetailsView },
     { path: '/create-group', name: 'CreateGroupView', component: CreateGroupView },
     { path: '/create-game-session', name: 'CreateGameSessionView', component: CreateGameSessionView },

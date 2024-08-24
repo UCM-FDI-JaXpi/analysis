@@ -5,7 +5,9 @@
     </header>
     <div class="main-container">
       <SidebarMenu v-if="showSidebar" />
-      <router-view></router-view>
+      <div class="content-container">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
@@ -42,16 +44,24 @@ const showSidebar = computed(() => { // In these views we don't want to have Sid
 </script>
 
 <style>
-  html, body, #app {
-    height: 100vh;
-    margin: 0;
-    box-sizing: border-box;
-  }
+html, body, #app {
+  height: 100vh;
+  margin: 0;
+  box-sizing: border-box;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+.main-container {
+  display: flex;
+  flex: 1;
+}
 
-  #app {
-    font-family: Arial, sans-serif;
-    /* display: flex;
-    flex-direction: column;
-    height: 100%; */
-  }
+.content-container {
+  flex-grow: 1;
+  padding: 1rem;
+}
 </style>
