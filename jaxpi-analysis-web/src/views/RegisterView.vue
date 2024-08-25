@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="register-container">
     <h1>Register</h1>
 
     <form @submit.prevent="register">
@@ -82,7 +82,6 @@ onMounted(() => {
 <style scoped>
 h1 {
   font-size: 25px;
-  color: #333;
 }
 
 .link {

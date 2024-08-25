@@ -49,6 +49,7 @@ html, body, #app {
   margin: 0;
   box-sizing: border-box;
 }
+
 #app {
   display: flex;
   flex-direction: column;
@@ -62,6 +63,6 @@ html, body, #app {
 
 .content-container {
   flex-grow: 1;
-  padding: 1rem;
+  padding: 2rem;
 }
 </style>

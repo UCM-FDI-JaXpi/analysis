@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="home-container">
     <h1>Home</h1>
     <p>Welcome to the Jaxpi home page!</p>
   </div>
@@ -8,12 +8,8 @@
 <script setup>
 </script>
 
-<style>
+<style scoped>
 h1 {
   font-size: 25px;
-  color: #333;
-}
-.container {
-  padding: 1rem;
 }
 </style>

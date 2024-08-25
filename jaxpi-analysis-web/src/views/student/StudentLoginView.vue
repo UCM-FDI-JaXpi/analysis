@@ -38,8 +38,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.student-login-container {
-  padding: 1rem;
+h1 {
+  font-size: 25px;
 }
 
 .error-message {

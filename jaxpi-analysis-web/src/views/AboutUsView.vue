@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="about-us-container">
         <h1>About us</h1>
         <p>Welcome to our About us page!</p>
         <p>Feel free to contact us if you have any questions or inquiries.</p>
@@ -10,4 +10,7 @@
 
 
 <style scoped>
+h1 {
+  font-size: 25px;
+}
 </style>

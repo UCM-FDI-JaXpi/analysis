@@ -64,10 +64,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.login-container {
-  padding: 1rem;
+h1 {
+  font-size: 25px;
 }
-
 .error-message {
     color: red;
 	font-weight: bold;

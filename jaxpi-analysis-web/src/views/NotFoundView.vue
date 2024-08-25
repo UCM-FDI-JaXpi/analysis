@@ -10,6 +10,10 @@
 </script>
 
 <style scoped>
+h1 {
+  font-size: 25px;
+}
+
 .not-found {
     text-align: center;
     margin-top: 50px;
