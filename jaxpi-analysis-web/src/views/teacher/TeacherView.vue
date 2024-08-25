@@ -6,8 +6,8 @@
         <div class="teacher-details" v-if="teacher">
             <h3 class="teacher-name">{{ teacher.name }}</h3>
             <p class="teacher-role">Role: {{ teacher.usr_type }}</p>
-            <p><strong>Email:</strong> {{ teacher.email }}</p>
-            <p><strong>Institution:</strong> {{ teacher.institution }}</p>  
+            <p class="teacher-email"><strong>Email:</strong> {{ teacher.email }}</p>
+            <p class="teacher-institution"><strong>Institution:</strong> {{ teacher.institution }}</p>
         </div>
   </div>
 </template>
@@ -25,34 +25,46 @@ const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teac
 </script>
 
 <style scoped>
-h1 {
-    margin-bottom: 0;
-}
-
 .teacher-view {
-    padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+}
+
+h1 {
+    margin-bottom: 0;
 }
 
 .teacher-details {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.teacher-details > * {
-    margin: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
+    background-color: #f9f9f9;
+    /* gap: 10px; */
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd; 
+    margin-bottom: 20px;
+    width: -webkit-fill-available;
+    max-width: 800px;
 }
 
 .teacher-name {
-    font-size: 1.5rem; /* Tamaño más grande para resaltar el nombre */
+    font-size: 1.7rem;
+    margin: 0;
 }
 
 .teacher-role {
-    font-size: 0.9rem; /* Tamaño más pequeño para los detalles */
-    color: #727171; /* Color gris claro para los detalles */
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #727171;
     font-weight: bold;
+}
+
+.teacher-email {
+    margin-top: 0px;
+    margin-bottom: 5px; /* Reduce el espacio entre Email e Institution */
+}
+
+.teacher-institution {
+    margin-top: 0px;
 }
 </style>

@@ -28,7 +28,7 @@
 
         <ConfirmModal
           :visible="showDeleteModal"
-          title="Confirm Deletion"
+          title="Confirm deletion"
           message="Are you sure you want to delete this game?<br>This action cannot be undone. Data will be lost."
           @confirm="deleteGame"
           @cancel="showDeleteModal = false"

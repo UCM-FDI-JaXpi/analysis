@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter  } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
@@ -119,6 +119,15 @@ const navigateToCreateGame = () => {
     routeStore.setOriginalRoute(route.fullPath);
     router.push('/create-game');
 };
+
+// Observa los cambios de ruta para mostrar los submenus desplegados
+watch(route, (newRoute) => {
+    if (newRoute.path.startsWith('/game-details')) {
+        isDevGamesSubmenuOpen.value = true;
+    } else if (newRoute.path.startsWith('/group-details')) {
+        isTeacherGroupsSubmenuOpen.value = true;
+    }
+});
 </script>
 
 <style scoped>

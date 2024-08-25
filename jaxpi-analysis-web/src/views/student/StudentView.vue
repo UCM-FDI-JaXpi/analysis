@@ -280,11 +280,7 @@ watch(activeTab, async (newTab) => {
 });
 </script>
 
-<style scoped>
-h1 {
-    margin-bottom: 0;
-}
-
+<style scoped>ç
 .student-view {
     padding: 1rem;
     display: flex;
@@ -292,11 +288,20 @@ h1 {
     gap: 20px;
 }
 
+h1 {
+    margin-bottom: 0;
+}
+
 .student-details {
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    flex-shrink: 0; /* Evita que esta sección se reduzca */
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd; 
+    margin-bottom: 20px;
+    width: -webkit-fill-available;
+    max-width: 800px;
 }
 
 .student-details > * {
@@ -304,10 +309,11 @@ h1 {
 }
 
 .student-name {
-    font-size: 1.5rem; /* Tamaño más grande para resaltar el nombre */
+    font-size: 1.7rem;
 }
 
 .student-role {
+    font-size: 0.9rem;
     color: #727171; /* Color gris claro para los detalles */
     font-weight: bold;
 }
