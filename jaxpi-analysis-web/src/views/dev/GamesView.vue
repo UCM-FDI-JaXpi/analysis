@@ -9,7 +9,4 @@ import GameList from '@/components/dev/GameList.vue';
 </script>
 
 <style scoped>
-.games {
-    padding: 1rem;
-}
 </style>

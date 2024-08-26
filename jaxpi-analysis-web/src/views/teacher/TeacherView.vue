@@ -66,5 +66,6 @@ h1 {
 
 .teacher-institution {
     margin-top: 0px;
+    margin-bottom: 5px;
 }
 </style>

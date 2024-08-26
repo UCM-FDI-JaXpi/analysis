@@ -2,6 +2,8 @@
   <div class="chart-container">
     <h2 class="chart-title">{{ title }}</h2>
     <div :id="chartId"></div>
+
+    <button v-if="chartId == 'pie-chart-completed-game'" @click="changeChartType">Change type chart</button>
   </div>
 </template>
 
@@ -27,6 +29,7 @@ const props = defineProps({
 
 // Ref al elemento DOM donde se renderizará el gráfico
 const chart = ref(null);
+let currentChartType = ref('pie');
 
 // Monta el gráfico al montar el componente
 onMounted(() => {
@@ -40,21 +43,27 @@ onUnmounted(() => {
     }
 });
 
+const changeChartType = () => {
+  if (chart.value) {
+    const newType = currentChartType.value === 'pie' ? 'bar' : 'pie';
+    chart.value.transform(newType);
+    currentChartType.value = newType;
+    drawPieChart(props.data, props.chartId);
+  }
+};
+
 // Watch for changes in the data prop
 watch(() => props.data, (newData) => {
-    drawPieChart(newData, props.chartId);
+    if (chart.value) {
+        chart.value.destroy(); // Destruir el gráfico anterior
+    }
+    drawPieChart(newData, props.chartId); // Redibujar el gráfico con los nuevos datos
 });
 
 // Configuración de c3 para crear el gráfico de tarta
 const drawPieChart = (data, chartId) => {
-  //const xAxisData = data.map(item => item.nameObject);
-  //const yAxisData = data.map(item => item.completionTime || item.value);
-console.log(data);
-//   const names = {
-//     'pie-chart1': 'Times'
-//   };
-
-  let res=[];
+  console.log(data);
+  let res = [];
   data.forEach( elem => {
     let comp = [];
     comp.push(elem.nameObject);
@@ -62,18 +71,25 @@ console.log(data);
     res.push(comp);
   });
 
-
-  // [
-  //   ['x'].concat(xAxisData),
-  //   [names[chartId]].concat(yAxisData)
-  // ];
+  // Obtener valores únicos para el eje Y
+  const yValues = data.map(item => item.value);
+  const uniqueYValues = Array.from(new Set(yValues));
 
   chart.value = c3.generate({
     bindto: `#${chartId}`,
     data: {
       columns: res,
-      type: 'pie',
-      onclick: function (d, i) { console.log("onclick", d, i); }
+      type: currentChartType.value
+    },
+    axis: {
+      y: {
+        tick: {
+          format: function (value) {
+            return Math.round(value); // Formatear el eje Y para mostrar enteros
+          },
+          values: uniqueYValues // Mostrar solo los valores únicos en el eje Y
+        }
+      }
     }
   });
 }
@@ -82,5 +98,12 @@ console.log(data);
 <style scoped>
 .chart-title {
   text-align: center; /* Centra el texto dentro del h2 */
+}
+
+button {
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

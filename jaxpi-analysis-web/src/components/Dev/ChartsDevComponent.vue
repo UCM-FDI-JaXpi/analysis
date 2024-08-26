@@ -9,72 +9,22 @@
       </div>
       
       <div v-if="activeTab === 0" class="tab-content"> <!------------------------------------OVERVIEW TAB-->
-        <div v-if="dataTableFormat.length > 0">
-          
-          <!-- Primer filtro y chart (LineChart) -->
-          <div class="chart-container-linechart">
-            <div class="filter-container-linechart">
-              <FilterChartsComponent 
-                :data="arrayStudents"
-                title="Filter by student"
-                @selectElem="handleFilterNameStudent"/>
-            </div>
-            <div class="chart-content">
-              <LineChart
-                :data="dataStatementsByTimestamp"
-                chartId="line-chart1"
-                title="Statements by timestamp" />
-            </div>
-          </div>
-
-          <!-- Segundo filtro y gráfico (BarChart) -->
-          <div class="chart-container-barchart">
-            <div class="filter-container-barchart">
-              <FilterChartsComponent 
-                :data="arrayStudents"
-                title="Filter by student"
-                @selectElem="handleFilterNameStudentBarChart"/>
-                <!-- Filtro del filtro que se mostrará al seleccionar un student -->
-                <div v-if="arrayLevelsPerStudent.length > 0" class="second-filter-container-barchart">
-                  <FilterChartsComponent 
-                    :data="arrayLevelsPerStudent"
-                    title="Filter by level"
-                    @selectElem="handleFilterLevel"/>
-                </div>
-            </div>
-            <div class="chart-content-barchart">
-              <BarChart
-                :data="dataAttemptTimesForStudentLevel "
-                chartId="bar-chart10"
-                title="Time per Attempt (Student per Level)" />
-            </div>
-          </div>
-
-          <h2>Last statements received</h2>
-          <form id="search">
-            Search <input name="query-teacher" v-model="searchQueryTeacher">
-          </form>
-          <DataTable
-            :data="dataTableFormat" 
-            :columns="tableColumnsTeacher"
-            :columnTitles="dataTableColumnTitlesTeacher"
-            :filter-key="searchQueryTeacher"/>
-        </div>
-        <div v-else class="no-data-charts">
-          <p>No data available for this table.</p>
-        </div>
-
         <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
             :data="dataPieChartGamesStartedCompleted"
-            chartId="pie-chart1"
-            title="Games started and completed" />
+            chartId="pie-chart-completed-game"
+            title="Completed the game" />
+            
+            <BarChart v-if="dataObjectCount.length > 0"
+              :data="dataObjectCount"
+              chartId="bar-chart-interactions-items"
+              title="Interactions of items" />
       </div>
   
       <div v-if="activeTab === 1" class="tab-content"> <!------------------------------------COMPLETION TIMES TAB-->
         <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
           :data="dataBestCompletionTimePerLevelPerGroup"
           chartId="bar-chart4"
-          title="Best completion time per level per this group" 
+          title="Best completion time per level" 
           :customTooltip="true"/>
 
         <BarChart v-if="dataLevelCompletionTimes.length > 0"
@@ -96,22 +46,17 @@
 import { ref, computed, watch } from 'vue';
 import { useGroupsStore } from '@/stores/groupsStore';
 import BarChart from '@/components/BarChart.vue';
-import LineChart from '@/components/LineChart.vue';
-import DataTable from '@/components/DataTable.vue';
 import PieChart from '@/components/PieChart.vue';
-import FilterChartsComponent from '@/components/FilterChartsComponent.vue';
 
 import { calculateLevelCompletionTimes, sortStatements } from '@/utils/utilities.js';
 
 const groupsStore = useGroupsStore();
 
 const groupId = computed(() => groupsStore.selectedGroupId);
-const arrayStudents = computed(() => groupsStore.getStudentsByGroupId(groupId.value).map(e => ({id:e, name:e}))); // Para los filtros
 const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
 
 const tabs = ref(["Overview", "Completion Times", "Verb counts"]);
 const activeTab = ref(0);
-const searchQueryTeacher = ref('');
 const dataStatementsByTimestamp = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
 const dataGroup  = ref([]);
@@ -119,25 +64,17 @@ const name  = ref([]);
 const dataFirstFilter  = ref([]);
 
 const colorPalettes = [['#65DB1C'], ['#6B8CFF']];
-const tableColumnsTeacher = ['student','session', 'game', 'numberOfStatements', 'lastTimestamp']
-const dataTableColumnTitlesTeacher = {
-  student: 'Students',
-  session: 'Session',
-  game: 'Game',
-  numberOfStatements: 'Number of statements',
-  lastTimestamp: 'Last statement send'
-};
 
 // eslint-disable-next-line
 const props = defineProps({
   filteredDataByGroupId: Array,
-  dataTableFormat: Array,
   dataLevelCompletionTimes: Array,
   verbCount: Object,
   dataVerbCount: Array,
   dataPieChartGamesStartedCompleted: Array,
   dataBestCompletionTimePerLevelPerGroup: Array,
-  dataAttemptTimesForStudentLevel : Array
+  dataAttemptTimesForStudentLevel : Array,
+  dataObjectCount: Array
 });
 
 watch(() => props.filteredDataByGroupId,(newProps, oldProps) => {
@@ -246,30 +183,6 @@ const handleFilterNameStudentBarChart = async (studentName) => { // Recibo el st
   arrayLevelsPerStudent.value = res;
 };
 
-const handleFilterLevel = async (levelData) => { // 'level1//ana xyz'
-  let finalData =[];
-  let level = levelData.split('//')[0];
-  let studentName = levelData.split('//')[1];
-  let resTempo = [];
-  dataGroup.value.filter( e => e.actorName == studentName).forEach(actorInfo => {
-    if(actorInfo.actorData[level]){
-      resTempo.push(actorInfo.actorData[level]);
-    }
-  }); 
-  resTempo = resTempo.flat();
-  let cont = 0;
-  resTempo.forEach(attemp => {
-      let obj = {
-        nameObject: 'Attempt ' + cont,
-        value: attemp,
-      };
-      cont++;
-      finalData.push(obj);
-  });
-
-  dataAttemptTimesForStudentLevel.value = finalData;
-};
-
 watch(() => groupId.value, (newGroupId, oldGroupId) => {
   if (newGroupId !== oldGroupId) {
     dataStatementsByTimestamp.value = [];
@@ -284,7 +197,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #bfdbf3;
 }
   
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #line-chart1 {
+#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-interactions-items, #pie-chart-completed-game, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
@@ -312,17 +225,6 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   padding: 10px;
   background-color: #79c1fd;
 }
-
-form#search {
-  margin-bottom: 1rem; /* Espacio debajo del formulario */
-}
-
-
-
-
-
-
-
 
 /* Para el filtro y su grafica (el primero)*/
 .chart-container-linechart {

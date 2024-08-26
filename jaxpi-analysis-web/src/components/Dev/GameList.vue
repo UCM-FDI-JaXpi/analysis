@@ -9,7 +9,7 @@
                 <div class="game-info">
                     <h2>{{ game.name }}</h2>
                     <div class="token-container">
-                        <p>Token: {{ game.token }}</p>
+                        <p><strong>Token:</strong> {{ game.token }}</p>
                         <button @click.stop="copyToken(game.token)">Copy Token</button>
                     </div>
                 </div>

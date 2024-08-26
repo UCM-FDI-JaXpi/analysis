@@ -1,38 +1,46 @@
 <template>
     <div class="game-details-view" v-if="game">
-        <div class="header">
-            <h1>Game details for {{ game.name }}</h1>
-            <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
+      <div class="header-container">
+        <div class="game-header">
+          <div class="header">
+              <h1>Game details for {{ game.name }}</h1>
+              <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
+          </div>
+          <div class="game-details" v-if="game">
+              <p><strong>Game id: </strong> {{ game.id }}</p>
+              <p><strong>Users: </strong>{{  activeUsers }}</p>
+              <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
+              <p v-if="dataLastStatement && dataLastStatement.length > 0"><strong>Last played: </strong> {{ dataLastStatement }}</p>
+          </div>
         </div>
-        <div class="game-details" v-if="game">
-            <p><strong>Game id: </strong> {{ game.id }}</p>
-            <p><strong>Users: </strong>{{  activeUsers }}</p>
-            <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
+        <div class="additional-content">
+          <h3 class="top3">
+            <span class="up"> Top 3</span>
+            <span class="down">Most popular objects</span>
+            <span>{{ dataObjectCount && dataObjectCount[0] && dataObjectCount[0].value ? '1. ' + dataObjectCount[0].nameObject +' '+dataObjectCount[0].value : ''}}</span>
+            <span>{{ dataObjectCount && dataObjectCount[1] && dataObjectCount[1].value ? '2. '+ dataObjectCount[1].nameObject +' '+dataObjectCount[1].value : ''}}</span>
+            <span>{{ dataObjectCount && dataObjectCount[2] && dataObjectCount[2].value ? '3. ' + dataObjectCount[2].nameObject +' '+dataObjectCount[2].value : ''}}</span>
+            <span v-if="!dataObjectCount || dataObjectCount.length === 0">Not used yet</span>
+          </h3>
         </div>
-        <div class="tabs">
-            <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
-                :class="{ 'active': activeTab === index }">
-                {{ tab }}
-            </button>
-        </div>
+      </div>
 
-        <div v-if="activeTab === 0" class="tab-content">
-            <ChartsDevComponent 
-            :originalData="originalData"
-            :filteredDataByGroupId ="filteredDataByGroupId"
-            :dataTableFormat="dataTableFormat"
-            :dataLevelCompletionTimes="dataLevelCompletionTimes"
-            :dataVerbCount="dataVerbCount"
-            :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted" />
-        </div>
+      <ChartsDevComponent 
+      :originalData="originalData"
+      :filteredDataByGroupId ="filteredDataByGroupId"
+      :dataLevelCompletionTimes="dataLevelCompletionTimes"
+      :dataVerbCount="dataVerbCount"
+      :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
+      :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
+      :dataObjectCount="dataObjectCount" />
 
-        <ConfirmModal
-          :visible="showDeleteModal"
-          title="Confirm deletion"
-          message="Are you sure you want to delete this game?<br>This action cannot be undone. Data will be lost."
-          @confirm="deleteGame"
-          @cancel="showDeleteModal = false"
-        />
+      <ConfirmModal
+        :visible="showDeleteModal"
+        title="Confirm deletion"
+        message="Are you sure you want to delete this game?<br>This action cannot be undone. Data will be lost."
+        @confirm="deleteGame"
+        @cancel="showDeleteModal = false"
+      />
     </div>
     <div v-else>
         <SuccessModal
@@ -48,7 +56,7 @@
 import { ref, computed, onMounted, onUnmounted, watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGamesStore } from '@/stores/gamesStore';
-import { useGroupsStore } from '@/stores/groupsStore';
+// import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
 
 import ConfirmModal from '@/components/modals/ConfirmModal.vue';
@@ -63,21 +71,19 @@ import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 const route = useRoute();
 const router = useRouter();
 const gamesStore = useGamesStore();
-const groupsStore = useGroupsStore();
+// const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 
 const gameId = computed(() => route.params.gameId);
 const game = computed(() => gamesStore.getGameById(gameId.value));
-const groupId = computed(() => route.params.groupId);
+// const groupId = computed(() => route.params.groupId);
 const userType = computed(() => authStore.userType);
 
-const tabs = ref(["Charts"]);
-const activeTab = ref(0);
 const showDeleteModal = ref(false);
 const showSuccessModal = ref(false);
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
-const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
+const dataLastStatement = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataLevelCompletionTimes = ref([]);
 const dataVerbCount = ref([]);
@@ -85,6 +91,8 @@ const dataPieChartGamesStartedCompleted = ref([]);
 const dataBestCompletionTimePerLevelPerGroup = ref([]);
 const activeUsers  = ref(0);
 const completedGameUsers = ref(0);
+const dataObjectCount = ref([]);
+
 
 const deleteGame = async () => {
     try {
@@ -95,6 +103,7 @@ const deleteGame = async () => {
         console.error('Failed to delete game:', error);
     }
 };
+
 const handleSuccessModalOk = () => {
     showSuccessModal.value = false;
     router.push('/games'); // Navigate to the games list after closing the success modal
@@ -105,70 +114,27 @@ onMounted(async () => {
 
   // EVENTOS DE SOCKET
   // To send data to the server
-  // const hello = 'hello websocket'
-  // socket.emit('message', hello);
+  const hello = 'hello websocket'
+  socket.emit('message', hello);
 
   // Data received from server
-  // console.log(props)
-  // socket.on('message', (msg) => {
-  //   console.log('Message received from server:', msg);
-  // });
+  socket.on('message', (msg) => {
+    console.log('Message received from server:', msg);
+  });
   
-  socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
-    if (userType.value === 'teacher') {
-      let actorFound = false;
+  socket.on('devDataPost', (updatedData) => { // Recibe record a record, no un array de records
+    if (userType.value === 'dev') {
+      // let actorFound = false;
       if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
-        let group = undefined;
-        group = originalData.value.find(item => item.groupId ===  updatedData.context.contextActivities.parent.id);
+        let game = undefined;
+        game = originalData.value.find(item => item.gameId ===  updatedData.statement.context.extensions["https://www.jaxpi.com/gameId"]);
+          console.log(game);
+        if (game) {
+          let tempo = game.actors.find( e =>  e.sessionKey == updatedData.sessionKey  && e.sessionId == updatedData.sessionId);
+          if (tempo){
+            tempo.statements.push(updatedData.statement);  
 
-        if (group) {
-          group.actors.forEach(actor => {
-            if (actor.sessionKey === updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) { // Me viene de back deshaseada
-              // Verifica que updatedData tiene la estructura esperada
-              if (updatedData && updatedData.actor && updatedData.context && updatedData.object && updatedData.stored && updatedData.timestamp && updatedData.verb) {
-                actor.statements.push(updatedData);
-                actorFound = true;
-                //console.log('Dato añadido al actor:', actor);
-              } else {
-                console.warn('updatedData tiene una estructura inesperada', updatedData);
-              }
-            }
-          });
-          if (!actorFound) { // Tengo que añadir el estudiante en su group por primera vez
-            console.log("Este estudiante no corresponde a este group");
-            let actor = {};
-            actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
-            actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
-            actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
-            actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
-            actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
-            actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
-            actor.statements = [updatedData];
-            group.actors.push(actor);
-          } else {
-            console.log('Datos actualizados en originalData:', originalData.value);
           }
-        } else { // Si en originalData(primer fetch) no tengo ningun group, añado este nuevo group, o si hay groups, añado este group al resto
-          console.log('No se encontró el group con groupId:', groupId);
-          let newGroup = {};
-          newGroup.groupId = updatedData.context.contextActivities.parent.id;
-          if (groupId.value){
-            newGroup.groupName = groupsStore.getGroupNameById(groupId);
-          } else {
-            newGroup.groupName = groupsStore.getGroupNameById(updatedData.context.contextActivities.parent.id);
-          }
-          newGroup.actors = [];
-          let actor = {};
-          actor.name = updatedData.context.extensions["https://www.jaxpi.com/studentName"];
-          actor.sessionKey = updatedData.context.extensions["https://www.jaxpi.com/sessionKey"];
-          actor.gameId = updatedData.context.extensions["https://www.jaxpi.com/gameId"];
-          actor.gameName = updatedData.context.extensions["https://www.jaxpi.com/gameName"];
-          actor.sessionId = updatedData.context.extensions["https://www.jaxpi.com/sessionId"];
-          actor.sessionName = updatedData.context.extensions["https://www.jaxpi.com/sessionName"];
-          actor.statements = [updatedData];
-
-          newGroup.actors.push(actor);
-          originalData.value.push(newGroup);
         }
       } else {
         console.warn('originalData no está definido o no es un array');
@@ -219,13 +185,10 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         });
         completedGameUsers.value = counts;
     }
-    // FORMATEAR DATOS PARA TABLE
+
+    // Hallar ultima hora jugada (ultimo statement recibido)
     if (filteredDataByGroupId.value.length > 0) {
-      ///////////////////////////////////////////////////////////////////////////////////////////// CALCULAR USUARIOS ACTIVOS DEL GRUPO
-    //   let dataTempo = filteredDataByGroupId.value[0].actors.map( e => e.name);
-    //   activeUsers.value = [...new Set(dataTempo)].length;
-      /////////////////////////////////////////////////////////////////////////////////////////////
-      dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
+      dataLastStatement.value = filteredDataByGroupId.value.flatMap(item => {
         return item.actors.map(actor => {
           // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
           let copyStatements = [...actor.statements];
@@ -233,27 +196,25 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
            // Comprueba si el actor tiene statements, si los tiene devuelve el primer timestamp que es el mas reciente, sino devuelve null
           const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
           return {
-            student: actor.name,
-            session: actor.sessionName + " (" + actor.sessionId + ")",
-            game: actor.gameName,
-            numberOfStatements: actor.statements.length,
             lastTimestamp: lastStatement
           };
         });
       }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
+      dataLastStatement.value = new Date(dataLastStatement.value[0].lastTimestamp).toLocaleString();
     }  else { // Limpia todas las stats var si no hay datos
-      dataTableFormat.value = []; 
+      dataLastStatement.value = []; 
       dataVerbCount.value = [];
       dataLevelCompletionTimes.value = [];
       dataPieChartGamesStartedCompleted.value = [];
       dataBestCompletionTimePerLevelPerGroup.value = [];
       activeUsers.value = 0;
       completedGameUsers.value = 0;
+      dataLastStatement.value = [];
+      dataObjectCount.value = [];
     }
   
-    // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
-    if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
-      if (groupId.value) {
+    // FORMATEAR DATOS PARA EL BARCHART - COMPLETION TIME PER LEVEL
+    if (filteredDataByGroupId.value.length > 0) {
         const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
         dataLevelCompletionTimes.value = [];
         dataGroup.forEach(actorInfo => {
@@ -279,7 +240,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
           }
         });
 
-        // PARA PRIMER BARCHART DEL TAB COMPLETION TIME (el mejor tiempo por nivel del grupo)
+        // PARA EL BARCHART DEL TAB COMPLETION TIME (el mejor tiempo por nivel del grupo)
         dataBestCompletionTimePerLevelPerGroup.value = [];
         dataGroup.forEach(actorInfo => {
           const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level') && key != 'level 15' && actorInfo.actorData[key].length > 0); // [ 'level1','level2', ...] menos el level 15 y los levels que no tienen tiempos de completado
@@ -301,7 +262,9 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
                     let minTime;
                     if (times.length > 0)
                       minTime = Math.min(...times);
-                    else minTime = 0;
+                    else 
+                      minTime = 0;
+
                     let level = { nameObject: key, value: minTime, student: actorInfo.actorName};
                     dataBestCompletionTimePerLevelPerGroup.value.push(level);
                 }
@@ -310,7 +273,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         }); 
         console.log('dataBestCompletionTimePerLevelPerGroup', dataBestCompletionTimePerLevelPerGroup.value);
 
-        // PARA EL SEGUNDO BARCHART - COUNTVERBS 
+        // PARA EL BARCHART - COUNTVERBS 
         dataVerbCount.value = [];
         dataGroup.forEach(actorInfo => {
             const keysVerbs = Object.keys(actorInfo.actorData.verbs);
@@ -330,37 +293,44 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
             }
           });
   
-        // PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
+        // PARA EL PIECHART
         dataPieChartGamesStartedCompleted.value = [];
+        let res = [ {nameObject:'Yes', value:completedGameUsers.value }, {nameObject: 'No',value: activeUsers.value - completedGameUsers.value }];
+        dataPieChartGamesStartedCompleted.value = res;
+
+
+
+        // PARA EL TOP 3 DE OBJETOS
+        let resInteractions = [];
+        let objects = [...new Set(dataGroup.flatMap( e => e.actorData.interactions.map( f => f.object)))]; 
+
         dataGroup.forEach(actorInfo => {
-            // actorInfo.actorData.starteds = > [{"level": "level 1"},{"level": "level 2"}]
-            let levels1 = actorInfo.actorData.starteds.filter( start => start.level == 'level 1')
-            let completeds14 = actorInfo.actorData.completeds.filter( completed => completed.level == 'level 14')
-            if (levels1.length == 0 && completeds14.length == 0) { // No pinto el piechart si no hay datos
-              dataPieChartGamesStartedCompleted.value = [];
+          objects.forEach(element => {
+            let interaction = resInteractions.find( e => e.nameObject == element);
+            if (interaction){
+              let tempo = actorInfo.actorData.interactions.find( e => e.object == element);
+              if(tempo){
+                interaction.value+=tempo.count
+              }
             } else {
-              if (dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started')) {
-                  let previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started');
-                  const sumStarted = previousData.value + (levels1.length - completeds14.length);  // No completados 
-                  previousData.value = sumStarted;
-                  previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'completed');
-                  const sumCompleted = previousData.value + completeds14.length;
-                  previousData.value = sumCompleted;
-                } else { // No hay datos aun 
-                  let countStarted = { nameObject: 'started', value: levels1.length - completeds14.length};
-                  let countCompleted = { nameObject: 'completed', value: completeds14.length};
-                  dataPieChartGamesStartedCompleted.value.push(countStarted); 
-                  dataPieChartGamesStartedCompleted.value.push(countCompleted); 
-                }
+              let objInteraction = {nameObject: element, value: 0 };
+              let tempo = actorInfo.actorData.interactions.find( e => e.object == element);
+              if (tempo){
+                objInteraction.value += tempo.count;
+              }
+              resInteractions.push(objInteraction);
             }
           });
-      }
-      // else 
-      // bucle for para cada grupo
-      console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
-      console.log('dataVerbCount:', dataVerbCount.value);
-      console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
+        });
+        resInteractions = resInteractions.sort((a, b) => b.value - a.value);
+        dataObjectCount.value = resInteractions;
+
+
+      
     }
+    console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
+    console.log('dataVerbCount:', dataVerbCount.value);
+    console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 
 watch(() => gameId.value, (newGameId, oldGameId) => {
@@ -430,5 +400,41 @@ watch(() => gameId.value, (newGameId, oldGameId) => {
 h1 {
     font-size: 2rem;
     margin: 0;
+}
+
+.header-container {
+  display: flex;
+  align-items: flex-start; /* Alinea el contenido al principio del contenedor */
+  gap: 40px; /* Espacio entre el contenedor de encabezado y el contenedor adicional */
+}
+
+.game-header {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Permite que .game-header ocupe el espacio disponible */
+}
+
+/* Nuevo contenedor vertical a la derecha */
+.additional-content {
+  width: 200px; /* Ancho fijo del nuevo contenedor */
+  background-color: #70c4cf; /* Color de fondo */
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center; /* texto  centrado */
+}
+
+.top3 {
+    display: flex;
+    flex-direction: column; /* Apila los elementos dentro del h3 verticalmente */
+    margin: 0;
+}
+.up {
+    font-size: 2rem;
+    color: #fbff00;
+}
+
+.down {
+    color: #696969;
+    margin-top: -5px;
 }
 </style>

@@ -61,7 +61,8 @@ const drawBarChart = (data, chartId) => {
     'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time',
     'bar-chart4': 'Time',
-    'bar-chart10': 'Time'
+    'bar-chart10': 'Time',
+    'bar-chart-interactions-items': 'Times'
   };
 
   const chartData = [
