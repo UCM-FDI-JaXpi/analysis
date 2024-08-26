@@ -34,16 +34,16 @@
       :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
       :dataObjectCount="dataObjectCount" />
 
-      <ConfirmModal
+      <ConfirmModal v-if="showDeleteModal"
         :visible="showDeleteModal"
         title="Confirm deletion"
         message="Are you sure you want to delete this game?<br>This action cannot be undone. Data will be lost."
         @confirm="deleteGame"
-        @cancel="showDeleteModal = false"
+        @cancel="hideDeleteModal"
       />
     </div>
     <div v-else>
-        <SuccessModal
+        <SuccessModal v-if="showSuccessModal"
           :visible="showSuccessModal"
           title="Success!"
           message="Game deleted successfully!"
@@ -327,6 +327,15 @@ watch(() => gameId.value, (newGameId, oldGameId) => {
     if (newGameId !== oldGameId) {
       fetchDataFromMongoDB(newGameId);
     }
+});
+
+const hideDeleteModal = () => {
+  showDeleteModal.value = false;
+};
+
+// Observa los cambios en la ruta para cerrar el modal
+watch(route, () => {
+  hideDeleteModal();
 });
 </script>
 

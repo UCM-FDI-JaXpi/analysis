@@ -79,10 +79,12 @@ const isCreateMenuOpen = ref(false);
 const isDevGamesSubmenuOpen = ref(false);
 
 const selectGroup = (groupId) => {
+  routeStore.setOriginalRoute(route.fullPath);
   groupsStore.setSelectedGroupId(groupId);
 };
 
 const selectGame = (gameId) => {
+  routeStore.setOriginalRoute(route.fullPath);
   gamesStore.setSelectedGameId(gameId);
 };
 
@@ -98,20 +100,21 @@ const toggleCreateMenu = () => {
     isCreateMenuOpen.value = !isCreateMenuOpen.value;
 };
 
-// const isActiveRoute = (path) => { // Para comprobar si estamos en la misma ruta que la opcion seleccionada para pintarla
-//     return route.path === path;
-// };
 const isActiveRoute = (path) => { // Para comprobar si estamos en la misma ruta que la opcion seleccionada para pintarla
     return route.path.startsWith(path) || route.path.includes(path);
 };
 
 const navigateToCreateGroup = () => {
-    routeStore.setOriginalRoute(route.fullPath);
+    if(!route.path.includes('/create-game-session')) {
+        routeStore.setOriginalRoute(route.fullPath);
+    }
     router.push('/create-group');
 };
 
 const navigateToCreateGameSession = () => {
-    routeStore.setOriginalRoute(route.fullPath);
+    if(!route.path.includes('/create-group')) {
+        routeStore.setOriginalRoute(route.fullPath);
+    }
     router.push('/create-game-session');
 };
 

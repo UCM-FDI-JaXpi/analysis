@@ -48,13 +48,13 @@ html, body, #app {
   height: 100vh;
   margin: 0;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 #app {
   display: flex;
   flex-direction: column;
   margin: 0;
-  font-family: Arial, sans-serif;
 }
 .main-container {
   display: flex;

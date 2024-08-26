@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
+// import { useRouteStore } from '@/stores/routeStore'
 import HomeView from '@/views/HomeView.vue'
 import SelectRoleView from '@/views/SelectRoleView.vue'
 import StudentLoginView from '@/views/student/StudentLoginView.vue'
@@ -51,5 +53,23 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 })
+
+// Guard global de navegacion en Vue Router
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore();
+    if ((to.path === '/select-role' || to.path === '/login' || to.path === '/student-login' ||
+        to.path === '/register') && authStore.isAuthenticated) {
+      authStore.logout(); // Desconecta al usuario
+      next('/'); // Redirige a la página principal
+    } else {
+      next();
+    }
+  });
+  
+// // Sincroniza la ruta con el store
+// router.afterEach((to) => {
+//     const routeStore = useRouteStore();
+//     routeStore.setOriginalRoute(to.fullPath);
+// });
 
 export default router;
