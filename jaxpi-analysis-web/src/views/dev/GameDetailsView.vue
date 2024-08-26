@@ -56,7 +56,6 @@
 import { ref, computed, onMounted, onUnmounted, watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGamesStore } from '@/stores/gamesStore';
-// import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
 
 import ConfirmModal from '@/components/modals/ConfirmModal.vue';
@@ -71,12 +70,10 @@ import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 const route = useRoute();
 const router = useRouter();
 const gamesStore = useGamesStore();
-// const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 
 const gameId = computed(() => route.params.gameId);
 const game = computed(() => gamesStore.getGameById(gameId.value));
-// const groupId = computed(() => route.params.groupId);
 const userType = computed(() => authStore.userType);
 
 const showDeleteModal = ref(false);
@@ -92,7 +89,6 @@ const dataBestCompletionTimePerLevelPerGroup = ref([]);
 const activeUsers  = ref(0);
 const completedGameUsers = ref(0);
 const dataObjectCount = ref([]);
-
 
 const deleteGame = async () => {
     try {
@@ -124,7 +120,6 @@ onMounted(async () => {
   
   socket.on('devDataPost', (updatedData) => { // Recibe record a record, no un array de records
     if (userType.value === 'dev') {
-      // let actorFound = false;
       if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
         let game = undefined;
         game = originalData.value.find(item => item.gameId ===  updatedData.statement.context.extensions["https://www.jaxpi.com/gameId"]);
@@ -133,7 +128,6 @@ onMounted(async () => {
           let tempo = game.actors.find( e =>  e.sessionKey == updatedData.sessionKey  && e.sessionId == updatedData.sessionId);
           if (tempo){
             tempo.statements.push(updatedData.statement);  
-
           }
         }
       } else {
@@ -298,8 +292,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         let res = [ {nameObject:'Yes', value:completedGameUsers.value }, {nameObject: 'No',value: activeUsers.value - completedGameUsers.value }];
         dataPieChartGamesStartedCompleted.value = res;
 
-
-
         // PARA EL TOP 3 DE OBJETOS
         let resInteractions = [];
         let objects = [...new Set(dataGroup.flatMap( e => e.actorData.interactions.map( f => f.object)))]; 
@@ -324,10 +316,8 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         });
         resInteractions = resInteractions.sort((a, b) => b.value - a.value);
         dataObjectCount.value = resInteractions;
-
-
-      
     }
+
     console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
     console.log('dataVerbCount:', dataVerbCount.value);
     console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
@@ -346,10 +336,11 @@ watch(() => gameId.value, (newGameId, oldGameId) => {
     display: flex;
     flex-direction: column;
     background-color: #f9f9f9;
-
+    gap: 30px;
 }
 .game-details > p {
     margin-top: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
+    margin-bottom: 10px;
 }
 
 .header {

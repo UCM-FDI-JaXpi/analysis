@@ -1,6 +1,6 @@
 <template>
     <div class="charts-container">
-      <div class="tabs">
+      <div class="tabs-charts">
         <button v-for="(tab, index) in tabs" :key="index" 
                   @click="activeTab = index" 
                   :class="{ 'active': activeTab === index }">
@@ -8,7 +8,7 @@
         </button>
       </div>
       
-      <div v-if="activeTab === 0" class="tab-content"> <!------------------------------------OVERVIEW TAB-->
+      <div v-if="activeTab === 0" class="tab-content-charts"> <!------------------------------------OVERVIEW TAB-->
         <div v-if="dataTableFormat.length > 0">
           
           <!-- Primer filtro y chart (LineChart) -->
@@ -70,7 +70,7 @@
             title="Games started and completed" />
       </div>
   
-      <div v-if="activeTab === 1" class="tab-content"> <!------------------------------------COMPLETION TIMES TAB-->
+      <div v-if="activeTab === 1" class="tab-content-charts"> <!------------------------------------COMPLETION TIMES TAB-->
         <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
           :data="dataBestCompletionTimePerLevelPerGroup"
           chartId="bar-chart4"
@@ -83,7 +83,8 @@
           title="Completion time per level"
           :colorPalette="colorPalettes[1]" />
       </div>
-      <div v-if="activeTab === 2" class="tab-content"> <!-------------------------------------VERB COUNTS TAB-->
+
+      <div v-if="activeTab === 2" class="tab-content-charts"> <!-------------------------------------VERB COUNTS TAB-->
         <BarChart v-if="dataVerbCount.length > 0" 
           :data="dataVerbCount"
           chartId="bar-chart1"
@@ -289,40 +290,41 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
-/* Add styling for tabs */
-.tabs {
+.charts-container{
+  padding: 10px;
+}
+
+/* Add styling for tabs-charts */
+.tabs-charts {
   display: flex;
 }
 
-.tabs button {
+.tabs-charts button {
   padding: 10px 20px;
-  margin-right: 1px;
+  margin-right: 2px;
   cursor: pointer;
   border: none;
+  background-color: #f0f0f0;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.tabs button.active {
-  background-color: #79c1fd;
+.tabs-charts button.active {
+  background-color: #79C1FD;
+  color: white;
 }
 
-.tab-content {
+.tab-content-charts {
   display: flex;
   flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
   gap: 50px; /* Espacio entre los elementos */
   padding: 10px;
-  background-color: #79c1fd;
+  background-color: #79C1FDBA;
 }
 
 form#search {
   margin-bottom: 1rem; /* Espacio debajo del formulario */
 }
-
-
-
-
-
-
-
 
 /* Para el filtro y su grafica (el primero)*/
 .chart-container-linechart {
@@ -341,8 +343,6 @@ form#search {
   padding: 1rem;
   box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
-
-
 
 /* Para el filtro y su grafica (el segundo)*/
 .chart-container-barchart {

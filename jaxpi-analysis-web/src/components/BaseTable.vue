@@ -53,7 +53,7 @@ function showStudentDetail(studentName) {
 }
 </script>
 
-<style>
+<style scoped>
 table {
     border: 2px solid #4276b9;
     border-radius: 3px;

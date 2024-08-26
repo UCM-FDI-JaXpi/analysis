@@ -12,11 +12,7 @@
             </tr>
         </thead>
         <tbody v-if="paginatedData.length">
-            <tr v-for="(entry, index) in paginatedData" :key="index"
-                @click="showStudentDetail(entry.student)"
-                @mouseover="highlightRow = index"
-                @mouseleave="highlightRow = null"
-                :class="{ 'highlight': highlightRow === index }">
+            <tr v-for="(entry, index) in paginatedData" :key="index">
                 <td v-for="key in columns" :key="`_${index}_${key}`">
                     {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }}
                 </td>
@@ -40,11 +36,10 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits } from 'vue';
+import { ref, computed } from 'vue';
 import PaginationComponent from '@/components/PaginationComponent.vue';
 import { usePaginationStore } from '@/stores/paginationStore';
 
-const emit = defineEmits(['student-selected']); // Definir evento personalizado
 const paginationStore = usePaginationStore();
 
 const props = defineProps({
@@ -54,7 +49,6 @@ const props = defineProps({
     filterKey: String
 });
 
-let highlightRow = ref(null)
 const sortKey = ref('')
 const sortOrders = ref(
     props.columns.reduce((o, key) => ((o[key] = 1), o), {})
@@ -102,19 +96,9 @@ function sortBy(key) {
 function formatTimestamp(timestamp) {
     return new Date(timestamp).toLocaleString();
 }
-
-/*function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-}*/
-
-function showStudentDetail(studentName) {
-    console.log(studentName)
-    emit('student-selected', studentName); // Emitir evento personalizado con el nombre del estudiante
-}
-
 </script>
 
-<style>
+<style scoped>
 table {
     border: 2px solid #4276b9;
     border-radius: 3px;
@@ -123,12 +107,6 @@ table {
 
 td {
     background-color: #f7f5f5; /* Color por defecto cuando el mouse no está sobre la fila */
-}
-
-/* Estilo para td cuando el mouse está sobre la fila */
-tr.highlight td {
-    background-color: #b4dffca4; /* Color cuando el mouse está sobre la fila */
-    cursor: pointer;
 }
 
 th,td {

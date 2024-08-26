@@ -21,6 +21,10 @@
           {{ gameSessionData.sessionName }}</option>
       </select>
 
+      <h2>Last statements received</h2>
+          <form id="search">
+            Search <input name="query-teacher" v-model="searchQueryTeacher">
+      </form>
       <DataTable
         :data="dataTableFormat" 
         :columns="tableColumnsTeacher"

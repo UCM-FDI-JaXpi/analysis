@@ -38,7 +38,6 @@ h1 {
     display: flex;
     flex-direction: column;
     background-color: #f9f9f9;
-    /* gap: 10px; */
     padding: 1.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd; 
@@ -61,11 +60,11 @@ h1 {
 
 .teacher-email {
     margin-top: 0px;
-    margin-bottom: 5px; /* Reduce el espacio entre Email e Institution */
+    margin-bottom: 10px; /* Reduce el espacio entre Email e Institution */
 }
 
 .teacher-institution {
     margin-top: 0px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 </style>

@@ -1,42 +1,48 @@
 <template>
-    <div class="group-details" v-if="group">
+    <div class="group-details-view">
+      <div class="group-details" v-if="group">
         <h1>Details of {{ group.name }}</h1>
         <p>Total students: {{ group.students.length }}</p>
         <p>Active students: {{ activeUsers }}</p>
         <p>No active students: {{ group.students.length - activeUsers }}</p>
+      </div>
+      <div v-else>There are no details to show.</div>
 
-
+      <div class="tabs-container">
         <div class="tabs">
             <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                 :class="{ 'active': activeTab === index }">
                 {{ tab }}
             </button>
         </div>
+      </div>
 
-        <div v-if="activeTab === 0" class="tab-content">
-            <ChartsComponent :groupId="group.id"
-                             :originalData="originalData"
-                             :filteredDataByGroupId ="filteredDataByGroupId"
-                             :dataTableFormat="dataTableFormat"
-                             :dataLevelCompletionTimes="dataLevelCompletionTimes"
-                             :dataVerbCount="dataVerbCount"
-                             :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-                             :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
-                             :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
+      <div class="tab-content">
+        <div v-if="activeTab === 0">
+          <ChartsComponent :groupId="group.id"
+                            :originalData="originalData"
+                            :filteredDataByGroupId ="filteredDataByGroupId"
+                            :dataTableFormat="dataTableFormat"
+                            :dataLevelCompletionTimes="dataLevelCompletionTimes"
+                            :dataVerbCount="dataVerbCount"
+                            :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
+                            :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
+                            :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
         </div>
 
-        <div v-if="activeTab === 1" class="tab-content">
+        <div v-if="activeTab === 1">
             <GameSessionList />
         </div>
 
-        <div v-if="activeTab === 2" class="tab-content">
+        <div v-if="activeTab === 2">
             <StudentList :groupId="group.id"
-                         :dataStudentList = "dataTableFormat"
-                         :filteredDataByGroupId ="filteredDataByGroupId"/>
+                        :dataStudentList = "dataTableFormat"
+                        :filteredDataByGroupId ="filteredDataByGroupId"/>
         </div>
+      </div>
     </div>
 
-    <div class="group-details-general-charts" v-else>
+    <!-- <div class="group-details-general-charts" v-else> ESTO ES POR SI CHARTSGENERAL
         <h1>General charts</h1>
         <ChartsComponent 
             :originalData="originalData"
@@ -46,7 +52,7 @@
             :dataVerbCount="dataVerbCount"
             :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
             :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel "/>
-    </div>
+    </div> -->
 </template>
 
 <script setup>
@@ -361,34 +367,47 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 </script>
 
 <style scoped>
-.group-details {
+.group-details-view {
     padding: 1rem;
+}
+
+.group-details {
+  margin-bottom: 2rem;
 }
 
 .group-details-general-charts {
     padding: 1rem;
 }
-/* Add styling for tabs */
+
 .tabs {
     display: flex;
+    border-bottom: 2px solid #ddd;
+    max-width: 1300px;
 }
 
 .tabs button {
     padding: 10px 20px;
-    margin-right: 1px;
+    margin-right: 2px;
     cursor: pointer;
     border: none;
+    background-color: #f0f0f0;
+    border-radius: 5px 5px 0 0;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .tabs button.active {
     background-color: #79c1fd;
+    color: white;
 }
 
 .tab-content {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-    gap: 50px;
     padding: 1rem;
-    background-color: #79c1fd;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 1300px;
+    box-sizing: border-box; /* Incluye el padding y el border en el ancho total */
+    overflow-y: auto; /* Permite desplazamiento si el contenido es demasiado grande */
+    display: flex;
+    flex-direction: column;
 }
 </style>
