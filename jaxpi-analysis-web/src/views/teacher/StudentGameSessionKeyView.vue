@@ -1,29 +1,44 @@
 <template>
     <div class="student-game-session-key" v-if="session">
+      <div class="student-game-session-key-details">
         <h1>{{ session.sessionName }}</h1>
         <p><strong>Game: </strong>{{ session.gameName }}</p>
         <p><strong>Group: </strong>{{ groupName }}</p>
         <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
-        <div class="student-list">
+      </div>
+
+        <div style="display: flex; gap:15%;">
+          <div>
             <h2>Students</h2>
             <BaseTable 
                 :headers="['Name', 'Key']"
                 :rows="session.students"
                 :rowKeys="['name', 'key']"
                 @student-selected="handleStudentSelected" />
+          </div>  
+          <div>
+            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+                :data="dataPieChartGamesStartedCompleted"
+                chartId="pie-chart1"
+                title="Games started and completed" />
+          </div>
         </div>
 
-        <div class="more-student" v-if="isStatements">
-            <StackedBarChart v-if="dataObjectCount.length > 0"
+        <div style="align-self: center; width: 600px;" v-if="isStatements">
+          <StackedBarChart v-if="dataObjectCount.length > 0"
                 :data="dataObjectCount"
                 chartId="stacked-bar-chart2"
                 title="Interaction of items" />
+        </div>
 
-            <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
+        <div style="align-self: center; width: 900px;" v-if="isStatements">
+          <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
                 :data="dataCompletedLevelsCount"
                 chartId="stacked-bar-chart1"
                 title="Number of completed levels by student" />
+        </div>
 
+        <div class="more-student  centerItems" v-if="isStatements">
             <div v-if="dataTableFormat.length > 0" class="search-table">
                 <h2>Last statements received</h2>
                 <form id="search">
@@ -45,11 +60,6 @@
                 :data="dataVerbCount"
                 chartId="bar-chart1"
                 title="Verb count" /> 
-
-            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-                :data="dataPieChartGamesStartedCompleted"
-                chartId="pie-chart1"
-                title="Games started and completed" />
         </div>
         <div v-else>
             No data for this student.
@@ -305,13 +315,34 @@ function handleStudentSelected(student) { // When you click on a row in the tabl
 
 <style scoped>
 .student-game-session-key {
-    padding: 1rem;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 110px;
 }
 
-.student-game-session-key > * {
-    margin: 0;
+.student-game-session-key-details {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 62%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd; 
+  margin-bottom: 20px;
+}
+
+.student-game-session-key-details h1 {
+  margin-top: 10px;
+}
+
+.student-game-session-key-details p {
+  margin-top: 0px;
+  margin-bottom: 10px; 
+}
+
+.student-game-session-key-details p strong {
+  color: #3498db;
 }
 </style>

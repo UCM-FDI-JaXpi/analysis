@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="widthLineChart">
         <h2>{{ title }}</h2>
         <div :id="chartId"></div>
     </div>
@@ -99,5 +99,9 @@ const drawLineChart = (data, chartId) => {
 <style scoped>
 h2 {
     text-align: center;
+}
+
+.widthLineChart{
+    width: 600px;
 }
 </style>

@@ -192,17 +192,11 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 </script>
   
 <style>
-  /* Style for the div app that comes by default */
-#app {
-  background-color: #bfdbf3;
-}
-  
 #bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-interactions-items, #pie-chart-completed-game, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
-/* Add styling for tabs */
 .tabs {
   display: flex;
 }
@@ -226,37 +220,21 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #79c1fd;
 }
 
-/* Para el filtro y su grafica (el primero)*/
 .chart-container-linechart {
   display: flex;
-  width: 100%; /* Asegúrate de que el contenedor principal ocupe el 100% del ancho disponible */
-}
-
-.filter-container-linechart {
-  flex: 0 0 250px; /* El filtro tendrá un ancho fijo de 300px */
-  padding: 1rem; /* Espacio alrededor del filtro */
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
+  width: 100%;
 }
 
 .chart-content {
-  flex: 1; /* El gráfico ocupará el resto del espacio disponible */
+  flex: 1;
   padding: 1rem;
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
+  box-sizing: border-box;
 }
 
-
-
-/* Para el filtro y su grafica (el segundo)*/
 .chart-container-barchart {
   display: flex;
-  width: 100%; /* Asegúrate de que el contenedor principal ocupe el 100% del ancho disponible */
+  width: 100%;
   height: auto;
-}
-
-.filter-container-barchart {
-  flex: 0 0 250px; /* El filtro tendrá un ancho fijo de 300px */
-  padding: 1rem; /* Espacio alrededor del filtro */
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
 .second-filter-container {
@@ -264,9 +242,9 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 }
 
 .chart-content-barchart {
-  flex: 1; /* El gráfico ocupará el resto del espacio disponible */
+  flex: 1;
   padding: 1rem;
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
+  box-sizing: border-box;
 }
 
 .no-data-charts {

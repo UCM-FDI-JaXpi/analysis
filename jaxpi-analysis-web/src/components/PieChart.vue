@@ -81,6 +81,9 @@ const drawPieChart = (data, chartId) => {
       columns: res,
       type: currentChartType.value
     },
+    size: {
+          width: 370, // Ajusta la anchura del gráfico
+        },
     axis: {
       y: {
         tick: {

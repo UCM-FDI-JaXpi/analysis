@@ -409,5 +409,6 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
     overflow-y: auto; /* Permite desplazamiento si el contenido es demasiado grande */
     display: flex;
     flex-direction: column;
+    min-height: 477px;
 }
 </style>

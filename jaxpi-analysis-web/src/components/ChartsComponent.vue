@@ -9,17 +9,17 @@
       </div>
       
       <div v-if="activeTab === 0" class="tab-content-charts"> <!------------------------------------OVERVIEW TAB-->
-        <div v-if="dataTableFormat.length > 0">
+        <div class="centerItems" v-if="dataTableFormat.length > 0">
           
           <!-- Primer filtro y chart (LineChart) -->
-          <div class="chart-container-linechart">
+          <div class="chart-container-linechart marginBottom90">
             <div class="filter-container-linechart">
               <FilterChartsComponent 
                 :data="arrayStudents"
                 title="Filter by student"
                 @selectElem="handleFilterNameStudent"/>
             </div>
-            <div class="chart-content">
+            <div>
               <LineChart
                 :data="dataStatementsByTimestamp"
                 chartId="line-chart1"
@@ -28,7 +28,7 @@
           </div>
 
           <!-- Segundo filtro y gráfico (BarChart) -->
-          <div class="chart-container-barchart">
+          <div class="chart-container-barchart marginBottom90">
             <div class="filter-container-barchart">
               <FilterChartsComponent 
                 :data="arrayStudents"
@@ -39,10 +39,11 @@
                   <FilterChartsComponent 
                     :data="arrayLevelsPerStudent"
                     title="Filter by level"
+                    :hasMargin="true"
                     @selectElem="handleFilterLevel"/>
                 </div>
             </div>
-            <div class="chart-content-barchart">
+            <div>
               <BarChart
                 :data="dataAttemptTimesForStudentLevel "
                 chartId="bar-chart10"
@@ -50,28 +51,31 @@
             </div>
           </div>
 
-          <h2>Last statements received</h2>
-          <form id="search">
-            Search <input name="query-teacher" v-model="searchQueryTeacher">
-          </form>
-          <DataTable
-            :data="dataTableFormat" 
-            :columns="tableColumnsTeacher"
-            :columnTitles="dataTableColumnTitlesTeacher"
-            :filter-key="searchQueryTeacher"/>
+          <div class="datatable-charts">
+            <h2 >Last statements received</h2>
+            <form id="search">
+              Search <input name="query-teacher" v-model="searchQueryTeacher">
+            </form>
+            <DataTable
+              :data="dataTableFormat" 
+              :columns="tableColumnsTeacher"
+              :columnTitles="dataTableColumnTitlesTeacher"
+              :filter-key="searchQueryTeacher"/>
+          </div>
+
+            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+            :data="dataPieChartGamesStartedCompleted"
+            chartId="pie-chart1"
+            title="Games started and completed" />
         </div>
         <div v-else class="no-data-charts">
           <p>No data available for this table.</p>
         </div>
-
-        <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-            :data="dataPieChartGamesStartedCompleted"
-            chartId="pie-chart1"
-            title="Games started and completed" />
       </div>
   
-      <div v-if="activeTab === 1" class="tab-content-charts"> <!------------------------------------COMPLETION TIMES TAB-->
-        <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
+      <div v-if="activeTab === 1" class="tab-content-charts "> <!------------------------------------COMPLETION TIMES TAB-->
+        <div class="centerItems marginBottom90">
+          <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
           :data="dataBestCompletionTimePerLevelPerGroup"
           chartId="bar-chart4"
           title="Best completion time per level per this group" 
@@ -82,6 +86,7 @@
           chartId="bar-chart2"
           title="Completion time per level"
           :colorPalette="colorPalettes[1]" />
+        </div>
       </div>
 
       <div v-if="activeTab === 2" class="tab-content-charts"> <!-------------------------------------VERB COUNTS TAB-->
@@ -280,21 +285,15 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 </script>
   
 <style>
-  /* Style for the div app that comes by default */
-#app {
-  background-color: #bfdbf3;
-}
-  
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #line-chart1 {
+#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #line-chart1, #stacked-bar-chart2 {
   background-color: rgba(255, 255, 255, 0.8);
-  min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
+  min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
 .charts-container{
   padding: 10px;
 }
 
-/* Add styling for tabs-charts */
 .tabs-charts {
   display: flex;
 }
@@ -315,61 +314,67 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 }
 
 .tab-content-charts {
-  display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-  gap: 50px; /* Espacio entre los elementos */
-  padding: 10px;
+  padding: 20px;
   background-color: #79C1FDBA;
 }
 
-form#search {
-  margin-bottom: 1rem; /* Espacio debajo del formulario */
-}
-
-/* Para el filtro y su grafica (el primero)*/
 .chart-container-linechart {
   display: flex;
-  width: 100%; /* Asegúrate de que el contenedor principal ocupe el 100% del ancho disponible */
+  width: 100%;
+  place-content: center;
+  gap: 22px;
 }
 
 .filter-container-linechart {
-  flex: 0 0 250px; /* El filtro tendrá un ancho fijo de 300px */
-  padding: 1rem; /* Espacio alrededor del filtro */
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
-}
-
-.chart-content {
-  flex: 1; /* El gráfico ocupará el resto del espacio disponible */
+  flex: 0 0 250px; 
   padding: 1rem;
   box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
-/* Para el filtro y su grafica (el segundo)*/
 .chart-container-barchart {
   display: flex;
-  width: 100%; /* Asegúrate de que el contenedor principal ocupe el 100% del ancho disponible */
-  height: auto;
+  width: 100%;
+  place-content: center;
+  gap: 28px;
 }
 
 .filter-container-barchart {
-  flex: 0 0 250px; /* El filtro tendrá un ancho fijo de 300px */
-  padding: 1rem; /* Espacio alrededor del filtro */
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
+  flex: 0 0 250px;
+  padding: 1rem;
+  box-sizing: border-box;
+  max-height: 365px;
+  overflow-y: auto; /* Muestra scrollbar vertical cuando el contenido desborda */
+  scrollbar-color: #79c1fd #f0f0f0;
+  margin-top: 22px;
+  padding-top: 0px;
 }
 
 .second-filter-container {
   margin-top: 1rem; /* Espacio entre el primer filtro y el segundo */
 }
 
-.chart-content-barchart {
-  flex: 1; /* El gráfico ocupará el resto del espacio disponible */
-  padding: 1rem;
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
-}
-
 .no-data-charts {
     text-align: center;
     color: #666;
     font-size: 1.125rem;
+}
+
+.marginBottom90{
+  margin-bottom: 90px;
+}
+
+.datatable-charts{
+  display: contents;
+}
+
+form#search {
+  margin-bottom: 1rem; /* Espacio debajo del formulario */
+}
+
+.centerItems {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>

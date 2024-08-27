@@ -45,7 +45,9 @@ const showSidebar = computed(() => { // In these views we don't want to have Sid
 
 <style>
 html, body, #app {
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin: 0;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
@@ -55,6 +57,7 @@ html, body, #app {
   display: flex;
   flex-direction: column;
   margin: 0;
+  background-color: #b5dcff;
 }
 .main-container {
   display: flex;

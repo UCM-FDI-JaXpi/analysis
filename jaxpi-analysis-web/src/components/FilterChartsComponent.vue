@@ -1,6 +1,6 @@
 <template>
     <div class="filters">
-        <h2>{{ title }}</h2>
+        <h2 :style="dynamicStyles">{{ title }}</h2>
         <div class="elements">
             <button v-for="elem in data" :key="elem.id"
                 :class="{ selected: elem.id === selectedElem?.id }" @click="selectElem(elem)">
@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 
 // eslint-disable-next-line
 const props = defineProps({
@@ -22,10 +22,19 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+  hasMargin: {
+    type:Boolean,
+    default: false,
+    required: false
   }
 });
 const selectedElem = ref('');
-
+const dynamicStyles = computed(() => {
+  return {
+    'margin-top': props.hasMargin ? '20px' : '3px'
+  };
+});
 const emit = defineEmits(['selectElem']);
 
 const selectElem = (elem) => {

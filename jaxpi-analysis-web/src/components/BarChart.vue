@@ -1,5 +1,5 @@
 <template>
-  <div class="chart-container">
+  <div class="widthBarChart">
     <h2 class="chart-title">{{ title }}</h2>
     <div :id="chartId"></div>
   </div>
@@ -126,6 +126,10 @@ const drawBarChart = (data, chartId) => {
 <style>
 .chart-title {
   text-align: center; /* Centra el texto dentro del h2 */
+}
+
+.widthBarChart{
+    width: 600px;
 }
 
 .custom-tooltip {
