@@ -89,6 +89,10 @@ const exportDataToCSV = () => {
     padding: 1rem;
 }
 
+.form-container {
+    max-width: 50%;
+}
+
 .buttons {
     display: flex;
     gap: 10px;

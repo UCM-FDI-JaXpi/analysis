@@ -53,6 +53,10 @@ const handleCancel = () => {
     padding: 1rem;
 }
 
+.form-container {
+    max-width: 50%;
+}
+
 .confirmation {
     padding: 10px;
     display: flex;

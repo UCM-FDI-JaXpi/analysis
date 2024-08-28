@@ -58,10 +58,6 @@ const cancelForm = () => {
 </script>
 
 <style scoped>
-form {
-    padding: 10px;
-}
-
 form label {
     display: block;
     margin-bottom: 8px;
@@ -69,7 +65,7 @@ form label {
 
 form input,
 form textarea {
-    width: 40%;
+    width: 50%;
     display: block;
     padding: 8px;
     margin-bottom: 10px;

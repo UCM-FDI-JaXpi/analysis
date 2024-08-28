@@ -21,8 +21,10 @@
             <small>Maximum 100 students</small>
         </div>
 
-        <button type="submit">Create</button>
-        <button type="button" @click="cancelForm">Cancel</button>
+        <div class="button-container">
+            <button type="submit">Create</button>
+            <button type="button" @click="cancelForm">Cancel</button>
+        </div>
     </form>
 </template>
 
@@ -108,12 +110,59 @@ form {
     gap: 10px;
 }
 
-textarea {
-    width: 100%;
-    height: 100px;
+form label {
+    display: block;
+}
+
+form input {
+    display: block;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 7px;
+}
+
+form button {
+    padding: 10px;
+    background-color: #1976D2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #1565C0;
+}
+
+input, select {
+  width: 60%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  border-color: #f6d365;
+  outline: none;
+  box-shadow: 0 0 5px rgba(246, 211, 101, 0.5);
 }
 
 small {
+    display: block;
     color: gray;
+}
+
+textarea {
+    width: 60%;
+    height: 100px;
 }
 </style>
