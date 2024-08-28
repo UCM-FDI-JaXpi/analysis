@@ -24,7 +24,6 @@
 </template>
 
 <script setup>
-
 import { computed } from 'vue';
 import { useGamesStore } from '@/stores/gamesStore';
 

@@ -188,13 +188,6 @@ watch(route, (newRoute) => {
     background-color: #007bff;
 }
 
-
-
-
-
-
-
-
 .create-menu-item {
     background-color: #3eaf2a;
     color: white;

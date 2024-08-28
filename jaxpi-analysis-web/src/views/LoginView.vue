@@ -69,8 +69,8 @@ onMounted(() => {
 
 <style scoped>
 h1 {
-  font-size: 25px;
-  margin-bottom: 27px;
+	font-size: 25px;
+	margin-bottom: 27px;
 }
 
 .error-message {

@@ -31,8 +31,7 @@
     <PaginationComponent
         :totalItems="filteredData.length" 
         :itemsPerPage="itemsPerPage"
-        @page-changed="changePage"
-    />
+        @page-changed="changePage"/>
 </template>
 
 <script setup>

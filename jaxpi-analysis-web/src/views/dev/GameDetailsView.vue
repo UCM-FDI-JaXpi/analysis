@@ -26,13 +26,13 @@
       </div>
 
       <ChartsDevComponent 
-      :originalData="originalData"
-      :filteredDataByGroupId ="filteredDataByGroupId"
-      :dataLevelCompletionTimes="dataLevelCompletionTimes"
-      :dataVerbCount="dataVerbCount"
-      :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
-      :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-      :dataObjectCount="dataObjectCount" />
+        :originalData="originalData"
+        :filteredDataByGroupId ="filteredDataByGroupId"
+        :dataLevelCompletionTimes="dataLevelCompletionTimes"
+        :dataVerbCount="dataVerbCount"
+        :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
+        :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
+        :dataObjectCount="dataObjectCount" />
 
       <ConfirmModal v-if="showDeleteModal"
         :visible="showDeleteModal"
@@ -347,6 +347,7 @@ watch(route, () => {
     background-color: #f9f9f9;
     gap: 30px;
 }
+
 .game-details > p {
     margin-top: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
     margin-bottom: 10px;
@@ -373,7 +374,6 @@ watch(route, () => {
     background-color: #b71c1c;
 }
 
-/* Add styling for tabs */
 .tabs {
     display: flex;
 }
@@ -391,8 +391,8 @@ watch(route, () => {
 
 .tab-content {
     display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-    gap: 50px; /* Espacio entre los elementos */
+    flex-wrap: wrap;
+    gap: 50px;
     padding: 10px;
     background-color: #79c1fd;
 }
@@ -403,24 +403,24 @@ h1 {
 }
 
 .header-container {
-  display: flex;
-  align-items: flex-start; /* Alinea el contenido al principio del contenedor */
-  gap: 40px; /* Espacio entre el contenedor de encabezado y el contenedor adicional */
+    display: flex;
+    align-items: flex-start;
+    gap: 40px; /* Espacio entre el contenedor de encabezado y el contenedor adicional */
 }
 
 .game-header {
-  display: flex;
-  flex-direction: column;
-  flex: 1; /* Permite que .game-header ocupe el espacio disponible */
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Permite que .game-header ocupe el espacio disponible */
 }
 
 /* Nuevo contenedor vertical a la derecha */
 .additional-content {
-  width: 200px; /* Ancho fijo del nuevo contenedor */
-  background-color: #70c4cf; /* Color de fondo */
-  padding: 1rem;
-  border-radius: 8px;
-  text-align: center; /* texto  centrado */
+    width: 200px;
+    background-color: #70c4cf;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
 }
 
 .top3 {

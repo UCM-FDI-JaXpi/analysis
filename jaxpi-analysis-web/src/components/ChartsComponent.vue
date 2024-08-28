@@ -69,14 +69,13 @@
             chartId="pie-chart1"
             title="Games started and completed" />
           </div>
-
-           
         </div>
         <div v-else class="no-data-charts">
           <p>No data available for this class.</p>
         </div>
       </div>
   
+
       <div v-if="activeTab === 1" class="tab-content-charts "> <!------------------------------------COMPLETION TIMES TAB-->
         <div class="centerItems" v-if="dataTableFormat.length > 0">
           <div class="marginBottom90">
@@ -110,7 +109,6 @@
         <div v-else class="no-data-charts">
           <p>No data available for this class.</p>
         </div>
-        
       </div>
     </div>
 </template>
@@ -335,46 +333,15 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #79C1FDBA;
 }
 
-/* .chart-container-linechart {
-  display: flex;
-  width: 100%;
-  place-content: center;
-  gap: 22px;
-} */
-
 .filter-container-linechart {
   flex: 0 0 250px; 
   padding: 1rem;
   box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
-/* .chart-container-barchart {
-  display: flex;
-  width: 100%;
-  place-content: center;
-  gap: 28px;
-} */
-
-/* .filter-container-barchart {
-  flex: 0 0 250px;
-  padding: 1rem;
-  box-sizing: border-box;
-  max-height: 365px;
-  overflow-y: auto;
-  scrollbar-color: #79c1fd #f0f0f0;
-  margin-top: 22px;
-  padding-top: 0px;
-} */
-
 .second-filter-container {
   margin-top: 1rem; /* Espacio entre el primer filtro y el segundo */
 }
-
-/* .no-data-charts {
-  text-align: center;
-  color: #696866;
-  font-size: 1.5rem;
-} */
 
 .marginBottom90{
   margin-bottom: 90px;
@@ -385,7 +352,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 }
 
 form#search {
-  margin-bottom: 1rem; /* Espacio debajo del formulario */
+  margin-bottom: 1rem;
 }
 
 .centerItems {

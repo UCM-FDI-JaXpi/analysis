@@ -57,7 +57,7 @@
             title="Verb count" /> 
         </div>
         <div v-else class="no-data-charts">
-        <p>No data available.</p>
+          <p>No data available.</p>
         </div>
       </div>
     </div>
@@ -232,45 +232,4 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 .tabs button.active {
   background-color: #79c1fd;
 }
-
-/* .tab-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 50px;
-  padding: 10px;
-  background-color: #79c1fd;
-} */
-
-/* .chart-container-linechart {
-  display: flex;
-  width: 100%;
-} */
-
-/* .chart-content {
-  flex: 1;
-  padding: 1rem;
-  box-sizing: border-box;
-} */
-
-/* .chart-container-barchart {
-  display: flex;
-  width: 100%;
-  height: auto;
-} */
-
-/* .second-filter-container {
-  margin-top: 1rem;
-} */
-
-/* .chart-content-barchart {
-  flex: 1;
-  padding: 1rem;
-  box-sizing: border-box;
-} */
-
-/* .no-data-charts {
-    text-align: center;
-    color: #666;
-    font-size: 1.125rem;
-} */
 </style>

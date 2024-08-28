@@ -100,9 +100,9 @@ watch(route, () => {
 
 .nav-item {
   padding: 0.5rem 2rem; /* Espaciado interno de los enlaces */
-  cursor: pointer; /* Cambiar el cursor al pasar por encima */
-  color: rgba(255, 255, 255, 0.876); /* Color de texto */
-  text-decoration: none; /* Quitar la decoración de texto (no underline) */
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.876);
+  text-decoration: none;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 

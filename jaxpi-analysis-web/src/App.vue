@@ -59,6 +59,7 @@ html, body, #app {
   margin: 0;
   background-color: #cfe9ff;
 }
+
 .main-container {
   display: flex;
   flex: 1;
@@ -96,15 +97,15 @@ html, body, #app {
 
 .blueCard {
   background-color: #A8D8FF;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    max-width: 1300px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  max-width: 1300px;
 }
 
 .no-data-charts {
@@ -137,5 +138,4 @@ html, body, #app {
   place-content: center;
   gap: 22px;
 }
-
 </style>

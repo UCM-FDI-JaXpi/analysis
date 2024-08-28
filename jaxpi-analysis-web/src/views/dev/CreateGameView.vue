@@ -64,7 +64,7 @@ const handleCancel = () => {
 }
 
 .confirmation > * {
-    margin: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
+    margin: 0;
 }
 
 .confirmation button {

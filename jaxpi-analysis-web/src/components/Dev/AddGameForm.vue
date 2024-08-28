@@ -76,6 +76,7 @@ form textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 form textarea {
     height: 7em;
 }

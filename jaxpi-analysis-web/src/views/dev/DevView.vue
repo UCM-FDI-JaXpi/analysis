@@ -71,7 +71,7 @@ h1 {
 
 .dev-info {
     display: flex;
-    justify-content: space-between; /* Distribuye los elementos a los extremos */
+    justify-content: space-between;
     align-items: flex-start; /* Alinea el contenido hacia arriba */
 }
 
@@ -96,7 +96,7 @@ h1 {
 }
 
 .games-right {
-    text-align: center; /* texto  centrado */
+    text-align: center;
 }
 
 .games-count {

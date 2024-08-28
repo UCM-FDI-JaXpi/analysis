@@ -10,31 +10,26 @@
       <div class="blueCard centerItems" v-if="isStatements">
         <div class="marginBottom90" style="align-self: center; width: 600px;">
           <BarChart v-if="dataLevelCompletionTimes.length > 0"
-                :data="dataLevelCompletionTimes"
-                chartId="bar-chart2"
-                title="Completion time per level" />
+            :data="dataLevelCompletionTimes"
+            chartId="bar-chart2"
+            title="Completion time per level" />
         </div>
         <div class="marginBottom90" style="align-self: center; width: 600px;">
           <BarChart v-if="dataVerbCount.length > 0" 
-                :data="dataVerbCount"
-                chartId="bar-chart1"
-                title="Verb count" /> 
+            :data="dataVerbCount"
+            chartId="bar-chart1"
+            title="Verb count" /> 
         </div>
         <div class="marginBottom90">
           <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-                :data="dataPieChartGamesStartedCompleted"
-                chartId="pie-chart1"
-                title="Games started and completed" />
+            :data="dataPieChartGamesStartedCompleted"
+            chartId="pie-chart1"
+            title="Games started and completed" />
         </div>
       </div>
-      <!-- <div v-else class="blueCard centerItems">
-            No data for this student.
+      <!-- <div v-if="!isStatements" class="no-data-message">
+          No data for this student.
       </div> -->
-
-        <!-- <div v-if="!isStatements" class="no-data-message">
-            No data for this student.
-        </div> -->
-      
     </div>
 </template>
 <script setup>
@@ -218,10 +213,6 @@ function cleanData(){
     flex-direction: column;
     gap: 10px;
 }
-
-/* .student-game-session-key > * {
-    margin: 0;
-} */
 
 .no-data-message {
     text-align: center;

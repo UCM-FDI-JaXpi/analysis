@@ -254,47 +254,9 @@ function cleanData(){
 </script>
 
 <style scoped>
-/* .blueCard {
-  background-color: #A8D8FF;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    max-width: 1300px;
-} */
-
 .student-game-session-key2 {
     padding: 1rem;
     display: flex;
     flex-direction: column;
 }
-  /* 
-  .student-game-session-key2-details {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 62%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ddd; 
-    margin-bottom: 20px;
-  }
-
-  .student-game-session-key2-details h1 {
-    margin-top: 10px;
-  }
-
-  .student-game-session-key2-details p {
-    margin-top: 0px;
-    margin-bottom: 10px; 
-  }
-
-  .student-game-session-key2-details p strong {
-    color: #3498db;
-  } */
 </style>

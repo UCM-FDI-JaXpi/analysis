@@ -318,7 +318,6 @@ h1 {
     font-weight: bold;
 }
 
-/* Add styling for tabs */
 .tabs {
     display: flex;
 }

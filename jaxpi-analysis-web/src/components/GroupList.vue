@@ -49,7 +49,7 @@ const selectGroup = (groupId) => {
 
 .card-container {
     display: flex;
-    flex-direction: column; /* Apila los elementos verticalmente */
+    flex-direction: column;
     gap: 10px;
 }
 
@@ -83,7 +83,7 @@ const selectGroup = (groupId) => {
 }
 
 .card-actions {
-    flex-shrink: 0; /* Para que el div del botón no se reduzca */
+    flex-shrink: 0;
 }
 
 .details-button {
@@ -95,7 +95,7 @@ const selectGroup = (groupId) => {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.24s ease;
-    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    white-space: nowrap;
 }
 
 .details-button:hover {

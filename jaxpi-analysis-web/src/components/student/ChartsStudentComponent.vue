@@ -37,53 +37,50 @@
 
           <div class="datatable-charts">
             <h2>Last statements received</h2>
-          <form id="search">
-            Search <input name="query-teacher" v-model="searchQueryTeacher">
-          </form>
-          <DataTable
-            :data="dataTableFormat" 
-            :columns="tableColumnsTeacher"
-            :columnTitles="dataTableColumnTitlesTeacher"
-            :filter-key="searchQueryTeacher"/>
+            <form id="search">
+              Search <input name="query-teacher" v-model="searchQueryTeacher">
+            </form>
+            <DataTable
+              :data="dataTableFormat" 
+              :columns="tableColumnsTeacher"
+              :columnTitles="dataTableColumnTitlesTeacher"
+              :filter-key="searchQueryTeacher"/>
           </div>
 
           <div style="margin-top: 90px;">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-                :data="dataPieChartGamesStartedCompleted"
-                chartId="pie-chart1"
-                title="Games started and completed" />
+              :data="dataPieChartGamesStartedCompleted"
+              chartId="pie-chart1"
+              title="Games started and completed" />
           </div>
-          
         </div>
         <div v-else class="no-data-charts">
           <p>No data available for this student.</p>
         </div>
-        
       </div>
   
       <div v-if="activeTab === 1" class="tab-content-charts "> <!------------------------------------COMPLETION TIMES TAB-->
         <div class="centerItems"  v-if="dataTableFormat.length > 0">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
-          :data="dataBestCompletionTimePerLevelPerGroup"
-          chartId="bar-chart4"
-          title="Your best completion time per level" 
-          :customTooltip="true"/>
+              :data="dataBestCompletionTimePerLevelPerGroup"
+              chartId="bar-chart4"
+              title="Your best completion time per level" 
+              :customTooltip="true"/>
           </div>
           <div>
             <BarChart v-if="dataLevelCompletionTimes.length > 0"
-          :data="dataLevelCompletionTimes"
-          chartId="bar-chart2"
-          title="Your average completion time per level"
-          :colorPalette="colorPalettes[1]" />
+              :data="dataLevelCompletionTimes"
+              chartId="bar-chart2"
+              title="Your average completion time per level"
+              :colorPalette="colorPalettes[1]" />
           </div>
         </div>
         <div v-else class="no-data-charts">
           <p>No data available for this student.</p>
         </div>
-  
-        
       </div>
+
       <div v-if="activeTab === 2" class="tab-content.charts centerItems"> <!-------------------------------------VERB COUNTS TAB-->
         <div v-if="dataTableFormat.length > 0">
           <BarChart v-if="dataVerbCount.length > 0" 
@@ -93,8 +90,7 @@
         </div>
         <div v-else class="no-data-charts">
           <p>No data available for this student.</p>
-      </div>
-
+        </div>
       </div>
     </div>
 </template>
@@ -298,50 +294,7 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz'
   background-color: #79c1fd;
 }
 
-/* .tab-content {
-  display: flex;
-  flex-wrap: wrap; 
-  gap: 50px; 
-  padding: 10px;
-  background-color: #79c1fd;
-} */
-
 form#search {
-  margin-bottom: 1rem; /* Espacio debajo del formulario */
+  margin-bottom: 1rem;
 }
-
-/* .chart-container-linechart {
-  display: flex;
-  width: 100%;
-} */
-
-/* .chart-content {
-  flex: 1;
-  padding: 1rem;
-  box-sizing: border-box;
-} */
-
-/* .chart-container-barchart {
-  display: flex;
-  width: 100%;
-  place-content: center;
-  gap: 28px;
-}  */
-
-/* .filter-container-barchart {
-  flex: 0 0 250px;
-  padding: 1rem;
-  box-sizing: border-box;
-  max-height: 365px;
-  overflow-y: auto;
-  scrollbar-color: #79c1fd #f0f0f0;
-  margin-top: 22px;
-  padding-top: 0px;
-} */
-
-/* .chart-content-barchart {
-  flex: 1;
-  padding: 1rem;
-  box-sizing: border-box;
-} */
 </style>

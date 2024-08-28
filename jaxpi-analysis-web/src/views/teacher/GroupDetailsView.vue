@@ -370,30 +370,6 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 .group-details-view {
     padding: 1rem;
 }
-/* .group-details {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 62%;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ddd; 
-  margin-bottom: 20px;
-}
-
-.group-details h1 {
-  margin-top: 10px;
-}
-
-.group-details p {
-  margin-top: 0px;
-  margin-bottom: 10px; 
-}
-
-.group-details p strong {
-  color: #3498db;
-} */
 
 .group-details-general-charts {
     padding: 1rem;
