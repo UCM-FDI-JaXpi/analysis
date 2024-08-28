@@ -1,7 +1,7 @@
 <template>
     <div v-if="isTeacher" class="game-session-list">
         <div v-if="gameSessions.length === 0" class="no-data-charts">
-            <p>No game sessions available for this group.</p>
+            <p>No game sessions available for this class.</p>
         </div>
         <div v-else class="card-container">
             <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">

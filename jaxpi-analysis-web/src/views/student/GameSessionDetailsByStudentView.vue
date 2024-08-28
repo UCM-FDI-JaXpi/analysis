@@ -27,9 +27,9 @@
             title="Games started and completed" />
         </div>
       </div>
-      <!-- <div v-if="!isStatements" class="no-data-message">
+      <div v-if="!isStatements" class="blueCard no-data-charts">
           No data for this student.
-      </div> -->
+      </div>
     </div>
 </template>
 <script setup>

@@ -82,7 +82,7 @@
             <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
               :data="dataBestCompletionTimePerLevelPerGroup"
               chartId="bar-chart4"
-              title="Best completion time per level per this group" 
+              title="Best completion time per level per this class" 
               :customTooltip="true"/>
           </div>
           <div>

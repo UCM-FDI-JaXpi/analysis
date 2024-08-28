@@ -10,12 +10,12 @@
                     <h2>{{ game.name }}</h2>
                     <div class="token-container">
                         <p><strong>Token:</strong> {{ game.token }}</p>
-                        <button @click.stop="copyToken(game.token)">Copy Token</button>
+                        <button @click.stop="copyToken(game.token)">Copy</button>
                     </div>
                 </div>
                 <div class="card-actions">
                     <router-link :to="{ name: 'GameDetailsView', params: { gameId: game.id } }" class="details-button">
-                        View Details
+                        View details
                     </router-link>
                 </div>
             </div>

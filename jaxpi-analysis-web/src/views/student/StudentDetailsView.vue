@@ -11,7 +11,7 @@
 
     <div class="blueCard centerItems" v-if="gameSessionOptions.length > 0">
       <div class="marginBottom90">
-        <h2 style="text-align: center;">Your game sessions</h2>
+        <h2 style="text-align: center;">Game sessions</h2>
         <BaseTable
           :headers="['Game session', 'Game', 'Session key']"
           :rows="formattedGameSessions"
@@ -25,7 +25,7 @@
         </select>
       </div>
  
-      <div class="centerItems marginBottom90">
+      <div class="centerItems marginBottom90" v-if="dataTableFormat.length > 0">
         <h2>Last statements received</h2>
         <form id="search">
           Search <input name="query-teacher" v-model="searchQueryTeacher">
@@ -36,27 +36,30 @@
           :columnTitles="dataTableColumnTitlesTeacher"
           :filter-key="searchQueryTeacher" />
       </div>
-      <div class="marginBottom90">
+      <div class="marginBottom90" v-if="dataTableFormat.length > 0">
         <BarChart v-if="dataLevelCompletionTimes.length > 0"
           :data="dataLevelCompletionTimes"
           chartId="bar-chart2"
           title="Completion time per level" />
       </div>
-      <div class="marginBottom90">
+      <div class="marginBottom90" v-if="dataTableFormat.length > 0">
         <BarChart v-if="dataVerbCount.length > 0" 
         :data="dataVerbCount"
         chartId="bar-chart1"
         title="Verb count" />
       </div>
 
-      <div class="marginBottom90">
+      <div class="marginBottom90" v-if="dataTableFormat.length > 0">
         <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
           :data="dataPieChartGamesStartedCompleted"
           chartId="pie-chart1"
           title="Games started and completed" />
       </div>
+      <div v-else style="margin-top:90px;" class="no-data-charts">
+        No data for this student.
+      </div>
     </div>
-    <div v-else class="blueCard centerItems no-data-charts">
+    <div v-else class="blueCard no-data-charts">
       No data for this student.
     </div>
   </div>

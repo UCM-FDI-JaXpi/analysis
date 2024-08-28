@@ -1,7 +1,7 @@
 <template>
     <div class="group-details-view">
       <div class="card-details" v-if="group">
-        <h1><strong>Details of </strong>{{ group.name }}</h1>
+        <h1>{{ group.name }}</h1>
         <p><strong>Total students: </strong>{{ group.students.length }}</p>
         <p><strong>Active students: </strong>{{ activeUsers }}</p>
         <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>

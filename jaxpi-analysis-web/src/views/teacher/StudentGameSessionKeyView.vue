@@ -25,14 +25,14 @@
           </div>
         </div>
 
-        <div class="marginBottom90"  style="align-self: center; width: 600px;" v-if="isStatements">
+        <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements">
           <StackedBarChart v-if="dataObjectCount.length > 0"
                 :data="dataObjectCount"
                 chartId="stacked-bar-chart2"
                 title="Interaction of items" />
         </div>
 
-        <div class="marginBottom90"  style="align-self: center; width: 900px;" v-if="isStatements">
+        <div class="marginBottom90" style="align-self: center; width: 900px;" v-if="isStatements">
           <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
                 :data="dataCompletedLevelsCount"
                 chartId="stacked-bar-chart1"
@@ -50,8 +50,8 @@
                     :columnTitles="dataTableColumnTitlesTeacher"
                     :filter-key="searchQueryTeacher"/>
         </div>
-        <div v-else>
-            No data for this student.
+        <div v-else class="no-data-charts">
+            No data for these students.
         </div>
 
         <div class="marginBottom90" >
@@ -68,7 +68,6 @@
                 title="Verb count" /> 
         </div>
       </div>
- 
     </div>
 </template>
 <script setup>

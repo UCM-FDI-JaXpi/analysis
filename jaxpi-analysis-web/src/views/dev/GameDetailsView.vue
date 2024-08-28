@@ -3,7 +3,7 @@
       <div class="header-container">
         <div class="game-header">
           <div class="header">
-              <h1>Game details for {{ game.name }}</h1>
+              <h1>{{ game.name }}</h1>
               <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
           </div>
           <div class="game-details" v-if="game">
