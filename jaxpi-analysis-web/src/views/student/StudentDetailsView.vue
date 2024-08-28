@@ -107,7 +107,7 @@ const dataTableColumnTitlesTeacher = {
     session: 'Session',
     game: 'Game',
     numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement send'
+    lastTimestamp: 'Last statement sent'
 };
 
 // For select-dropdown

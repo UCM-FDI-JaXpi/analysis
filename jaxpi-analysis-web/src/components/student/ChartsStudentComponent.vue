@@ -21,7 +21,7 @@
 
           <!-- Filtro y gráfico (BarChart) -->
           <div class="chart-container-barchart marginBottom90">
-            <div v-if="arrayLevelsPerStudent.length > 0" class="filter-container-barchart">
+            <div v-if="arrayLevelsPerStudent.length > 0" class="filter-container">
               <FilterChartsComponent 
                 :data="arrayLevelsPerStudent"
                 title="Filter by level"
@@ -125,7 +125,7 @@ const dataTableColumnTitlesTeacher = {
   session: 'Session',
   game: 'Game',
   numberOfStatements: 'Number of statements',
-  lastTimestamp: 'Last statement send'
+  lastTimestamp: 'Last statement sent'
 };
 
 // eslint-disable-next-line

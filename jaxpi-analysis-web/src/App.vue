@@ -121,7 +121,7 @@ html, body, #app {
   gap: 28px;
 }
 
-.filter-container-barchart {
+.filter-container {
   flex: 0 0 250px;
   padding: 1rem;
   box-sizing: border-box;

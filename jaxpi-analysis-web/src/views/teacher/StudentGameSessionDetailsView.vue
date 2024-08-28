@@ -41,7 +41,7 @@
             title="Games started and completed" />
         </div>
       </div>
-      <div v-else class="blueCard centerItems">
+      <div v-else class="blueCard centerItems no-data-charts">
             No data for this student.
       </div>
     </div>
@@ -88,7 +88,7 @@ const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
     student: 'Students',
     numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement send'
+    lastTimestamp: 'Last statement sent'
 };
 
 onMounted(async () => {

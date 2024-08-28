@@ -1,20 +1,10 @@
 <template>
     <div v-if="userType === 'teacher'" class="sidebar"> <!--Ni Dev ni Student tienen sidebar-->
-        <!-- New create menu (group and game session) -->
-        <div class="menu-item create-menu-item" @click="toggleCreateMenu">
-            Create
-            <span>{{ isCreateMenuOpen ? '-' : '+' }}</span>
-        </div>
-        <div v-if="isCreateMenuOpen" class="submenu">
-            <div class="submenu-link create" @click="navigateToCreateGroup" :class="{ active: isActiveRoute('/create-group') }">
-                Create class
-            </div>
-            <div class="submenu-link create" @click="navigateToCreateGameSession" :class="{ active: isActiveRoute('/create-game-session') }">
-                Create game session
-            </div>
+        <div class="menu-item create-menu-item" @click="navigateToCreateGroup">
+            Create class
         </div>
 
-        <!-- Existing groups menu -->
+        <!-- Existing class menu -->
         <div class="menu-item" @click="toggleTeacherGroupsSubmenu">
             Classes
             <span>{{ isTeacherGroupsSubmenuOpen ? '-' : '+' }}</span>
@@ -56,7 +46,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter  } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
@@ -73,10 +63,32 @@ const route = useRoute();
 const userType = computed(() => authStore.userType);
 const groups = computed(() => groupsStore.groups);
 const games = computed(() => gamesStore.games);
-const isTeacherGroupsSubmenuOpen = ref(false);
-const isCreateMenuOpen = ref(false);
 
+const isTeacherGroupsSubmenuOpen = ref(false);
 const isDevGamesSubmenuOpen = ref(false);
+
+onMounted(() => {
+    updateSidebarState(route.path);
+});
+
+// Observa cambios en la ruta
+watch(() => route.path, (newPath) => {
+    updateSidebarState(newPath);
+});
+
+// Función para actualizar el estado del sidebar según la ruta
+const updateSidebarState = (path) => {
+    if (path.startsWith('/game-details')) {
+        isDevGamesSubmenuOpen.value = true;
+        isTeacherGroupsSubmenuOpen.value = false;
+    } else if (path.startsWith('/group-details')) {
+        isTeacherGroupsSubmenuOpen.value = true;
+        isDevGamesSubmenuOpen.value = false;
+    } else {
+        isDevGamesSubmenuOpen.value = false;
+        isTeacherGroupsSubmenuOpen.value = false;
+    }
+};
 
 const selectGroup = (groupId) => {
   routeStore.setOriginalRoute(route.fullPath);
@@ -96,10 +108,6 @@ const toggleDevGamesSubmenu = () => {
     isDevGamesSubmenuOpen.value = !isDevGamesSubmenuOpen.value;
 };
 
-const toggleCreateMenu = () => {
-    isCreateMenuOpen.value = !isCreateMenuOpen.value;
-};
-
 const isActiveRoute = (path) => { // Para comprobar si estamos en la misma ruta que la opcion seleccionada para pintarla
     return route.path.startsWith(path) || route.path.includes(path);
 };
@@ -111,26 +119,10 @@ const navigateToCreateGroup = () => {
     router.push('/create-group');
 };
 
-const navigateToCreateGameSession = () => {
-    if(!route.path.includes('/create-group')) {
-        routeStore.setOriginalRoute(route.fullPath);
-    }
-    router.push('/create-game-session');
-};
-
 const navigateToCreateGame = () => {
     routeStore.setOriginalRoute(route.fullPath);
     router.push('/create-game');
 };
-
-// Observa los cambios de ruta para mostrar los submenus desplegados
-watch(route, (newRoute) => {
-    if (newRoute.path.startsWith('/game-details')) {
-        isDevGamesSubmenuOpen.value = true;
-    } else if (newRoute.path.startsWith('/group-details')) {
-        isTeacherGroupsSubmenuOpen.value = true;
-    }
-});
 </script>
 
 <style scoped>
@@ -143,12 +135,6 @@ watch(route, (newRoute) => {
     flex-direction: column;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.menu-link {
-    margin: 7px 0;
-    text-decoration: none;
-    color: #333;
 }
 
 .menu-item { /* To menu options that have submenus */
@@ -192,10 +178,13 @@ watch(route, (newRoute) => {
     background-color: #3eaf2a;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    padding: 12px;
 }
 
 .create-menu-item:hover {
-    background-color: #43bd2dbd; 
+    background-color: #43bd2dbd;
     transform: scale(1.01);
 }
 

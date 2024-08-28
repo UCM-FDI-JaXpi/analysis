@@ -13,7 +13,7 @@
           
           <!-- Primer filtro y chart (LineChart) -->
           <div class="chart-container-linechart marginBottom90">
-            <div class="filter-container-linechart">
+            <div class="filter-container">
               <FilterChartsComponent 
                 :data="arrayStudents"
                 title="Filter by student"
@@ -29,7 +29,7 @@
 
           <!-- Segundo filtro y gráfico (BarChart) -->
           <div class="chart-container-barchart marginBottom90">
-            <div class="filter-container-barchart">
+            <div class="filter-container">
               <FilterChartsComponent 
                 :data="arrayStudents"
                 title="Filter by student"
@@ -146,7 +146,7 @@ const dataTableColumnTitlesTeacher = {
   session: 'Session',
   game: 'Game',
   numberOfStatements: 'Number of statements',
-  lastTimestamp: 'Last statement send'
+  lastTimestamp: 'Last statement sent'
 };
 
 // eslint-disable-next-line
@@ -333,16 +333,6 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #79C1FDBA;
 }
 
-.filter-container-linechart {
-  flex: 0 0 250px; 
-  padding: 1rem;
-  box-sizing: border-box; /* Incluye padding y border en el ancho total */
-}
-
-.second-filter-container {
-  margin-top: 1rem; /* Espacio entre el primer filtro y el segundo */
-}
-
 .marginBottom90{
   margin-bottom: 90px;
 }
@@ -356,9 +346,9 @@ form#search {
 }
 
 .centerItems {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 </style>

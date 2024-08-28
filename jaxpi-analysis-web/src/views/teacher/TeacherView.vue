@@ -22,7 +22,6 @@ import { computed } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import GroupList from '@/components/GroupList.vue';
 
-
 const authStore = useAuthStore();
 
 const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teacher', sino, null

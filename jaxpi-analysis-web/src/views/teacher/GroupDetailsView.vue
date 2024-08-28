@@ -5,6 +5,7 @@
         <p><strong>Total students: </strong>{{ group.students.length }}</p>
         <p><strong>Active students: </strong>{{ activeUsers }}</p>
         <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>
+        <button @click="navigateToCreateGameSession">Create game session</button>
       </div>
       <div v-else>There are no details to show.</div>
 
@@ -57,12 +58,13 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import socket from '@/socket';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
+import { useRouteStore } from '@/stores/routeStore.js';
 
 import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
@@ -71,9 +73,11 @@ import StudentList from '@/components/teacher/StudentList.vue';
 import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 
 const route = useRoute();
+const router = useRouter();
 const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const gameSessionsStore = useGameSessionsStore();
+const routeStore = useRouteStore();
 
 const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
@@ -175,6 +179,13 @@ onUnmounted(() => {
   socket.off('message');
   socket.off('newStatement');
 });
+
+const navigateToCreateGameSession = () => {
+    if(!route.path.includes('/create-group')) {
+        routeStore.setOriginalRoute(route.fullPath);
+    }
+    router.push('/create-game-session');
+};
 
 const fetchGameSessions = async (groupId) => {
   if (groupId) // Si tengo groupdId, cogo sus gamesessions sino, limpio gamesessions []
@@ -362,6 +373,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
     if (newGroupId !== oldGroupId) {
       fetchDataFromMongoDB(newGroupId);
       fetchGameSessions(newGroupId);
+      groupsStore.setSelectedGroupId(groupId.value);
     }
 });
 </script>
@@ -373,6 +385,30 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 
 .group-details-general-charts {
     padding: 1rem;
+}
+
+.card-details {
+    position: relative; /* Permite el posicionamiento absoluto del botón */
+}
+
+.card-details button {
+    position: absolute; /* Posiciona el botón en la esquina superior derecha */
+    top: 30px; /* Ajusta la distancia desde el borde superior */
+    right: 20px; /* Ajusta la distancia desde el borde derecho */
+    padding: 10px;
+    font-size: 0.975rem;
+    color: white;
+    font-weight: bold;
+    background-color: #3eaf2a;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.card-details button:hover {
+    background-color: #43bd2dbd;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .tabs {

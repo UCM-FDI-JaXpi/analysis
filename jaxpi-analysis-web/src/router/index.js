@@ -33,16 +33,32 @@ const routes = [
     { path: '/about-us', name: 'AboutUsView', component: AboutUsView },
     { path: '/register', name: 'RegisterView', component: RegisterView },
     { path: '/:pathMatch(.*)*', name: 'NotFoundView', component: NotFoundView }, // For undefined routes
+
+    
+
+
+    
     { path: '/teacher', name: 'TeacherView', component: TeacherView }, /*************** Teacher **************/
     { path: '/groups', name: 'GroupsView', component: GroupsView },
     { path: '/group-details/:groupId?', name: 'GroupDetailsView', component: GroupDetailsView },
     { path: '/group-details/:groupId/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
     { path: '/student-game-session-details', name: 'StudentGameSessionDetailsView', component: StudentGameSessionDetailsView },
+    { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
+
     { path: '/create-group', name: 'CreateGroupView', component: CreateGroupView },
     { path: '/create-game-session', name: 'CreateGameSessionView', component: CreateGameSessionView },
+
+
+
+
+    
     { path: '/student', name: 'StudentView', component: StudentView }, /*************** Student **************/
-    { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
     { path: '/game-session-details-student/:gameSessionId', name: 'GameSessionDetailsByStudentView', component: GameSessionDetailsByStudentView},
+
+
+
+
+
     { path: '/dev', name: 'DevView', component: DevView }, /*************** Dev **************/
     { path: '/games', name: 'GamesView', component: GamesView },
     { path: '/game-details/:gameId', name: 'GameDetailsView', component: GameDetailsView},
