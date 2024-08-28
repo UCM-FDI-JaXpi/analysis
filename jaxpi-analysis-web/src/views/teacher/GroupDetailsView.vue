@@ -1,10 +1,10 @@
 <template>
     <div class="group-details-view">
-      <div class="group-details" v-if="group">
-        <h1>Details of {{ group.name }}</h1>
-        <p>Total students: {{ group.students.length }}</p>
-        <p>Active students: {{ activeUsers }}</p>
-        <p>No active students: {{ group.students.length - activeUsers }}</p>
+      <div class="card-details" v-if="group">
+        <h1><strong>Details of </strong>{{ group.name }}</h1>
+        <p><strong>Total students: </strong>{{ group.students.length }}</p>
+        <p><strong>Active students: </strong>{{ activeUsers }}</p>
+        <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>
       </div>
       <div v-else>There are no details to show.</div>
 
@@ -370,10 +370,30 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 .group-details-view {
     padding: 1rem;
 }
-
-.group-details {
-  margin-bottom: 2rem;
+/* .group-details {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 62%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd; 
+  margin-bottom: 20px;
 }
+
+.group-details h1 {
+  margin-top: 10px;
+}
+
+.group-details p {
+  margin-top: 0px;
+  margin-bottom: 10px; 
+}
+
+.group-details p strong {
+  color: #3498db;
+} */
 
 .group-details-general-charts {
     padding: 1rem;
@@ -402,7 +422,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 
 .tab-content {
     padding: 1rem;
-    background-color: #ffffff;
+    background-color: #a8d8ff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     max-width: 1300px;
     box-sizing: border-box; /* Incluye el padding y el border en el ancho total */

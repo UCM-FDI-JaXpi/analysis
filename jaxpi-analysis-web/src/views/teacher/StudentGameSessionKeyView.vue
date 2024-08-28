@@ -1,19 +1,20 @@
 <template>
     <div class="student-game-session-key" v-if="session">
-      <div class="student-game-session-key-details">
+      <div class="card-details">
         <h1>{{ session.sessionName }}</h1>
         <p><strong>Game: </strong>{{ session.gameName }}</p>
         <p><strong>Group: </strong>{{ groupName }}</p>
         <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
       </div>
 
-        <div style="display: flex; gap:15%;">
+      <div class="blueCard centerItems">
+        <div class="marginBottom90" style="display: flex; gap:15%;">
           <div>
-            <h2>Students</h2>
+            <h2 style="text-align: center;">Students</h2>
             <BaseTable 
-                :headers="['Name', 'Key']"
+                :headers="['Name', 'Key','']"
                 :rows="session.students"
-                :rowKeys="['name', 'key']"
+                :rowKeys="['name', 'key','view']"
                 @student-selected="handleStudentSelected" />
           </div>  
           <div>
@@ -24,22 +25,21 @@
           </div>
         </div>
 
-        <div style="align-self: center; width: 600px;" v-if="isStatements">
+        <div class="marginBottom90"  style="align-self: center; width: 600px;" v-if="isStatements">
           <StackedBarChart v-if="dataObjectCount.length > 0"
                 :data="dataObjectCount"
                 chartId="stacked-bar-chart2"
                 title="Interaction of items" />
         </div>
 
-        <div style="align-self: center; width: 900px;" v-if="isStatements">
+        <div class="marginBottom90"  style="align-self: center; width: 900px;" v-if="isStatements">
           <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
                 :data="dataCompletedLevelsCount"
                 chartId="stacked-bar-chart1"
                 title="Number of completed levels by student" />
         </div>
 
-        <div class="more-student  centerItems" v-if="isStatements">
-            <div v-if="dataTableFormat.length > 0" class="search-table">
+        <div  v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
                 <h2>Last statements received</h2>
                 <form id="search">
                     Search <input name="query-teacher" v-model="searchQueryTeacher">
@@ -49,21 +49,26 @@
                     :columns="tableColumnsTeacher"
                     :columnTitles="dataTableColumnTitlesTeacher"
                     :filter-key="searchQueryTeacher"/>
-            </div>
-
-            <BarChart v-if="dataLevelCompletionTimes.length > 0"
-                :data="dataLevelCompletionTimes"
-                chartId="bar-chart2"
-                title="Completion time per level" />
-
-            <BarChart v-if="dataVerbCount.length > 0" 
-                :data="dataVerbCount"
-                chartId="bar-chart1"
-                title="Verb count" /> 
         </div>
         <div v-else>
             No data for this student.
         </div>
+
+        <div class="marginBottom90" >
+          <BarChart v-if="dataLevelCompletionTimes.length > 0"
+                :data="dataLevelCompletionTimes"
+                chartId="bar-chart2"
+                title="Completion time per level" />
+        </div>
+
+        <div class="marginBottom90" >
+          <BarChart v-if="dataVerbCount.length > 0" 
+                :data="dataVerbCount"
+                chartId="bar-chart1"
+                title="Verb count" /> 
+        </div>
+      </div>
+ 
     </div>
 </template>
 <script setup>
@@ -314,13 +319,25 @@ function handleStudentSelected(student) { // When you click on a row in the tabl
 </script>
 
 <style scoped>
-.student-game-session-key {
-    padding: 3rem;
+/* .blueCard {
+  background-color: #A8D8FF;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 110px;
-}
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    max-width: 1300px;
+} */
 
+.student-game-session-key {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+/* 
 .student-game-session-key-details {
   background-color: #fff;
   padding: 20px;
@@ -344,5 +361,5 @@ function handleStudentSelected(student) { // When you click on a row in the tabl
 
 .student-game-session-key-details p strong {
   color: #3498db;
-}
+} */
 </style>

@@ -8,36 +8,57 @@
         </button>
       </div>
       
-      <div v-if="activeTab === 0" class="tab-content"> <!------------------------------------OVERVIEW TAB-->
-        <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-            :data="dataPieChartGamesStartedCompleted"
-            chartId="pie-chart-completed-game"
-            title="Completed the game" />
-            
+      <div v-if="activeTab === 0" class="tab-content-charts"> <!------------------------------------OVERVIEW TAB-->
+        <div class="centerItems" v-if="dataPieChartGamesStartedCompleted.length > 0 || dataObjectCount.length > 0">
+          <div class="marginBottom90">
+            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+              :data="dataPieChartGamesStartedCompleted"
+              chartId="pie-chart-completed-game"
+              title="Completed the game" />
+          </div>
+          <div>
             <BarChart v-if="dataObjectCount.length > 0"
               :data="dataObjectCount"
               chartId="bar-chart-interactions-items"
               title="Interactions of items" />
+          </div>
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available.</p>
+        </div>
       </div>
   
-      <div v-if="activeTab === 1" class="tab-content"> <!------------------------------------COMPLETION TIMES TAB-->
-        <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
-          :data="dataBestCompletionTimePerLevelPerGroup"
-          chartId="bar-chart4"
-          title="Best completion time per level" 
-          :customTooltip="true"/>
-
-        <BarChart v-if="dataLevelCompletionTimes.length > 0"
-          :data="dataLevelCompletionTimes"
-          chartId="bar-chart2"
-          title="Completion time per level"
-          :colorPalette="colorPalettes[1]" />
+      <div v-if="activeTab === 1" class="tab-content-charts"> <!------------------------------------COMPLETION TIMES TAB-->
+        <div class="centerItems" v-if="dataBestCompletionTimePerLevelPerGroup.length > 0 || dataLevelCompletionTimes.length > 0">
+          <div class="marginBottom90">
+            <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
+              :data="dataBestCompletionTimePerLevelPerGroup"
+              chartId="bar-chart4"
+              title="Best completion time per level" 
+              :customTooltip="true"/>
+          </div>
+          <div>
+            <BarChart v-if="dataLevelCompletionTimes.length > 0"
+              :data="dataLevelCompletionTimes"
+              chartId="bar-chart2"
+              title="Completion time per level"
+              :colorPalette="colorPalettes[1]" />
+          </div>
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available.</p>
+        </div>
       </div>
-      <div v-if="activeTab === 2" class="tab-content"> <!-------------------------------------VERB COUNTS TAB-->
-        <BarChart v-if="dataVerbCount.length > 0" 
-          :data="dataVerbCount"
-          chartId="bar-chart1"
-          title="Verb count" /> 
+      <div v-if="activeTab === 2" class="tab-content-charts centerItems"> <!-------------------------------------VERB COUNTS TAB-->
+        <div v-if="dataVerbCount.length > 0">
+          <BarChart v-if="dataVerbCount.length > 0" 
+            :data="dataVerbCount"
+            chartId="bar-chart1"
+            title="Verb count" /> 
+        </div>
+        <div v-else class="no-data-charts">
+        <p>No data available.</p>
+        </div>
       </div>
     </div>
 </template>
@@ -194,7 +215,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 <style>
 #bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-interactions-items, #pie-chart-completed-game, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
-  min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
+  min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
 .tabs {
@@ -212,44 +233,44 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #79c1fd;
 }
 
-.tab-content {
+/* .tab-content {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-  gap: 50px; /* Espacio entre los elementos */
+  flex-wrap: wrap;
+  gap: 50px;
   padding: 10px;
   background-color: #79c1fd;
-}
+} */
 
-.chart-container-linechart {
+/* .chart-container-linechart {
   display: flex;
   width: 100%;
-}
+} */
 
-.chart-content {
+/* .chart-content {
   flex: 1;
   padding: 1rem;
   box-sizing: border-box;
-}
+} */
 
-.chart-container-barchart {
+/* .chart-container-barchart {
   display: flex;
   width: 100%;
   height: auto;
-}
+} */
 
-.second-filter-container {
-  margin-top: 1rem; /* Espacio entre el primer filtro y el segundo */
-}
+/* .second-filter-container {
+  margin-top: 1rem;
+} */
 
-.chart-content-barchart {
+/* .chart-content-barchart {
   flex: 1;
   padding: 1rem;
   box-sizing: border-box;
-}
+} */
 
-.no-data-charts {
+/* .no-data-charts {
     text-align: center;
     color: #666;
     font-size: 1.125rem;
-}
+} */
 </style>

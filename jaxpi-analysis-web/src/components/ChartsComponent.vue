@@ -35,7 +35,7 @@
                 title="Filter by student"
                 @selectElem="handleFilterNameStudentBarChart"/>
                 <!-- Filtro del filtro que se mostrará al seleccionar un student -->
-                <div v-if="arrayLevelsPerStudent.length > 0" class="second-filter-container-barchart">
+                <div v-if="arrayLevelsPerStudent.length > 0">
                   <FilterChartsComponent 
                     :data="arrayLevelsPerStudent"
                     title="Filter by level"
@@ -63,37 +63,54 @@
               :filter-key="searchQueryTeacher"/>
           </div>
 
+          <div style="margin-top: 90px;">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
             title="Games started and completed" />
+          </div>
+
+           
         </div>
         <div v-else class="no-data-charts">
-          <p>No data available for this table.</p>
+          <p>No data available for this class.</p>
         </div>
       </div>
   
       <div v-if="activeTab === 1" class="tab-content-charts "> <!------------------------------------COMPLETION TIMES TAB-->
-        <div class="centerItems marginBottom90">
-          <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
-          :data="dataBestCompletionTimePerLevelPerGroup"
-          chartId="bar-chart4"
-          title="Best completion time per level per this group" 
-          :customTooltip="true"/>
-
-        <BarChart v-if="dataLevelCompletionTimes.length > 0"
-          :data="dataLevelCompletionTimes"
-          chartId="bar-chart2"
-          title="Completion time per level"
-          :colorPalette="colorPalettes[1]" />
+        <div class="centerItems" v-if="dataTableFormat.length > 0">
+          <div class="marginBottom90">
+            <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
+              :data="dataBestCompletionTimePerLevelPerGroup"
+              chartId="bar-chart4"
+              title="Best completion time per level per this group" 
+              :customTooltip="true"/>
+          </div>
+          <div>
+            <BarChart v-if="dataLevelCompletionTimes.length > 0"
+              :data="dataLevelCompletionTimes"
+              chartId="bar-chart2"
+              title="Completion time per level"
+              :colorPalette="colorPalettes[1]" />
+          </div>
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available for this class.</p>
         </div>
       </div>
+      
 
-      <div v-if="activeTab === 2" class="tab-content-charts"> <!-------------------------------------VERB COUNTS TAB-->
-        <BarChart v-if="dataVerbCount.length > 0" 
+      <div v-if="activeTab === 2" class="tab-content-charts centerItems"> <!-------------------------------------VERB COUNT TAB-->
+        <div v-if="dataTableFormat.length > 0">
+          <BarChart v-if="dataVerbCount.length > 0" 
           :data="dataVerbCount"
           chartId="bar-chart1"
           title="Verb count" /> 
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available for this class.</p>
+        </div>
+        
       </div>
     </div>
 </template>
@@ -115,7 +132,7 @@ const groupId = computed(() => groupsStore.selectedGroupId);
 const arrayStudents = computed(() => groupsStore.getStudentsByGroupId(groupId.value).map(e => ({id:e, name:e}))); // Para los filtros
 const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
 
-const tabs = ref(["Overview", "Completion Times", "Verb counts"]);
+const tabs = ref(["Overview", "Completion Times", "Verb count"]);
 const activeTab = ref(0);
 const searchQueryTeacher = ref('');
 const dataStatementsByTimestamp = ref([]);
@@ -318,12 +335,12 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   background-color: #79C1FDBA;
 }
 
-.chart-container-linechart {
+/* .chart-container-linechart {
   display: flex;
   width: 100%;
   place-content: center;
   gap: 22px;
-}
+} */
 
 .filter-container-linechart {
   flex: 0 0 250px; 
@@ -331,33 +348,33 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
-.chart-container-barchart {
+/* .chart-container-barchart {
   display: flex;
   width: 100%;
   place-content: center;
   gap: 28px;
-}
+} */
 
-.filter-container-barchart {
+/* .filter-container-barchart {
   flex: 0 0 250px;
   padding: 1rem;
   box-sizing: border-box;
   max-height: 365px;
-  overflow-y: auto; /* Muestra scrollbar vertical cuando el contenido desborda */
+  overflow-y: auto;
   scrollbar-color: #79c1fd #f0f0f0;
   margin-top: 22px;
   padding-top: 0px;
-}
+} */
 
 .second-filter-container {
   margin-top: 1rem; /* Espacio entre el primer filtro y el segundo */
 }
 
-.no-data-charts {
-    text-align: center;
-    color: #666;
-    font-size: 1.125rem;
-}
+/* .no-data-charts {
+  text-align: center;
+  color: #696866;
+  font-size: 1.5rem;
+} */
 
 .marginBottom90{
   margin-bottom: 90px;

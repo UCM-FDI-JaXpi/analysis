@@ -9,12 +9,19 @@
             <p class="teacher-email"><strong>Email:</strong> {{ teacher.email }}</p>
             <p class="teacher-institution"><strong>Institution:</strong> {{ teacher.institution }}</p>
         </div>
+
+        <div class="groups">
+        <h1>Classes</h1>
+            <GroupList />
+        </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import GroupList from '@/components/GroupList.vue';
+
 
 const authStore = useAuthStore();
 
@@ -28,6 +35,7 @@ const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teac
 .teacher-view {
     display: flex;
     flex-direction: column;
+    padding-top:1rem;
 }
 
 h1 {
@@ -66,5 +74,9 @@ h1 {
 .teacher-institution {
     margin-top: 0px;
     margin-bottom: 10px;
+}
+
+.groups {
+    padding: 1rem;
 }
 </style>

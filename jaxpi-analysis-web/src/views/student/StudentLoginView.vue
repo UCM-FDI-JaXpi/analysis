@@ -51,7 +51,7 @@ h1 {
 }
 
 .student-login-container {
-    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    background: linear-gradient(135deg, #95e8fd, #99a9f1);
 	padding: 40px;
 	border-radius: 12px;
 	box-shadow: 0 4px 17px rgba(0, 0, 0, 0.1);
@@ -95,7 +95,7 @@ button {
 	padding: 10px;
 	border: none;
 	border-radius: 8px;
-	background-color: #5ce8cf;
+	background-color: #5CD8E8;
 	color: white;
 	font-size: 16px;
 	cursor: pointer;
@@ -103,6 +103,6 @@ button {
 }
 
 button:hover {
-	background-color: #2bb198;
+	background-color: #1dcce3;
 }
 </style>

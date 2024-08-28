@@ -57,7 +57,7 @@ html, body, #app {
   display: flex;
   flex-direction: column;
   margin: 0;
-  background-color: #b5dcff;
+  background-color: #cfe9ff;
 }
 .main-container {
   display: flex;
@@ -68,4 +68,74 @@ html, body, #app {
   flex-grow: 1;
   padding: 2rem;
 }
+
+.card-details {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 62%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd; 
+  margin-bottom: 20px;
+}
+
+.card-details h1 {
+  margin-top: 10px;
+}
+
+.card-details p {
+  margin-top: 0px;
+  margin-bottom: 10px; 
+}
+
+.card-details p strong {
+  color: #3498db;
+}
+
+.blueCard {
+  background-color: #A8D8FF;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    max-width: 1300px;
+}
+
+.no-data-charts {
+  text-align: center;
+  color: #696866;
+  font-size: 1.5rem;
+}
+
+.chart-container-barchart {
+  display: flex;
+  width: 100%;
+  place-content: center;
+  gap: 28px;
+}
+
+.filter-container-barchart {
+  flex: 0 0 250px;
+  padding: 1rem;
+  box-sizing: border-box;
+  max-height: 365px;
+  overflow-y: auto; /* Muestra scrollbar vertical cuando el contenido desborda */
+  scrollbar-color: #79c1fd #f0f0f0;
+  margin-top: 22px;
+  padding-top: 0px;
+}
+
+.chart-container-linechart {
+  display: flex;
+  width: 100%;
+  place-content: center;
+  gap: 22px;
+}
+
 </style>

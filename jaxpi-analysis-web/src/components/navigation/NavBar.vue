@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar">
         <router-link class="nav-item" to="/" @click="navigateToHomeView">Home</router-link>
-        <router-link v-if="isTeacher" class="nav-item" to="/groups"  @click="navigateToGroupsView">Classes</router-link>
+        <!-- <router-link v-if="isTeacher" class="nav-item" to="/groups"  @click="navigateToGroupsView">Classes</router-link> -->
         <router-link v-if="isTeacher" class="nav-item" to="/teacher" @click="navigateToTeacherView">Teacher View</router-link>
         <router-link v-if="isStudent" class="nav-item" to="/student" @click="navigateToStudentView">Student View</router-link>
         <router-link v-if="isDev" class="nav-item" to="/games" @click="navigateToGamesView">Games</router-link>
@@ -50,10 +50,10 @@ const navigateToHomeView = () => {
     routeStore.setOriginalRoute(route.fullPath);
 };
 
-const navigateToGroupsView = () => {
-  if (isLoggedIn.value) 
-    routeStore.setOriginalRoute(route.fullPath);
-};
+// const navigateToGroupsView = () => {
+//   if (isLoggedIn.value) 
+//     routeStore.setOriginalRoute(route.fullPath);
+// };
 
 const navigateToTeacherView = () => {
   if (isLoggedIn.value) 

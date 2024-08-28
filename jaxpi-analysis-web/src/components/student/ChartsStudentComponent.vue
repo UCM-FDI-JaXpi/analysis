@@ -8,28 +8,26 @@
         </button>
       </div>
       
-      <div v-if="activeTab === 0" class="tab-content"> <!------------------------------------OVERVIEW TAB-->
-        <div v-if="dataTableFormat.length > 0">
+      <div v-if="activeTab === 0" class="tab-content-charts"> <!------------------------------------OVERVIEW TAB-->
+        <div class="centerItems" v-if="dataTableFormat.length > 0">
           
           <!-- Primer chart (LineChart) -->
-          <div class="chart-container-linechart">
-            <div class="chart-content">
+          <div class="chart-container-linechart marginBottom90">
               <LineChart
                 :data="dataStatementsByTimestamp"
                 chartId="line-chart1"
                 title="Statements by timestamp" />
-            </div>
           </div>
 
           <!-- Filtro y gráfico (BarChart) -->
-          <div class="chart-container-barchart">
+          <div class="chart-container-barchart marginBottom90">
             <div v-if="arrayLevelsPerStudent.length > 0" class="filter-container-barchart">
               <FilterChartsComponent 
                 :data="arrayLevelsPerStudent"
                 title="Filter by level"
                 @selectElem="handleFilterLevel"/>
             </div>
-            <div class="chart-content-barchart">
+            <div>
               <BarChart
                 :data="dataAttemptTimesForStudentLevel"
                 chartId="bar-chart10"
@@ -37,7 +35,8 @@
             </div>
           </div>
 
-          <h2>Last statements received</h2>
+          <div class="datatable-charts">
+            <h2>Last statements received</h2>
           <form id="search">
             Search <input name="query-teacher" v-model="searchQueryTeacher">
           </form>
@@ -46,35 +45,56 @@
             :columns="tableColumnsTeacher"
             :columnTitles="dataTableColumnTitlesTeacher"
             :filter-key="searchQueryTeacher"/>
-        </div>
-        <div v-else>
-          <p>No data available for this table.</p>
-        </div>
+          </div>
 
-        <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-            :data="dataPieChartGamesStartedCompleted"
-            chartId="pie-chart1"
-            title="Games started and completed" />
+          <div style="margin-top: 90px;">
+            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+                :data="dataPieChartGamesStartedCompleted"
+                chartId="pie-chart1"
+                title="Games started and completed" />
+          </div>
+          
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available for this student.</p>
+        </div>
+        
       </div>
   
-      <div v-if="activeTab === 1" class="tab-content"> <!------------------------------------COMPLETION TIMES TAB-->
-        <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
+      <div v-if="activeTab === 1" class="tab-content-charts "> <!------------------------------------COMPLETION TIMES TAB-->
+        <div class="centerItems"  v-if="dataTableFormat.length > 0">
+          <div class="marginBottom90">
+            <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
           :data="dataBestCompletionTimePerLevelPerGroup"
           chartId="bar-chart4"
           title="Your best completion time per level" 
           :customTooltip="true"/>
-
-        <BarChart v-if="dataLevelCompletionTimes.length > 0"
+          </div>
+          <div>
+            <BarChart v-if="dataLevelCompletionTimes.length > 0"
           :data="dataLevelCompletionTimes"
           chartId="bar-chart2"
           title="Your average completion time per level"
           :colorPalette="colorPalettes[1]" />
+          </div>
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available for this student.</p>
+        </div>
+  
+        
       </div>
-      <div v-if="activeTab === 2" class="tab-content"> <!-------------------------------------VERB COUNTS TAB-->
-        <BarChart v-if="dataVerbCount.length > 0" 
-          :data="dataVerbCount"
-          chartId="bar-chart1"
-          title="Verb count" /> 
+      <div v-if="activeTab === 2" class="tab-content.charts centerItems"> <!-------------------------------------VERB COUNTS TAB-->
+        <div v-if="dataTableFormat.length > 0">
+          <BarChart v-if="dataVerbCount.length > 0" 
+            :data="dataVerbCount"
+            chartId="bar-chart1"
+            title="Verb count" /> 
+        </div>
+        <div v-else class="no-data-charts">
+          <p>No data available for this student.</p>
+      </div>
+
       </div>
     </div>
 </template>
@@ -260,7 +280,7 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz'
 <style scoped>
 #bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #stacked-bar-chart1, #line-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
-  min-width: 510px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
+  min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
 .tabs {
@@ -278,47 +298,50 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz'
   background-color: #79c1fd;
 }
 
-.tab-content {
+/* .tab-content {
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-  gap: 50px; /* Espacio entre los elementos */
+  flex-wrap: wrap; 
+  gap: 50px; 
   padding: 10px;
   background-color: #79c1fd;
-}
+} */
 
 form#search {
   margin-bottom: 1rem; /* Espacio debajo del formulario */
 }
 
-.chart-container-linechart {
+/* .chart-container-linechart {
   display: flex;
   width: 100%;
-}
+} */
 
-.chart-content {
+/* .chart-content {
   flex: 1;
   padding: 1rem;
   box-sizing: border-box;
-}
+} */
 
-.chart-container-barchart {
+/* .chart-container-barchart {
   display: flex;
   width: 100%;
-  height: auto;
-}
+  place-content: center;
+  gap: 28px;
+}  */
 
-.filter-container-barchart {
+/* .filter-container-barchart {
   flex: 0 0 250px;
-  padding: 0.75rem;
+  padding: 1rem;
   box-sizing: border-box;
-  max-height: 405px;
-  overflow-y: auto; /* Muestra scrollbar vertical cuando el contenido desborda */
+  max-height: 365px;
+  overflow-y: auto;
   scrollbar-color: #79c1fd #f0f0f0;
-}
+  margin-top: 22px;
+  padding-top: 0px;
+} */
 
-.chart-content-barchart {
+/* .chart-content-barchart {
   flex: 1;
   padding: 1rem;
   box-sizing: border-box;
-}
+} */
 </style>

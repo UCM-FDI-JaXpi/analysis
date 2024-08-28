@@ -1,6 +1,6 @@
 <template>
     <div v-if="isTeacher" class="game-session-list">
-        <div v-if="gameSessions.length === 0" class="no-data">
+        <div v-if="gameSessions.length === 0" class="no-data-charts">
             <p>No game sessions available for this group.</p>
         </div>
         <div v-else class="card-container">
@@ -14,7 +14,7 @@
                     <router-link :to="{ name: 'StudentGameSessionKeyView', params: { groupId: gameSession.groupId, gameSessionId: gameSession.sessionId } }" 
                                  class="details-button"
                                  @click="selectSession(gameSession.sessionId)">
-                        View Students
+                        View students
                     </router-link>
                 </div>
             </div>
@@ -63,12 +63,6 @@ const selectSession = (sessionId) => {
 </script>
 
 <style scoped>
-.no-data {
-    text-align: center;
-    color: #666;
-    font-size: 1.125rem;
-}
-
 .card-container {
     display: flex;
     flex-direction: column;

@@ -15,7 +15,7 @@
                     <router-link :to="{ name: 'GroupDetailsView', params: { groupId: group.id } }"
                                  class="details-button"
                                  @click="selectGroup(group.id)">
-                        View Details
+                        View details
                     </router-link>
                 </div>
             </div>
@@ -38,7 +38,7 @@ const selectGroup = (groupId) => {
 
 <style scoped>
 .group-list {
-    padding: 20px;
+    padding-top: 20px;
 }
 
 .no-groups-message {

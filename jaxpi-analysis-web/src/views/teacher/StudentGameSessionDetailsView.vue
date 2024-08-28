@@ -1,41 +1,49 @@
 <template>
-    <div class="student-game-session-key" v-if="session">
-        <p><strong>Student: </strong>{{ selectedStudent }}</p>
+    <div class="student-game-session-key2" v-if="session">
+      <div class="card-details">
+        <h1>{{ selectedStudent }}</h1>
         <p><strong>Game session: </strong>{{ session.sessionName }}</p>
         <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
         <p><strong>Group: </strong>{{ groupName }}</p>
+      </div>
 
-        <div class="more-student" v-if="isStatements">
-            <div v-if="dataTableFormat.length > 0" class="search-table">
-                <h2>Last statements received</h2>
-                <form id="search">
-                    Search <input name="query-teacher" v-model="searchQueryTeacher">
-                </form>
-                <DataTable
-                    :data="dataTableFormat" 
-                    :columns="tableColumnsTeacher"
-                    :columnTitles="dataTableColumnTitlesTeacher"
-                    :filter-key="searchQueryTeacher"/>
-            </div>
-
-            <BarChart v-if="dataLevelCompletionTimes.length > 0"
-                :data="dataLevelCompletionTimes"
-                chartId="bar-chart2"
-                title="Completion time per level" />
-
-            <BarChart v-if="dataVerbCount.length > 0" 
-                :data="dataVerbCount"
-                chartId="bar-chart1"
-                title="Verb count" /> 
-
-            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-                :data="dataPieChartGamesStartedCompleted"
-                chartId="pie-chart1"
-                title="Games started and completed" />
+      <div class="blueCard centerItems" v-if="dataTableFormat.length > 0">
+        <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
+          <h2>Last statements received</h2>
+          <form id="search">
+              Search <input name="query-teacher" v-model="searchQueryTeacher">
+          </form>
+          <DataTable
+              :data="dataTableFormat" 
+              :columns="tableColumnsTeacher"
+              :columnTitles="dataTableColumnTitlesTeacher"
+              :filter-key="searchQueryTeacher"/>
         </div>
-        <div v-else>
+
+        <div class="marginBottom90" style="align-self: center; width: 600px;">
+          <BarChart v-if="dataLevelCompletionTimes.length > 0"
+            :data="dataLevelCompletionTimes"
+            chartId="bar-chart2"
+            title="Completion time per level" />
+        </div>
+
+        <div class="marginBottom90" style="align-self: center; width: 600px;">
+          <BarChart v-if="dataVerbCount.length > 0" 
+            :data="dataVerbCount"
+            chartId="bar-chart1"
+            title="Verb count" /> 
+        </div>
+
+        <div class="marginBottom90" >
+          <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+            :data="dataPieChartGamesStartedCompleted"
+            chartId="pie-chart1"
+            title="Games started and completed" />
+        </div>
+      </div>
+      <div v-else class="blueCard centerItems">
             No data for this student.
-        </div>
+      </div>
     </div>
 </template>
 <script setup>
@@ -246,14 +254,47 @@ function cleanData(){
 </script>
 
 <style scoped>
-.student-game-session-key {
+/* .blueCard {
+  background-color: #A8D8FF;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+    max-width: 1300px;
+} */
+
+.student-game-session-key2 {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
+  /* 
+  .student-game-session-key2-details {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 62%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd; 
+    margin-bottom: 20px;
+  }
 
-.student-game-session-key > * {
-    margin: 0;
-}
+  .student-game-session-key2-details h1 {
+    margin-top: 10px;
+  }
+
+  .student-game-session-key2-details p {
+    margin-top: 0px;
+    margin-bottom: 10px; 
+  }
+
+  .student-game-session-key2-details p strong {
+    color: #3498db;
+  } */
 </style>

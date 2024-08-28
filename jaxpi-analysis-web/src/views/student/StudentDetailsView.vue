@@ -1,27 +1,33 @@
 <template>
 	<div class="student-details-container" v-if="selectedStudent">
-    <div class="student-info">
+    <div class="card-details">
       <div class="student-name">
-        <p><strong>Student: </strong> {{ selectedStudent }}</p>
+        <h1>{{ selectedStudent }}</h1>
+        <!-- <p><strong>Student: </strong> {{ selectedStudent }}</p> -->
       </div>
       <div v-if="groupId" class="student-class">
         <p><strong>Class: </strong> {{ groupName }}</p>
       </div>
     </div>
 
-    <div class="more-student" v-if="gameSessionOptions.length > 0">
-      <BaseTable
+    <div class="blueCard centerItems" v-if="gameSessionOptions.length > 0">
+      <div class="marginBottom90">
+        <h2 style="text-align: center;">Your game sessions</h2>
+        <BaseTable
       :headers="['Game session', 'Game', 'Session key']"
       :rows="formattedGameSessions"
       :rowKeys="['gameSession', 'game', 'sessionKey']" />
-
-      <select v-model="selectedGameSession">
+      </div>
+      <div>
+        <select v-model="selectedGameSession">
         <option value="all" v-if="gameSessionOptions.length > 0">All game sessions</option>
         <option v-for="gameSessionData in gameSessionOptions" :key="gameSessionData.sessionId" :value="gameSessionData.sessionId">
           {{ gameSessionData.sessionName }}</option>
       </select>
-
-      <h2>Last statements received</h2>
+      </div>
+ 
+      <div class="centerItems marginBottom90">
+        <h2>Last statements received</h2>
           <form id="search">
             Search <input name="query-teacher" v-model="searchQueryTeacher">
       </form>
@@ -30,24 +36,29 @@
         :columns="tableColumnsTeacher"
         :columnTitles="dataTableColumnTitlesTeacher"
         :filter-key="searchQueryTeacher" />
-
-      <BarChart v-if="dataLevelCompletionTimes.length > 0"
+      </div>
+      <div class="marginBottom90">
+        <BarChart v-if="dataLevelCompletionTimes.length > 0"
         :data="dataLevelCompletionTimes"
         chartId="bar-chart2"
         title="Completion time per level" />
-
-      <BarChart v-if="dataVerbCount.length > 0" 
+      </div>
+      <div class="marginBottom90">
+        <BarChart v-if="dataVerbCount.length > 0" 
         :data="dataVerbCount"
         chartId="bar-chart1"
         title="Verb count" />
+      </div>
 
-      <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+      <div class="marginBottom90">
+        <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
         :data="dataPieChartGamesStartedCompleted"
         chartId="pie-chart1"
         title="Games started and completed" />
+      </div>
     </div>
 
-    <div v-else>
+    <div v-else class="blueCard centerItems no-data-charts">
       No data for this student.
     </div>
   </div>
@@ -383,4 +394,21 @@ function cleanData(){
 </script>
 
 <style scoped>
+.student-details-container {
+  padding:1rem;
+}
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #b0eee4;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+ select:focus {
+  border-color: #ffff00;
+  outline: none;
+  box-shadow: 0 0 5px rgba(246, 211, 101, 0.5);
+}
 </style>

@@ -100,7 +100,7 @@ function formatTimestamp(timestamp) {
 
 <style scoped>
 table {
-    width: 70%;
+    width: 81%;
     border: 2px solid #4276b9;
     border-radius: 3px;
     background-color: #fff;

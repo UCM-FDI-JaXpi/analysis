@@ -29,12 +29,16 @@ h1 {
 .select-role-container {
     text-align: center;
     padding: 1rem;
-    background-color: #f7f9fc;
+    background-color: #ffffff;
     padding: 50px 30px;
     border-radius: 12px;
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    width: 350px;
     margin: 40px auto;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .role-buttons {
@@ -54,16 +58,16 @@ h1 {
     font-weight: bold;
     border: none;
     border-radius: 10px;
-    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    background: linear-gradient(135deg, #95e8fd, #acb6e5);
     color: white;
     transition: background-color 0.3s ease;
 }
 
 .role-button:hover {
-    background: linear-gradient(135deg, #acb6e5, #74ebd5);
+    background: linear-gradient(135deg, #acb6e5, #74d7eb);
 }
 
 .student-button:hover {
-    background: linear-gradient(135deg, #79d9fc, #af93ec);
+    background: linear-gradient(135deg, #79d9fc, #9aaaf0);
 }
 </style>

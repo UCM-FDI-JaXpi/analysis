@@ -1,29 +1,40 @@
 <template>
     <div class="student-game-session-key" v-if="session">
+      <div class="card-details">
         <h1>{{ session.sessionName }}</h1>
         <p><strong>Game: </strong>{{ session.gameName }}</p>
         <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
         <p><strong>Your key: </strong>{{ session.key }}</p>
+      </div>
 
-        <div v-if="!isStatements" class="no-data-message">
-            No data for this student.
-        </div>
-        <div class="more-student" v-if="isStatements">
-            <BarChart v-if="dataLevelCompletionTimes.length > 0"
+      <div class="blueCard centerItems" v-if="isStatements">
+        <div class="marginBottom90" style="align-self: center; width: 600px;">
+          <BarChart v-if="dataLevelCompletionTimes.length > 0"
                 :data="dataLevelCompletionTimes"
                 chartId="bar-chart2"
                 title="Completion time per level" />
-
-            <BarChart v-if="dataVerbCount.length > 0" 
+        </div>
+        <div class="marginBottom90" style="align-self: center; width: 600px;">
+          <BarChart v-if="dataVerbCount.length > 0" 
                 :data="dataVerbCount"
                 chartId="bar-chart1"
                 title="Verb count" /> 
-
-            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+        </div>
+        <div class="marginBottom90">
+          <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
                 :data="dataPieChartGamesStartedCompleted"
                 chartId="pie-chart1"
                 title="Games started and completed" />
         </div>
+      </div>
+      <!-- <div v-else class="blueCard centerItems">
+            No data for this student.
+      </div> -->
+
+        <!-- <div v-if="!isStatements" class="no-data-message">
+            No data for this student.
+        </div> -->
+      
     </div>
 </template>
 <script setup>
@@ -208,9 +219,9 @@ function cleanData(){
     gap: 10px;
 }
 
-.student-game-session-key > * {
+/* .student-game-session-key > * {
     margin: 0;
-}
+} */
 
 .no-data-message {
     text-align: center;

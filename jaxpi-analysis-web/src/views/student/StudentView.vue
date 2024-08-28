@@ -8,7 +8,7 @@
             <p class="student-role">Role: {{ student.usr_type }}</p>
         </div>
 
-        <div class="content-container" v-if="student">
+        <div v-if="student">
             <div class="tabs">
                 <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
                     :class="{ 'active': activeTab === index }">
@@ -16,7 +16,7 @@
                 </button>
             </div>
 
-            <div v-if="activeTab === 0" class="tab-content">
+            <div v-if="activeTab === 0" class="tab-content-charts">
                 <ChartsStudentComponent :groupId="groupId"
                                         :filteredDataByGroupId ="filteredDataByGroupId"
                                         :dataTableFormat="dataTableFormat"
@@ -27,7 +27,7 @@
                                         :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
             </div>
 
-            <div v-if="activeTab === 1" class="tab-content">
+            <div v-if="activeTab === 1" class="tab-content-charts">
                 <GameSessionList />
             </div>
         </div>
@@ -280,9 +280,9 @@ watch(activeTab, async (newTab) => {
 });
 </script>
 
-<style scoped>ç
+<style scoped>
 .student-view {
-    padding: 1rem;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -318,13 +318,6 @@ h1 {
     font-weight: bold;
 }
 
-.content-container {
-    /* overflow-y: auto; Habilita el scroll si el contenido es muy grande */
-    padding: 1rem;
-    background-color: #f9f9f9; /* Color de fondo para diferenciarlo */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra para el contenedor */
-}
 /* Add styling for tabs */
 .tabs {
     display: flex;

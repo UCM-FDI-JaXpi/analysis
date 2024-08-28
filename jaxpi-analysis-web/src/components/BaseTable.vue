@@ -10,12 +10,23 @@
         <tbody>
             <tr v-for="(row, rowIndex) in rows" :key="rowIndex"
                 @click="showStudentDetail(row)"
-                @mouseover="highlightRow = rowIndex"
-                @mouseleave="highlightRow = null"
-                :class="{ 'highlight': highlightRow === rowIndex }">
+                >
                 <td v-for="(key, colIndex) in rowKeys" :key="colIndex"
                     :class="cellClasses ? cellClasses[rowIndex] ? cellClasses[rowIndex][key] : '' : ''">
-                    {{ row[key] }}
+                    <!-- {{ row[key] }} -->
+
+                    <span v-if="key === 'view'">
+                        {{ row[key] }}
+                        <span class="eye-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12c-2.48 0-4.5-2.02-4.5-4.5S9.52 7.5 12 7.5s4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5zm0-7c-1.38 0-2.5 1.12-2.5 2.5S10.62 14.5 12 14.5s2.5-1.12 2.5-2.5S13.38 9.5 12 9.5z"/>
+                            </svg>
+                        </span>
+                    </span>
+                    <!-- Para las otras columnas muestra normalmente -->
+                    <span v-else>
+                        {{ row[key] }}
+                    </span>
                 </td>
             </tr>
         </tbody>
@@ -23,7 +34,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
+import {  defineEmits } from 'vue';
 // eslint-disable-next-line
 const props = defineProps({
     headers: {
@@ -44,7 +55,7 @@ const props = defineProps({
     }
 });
 
-let highlightRow = ref(null);
+// let highlightRow = ref(null);
 const emit = defineEmits(['student-selected']); // Definir evento personalizado
 
 function showStudentDetail(studentName) {
@@ -109,5 +120,25 @@ th.active .arrow {
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
     border-top: 4px solid #fff;
+}
+
+.eye-icon {
+    margin-left: 8px;
+    cursor: pointer;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.eye-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: #007BFF; /* Color azul para el icono */
+    transition: fill 0.3s ease;
+}
+
+.eye-icon svg:hover {
+    fill: #0056b3; /* Cambio de color al pasar el cursor */
 }
 </style>

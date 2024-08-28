@@ -5,9 +5,9 @@
         </div>
         <div v-else class="table-container">
             <BaseTable 
-                :headers="['Name', 'Last interaction']"
+                :headers="['Name', 'Last interaction', '']"
                 :rows="formattedStudents"
-                :rowKeys="['name', 'lastInteraction']"
+                :rowKeys="['name', 'lastInteraction', 'view']"
                 :cellClasses="computedCellClasses"
                 @student-selected="handleStudentSelected" />
         </div>

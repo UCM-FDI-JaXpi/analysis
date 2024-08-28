@@ -72,13 +72,14 @@ h1 {
   font-size: 25px;
   margin-bottom: 27px;
 }
+
 .error-message {
     color: red;
 	font-weight: bold;
 }
 
 .login-container {
-    background: linear-gradient(135deg, #74ebd5, #acb6e5);
+    background: linear-gradient(135deg, #95e8fd, #93a5f8);
 	padding: 40px;
 	border-radius: 12px;
 	box-shadow: 0 4px 17px rgba(0, 0, 0, 0.1);
@@ -88,7 +89,7 @@ h1 {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	}
+}
 
 .input-container {
 	margin-bottom: 18px;
@@ -111,7 +112,7 @@ input {
 	box-sizing: border-box;
 }
 input:focus {
-	border-color: #74ebd5;
+	border-color: #74ddeb;
 	outline: none;
 	box-shadow: 0 0 5px rgba(116, 235, 213, 0.5);
 }
@@ -121,7 +122,7 @@ button {
 	padding: 10px;
 	border: none;
 	border-radius: 8px;
-	background-color: #5ce8cf;
+	background-color: #5cd8e8;
 	color: white;
 	font-size: 16px;
 	cursor: pointer;
@@ -129,7 +130,7 @@ button {
 }
 
 button:hover {
-	background-color: #2bb198;
+	background-color: #1dcce3;
 }
 
 .link {
@@ -142,6 +143,6 @@ button:hover {
 }
 
 .link:hover {
-	color: #2bb198;
+	color: #21afc1;
 }
 </style>
