@@ -7,8 +7,10 @@
 
         <!-- Mensaje de información de clase creada -->
         <div v-if="showConfirmationCreatedGroup" class="confirmation">
-            <h3>Class created</h3>
-            <img :src=checkImage alt="check image" class="check-image"/>
+            <div class="title-container-image">
+                <h3 style="font-size: 1.8rem; margin: 0px;">Class created</h3>
+                <img :src=checkImage alt="check image" class="check-image"/>
+            </div>
             <p><strong>Institution:</strong> {{ createdGroup.institution }}</p>
             <p><strong>Class name:</strong> {{ createdGroup.name }}</p>
             <p><strong>Teacher:</strong> {{ createdGroup.teacher }}</p>
@@ -25,11 +27,11 @@
 </template>
 
 <script setup>
+import checkImage from '@/assets/check.png';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import CreateGroupForm from '@/components/teacher/CreateGroupForm.vue';
-import checkImage from '@/assets/check.png';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -63,8 +65,8 @@ const handleCancel = () => {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 	position: absolute;
-	top: 54%;
-	left: 58%;
+	top: 53%;
+	left: 56.5%;
 	transform: translate(-50%, -50%);
     width: 100%;
     max-width: 333px;
@@ -89,7 +91,8 @@ const handleCancel = () => {
 }
 
 .confirmation button {
-    align-self: flex-start;
+    margin-top: 5px;
+    align-self: center;
     padding: 10px 20px; 
     border: none;
     border-radius: 4px;
@@ -102,16 +105,23 @@ const handleCancel = () => {
     background-color: #0056b3;
 }
 
+.title-container-image {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
 .check-image {
     max-width: 50px;
     height: auto;
 }
 
 .students-list {
-    max-height: 200px;
+    max-height: 170px;
     overflow-y: auto;
     padding-right: 5px;
-    border: outset;
+    border: 1px solid #c1c1c1;
 }
 
 .students-list ul {

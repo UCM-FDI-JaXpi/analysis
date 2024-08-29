@@ -7,15 +7,20 @@
 
          <!-- Mensaje de información de game sesion creada -->
          <div v-if="showConfirmationCreatedGameSession" class="confirmation">
-            <h3>Game session created</h3>
+            <div class="title-container-image">
+                <h3 style="font-size: 1.8rem; margin: 0px; margin-top: 7px; margin-bottom: 10px;">Game session created</h3>
+                <img :src=checkImage alt="check image" class="check-image"/>
+            </div>
             <p><strong>Game session name:</strong> {{ createdGameSession.sessionName }}</p>
             <p><strong>Game:</strong> {{ gameName }}</p>
             <p><strong>Class:</strong> {{ groupName }}</p>
             <p><strong>Students and keys:</strong></p>
-            <ul>
+            <div class="students-list">
+                <ul>
                 <li v-for="student in createdGameSession.students" :key="student.key">
                         {{ student.name }} - {{ student.key }}</li>
-            </ul>
+                </ul>
+            </div>
             <div class="buttons">
                <button @click="redirectToGameSessionDetails">OK</button>
                <button @click="exportDataToCSV">Export CSV</button>
@@ -25,6 +30,7 @@
 </template>
 
 <script setup>
+import checkImage from '@/assets/check.png';
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useGamesStore } from '@/stores/gamesStore';
@@ -84,16 +90,30 @@ const exportDataToCSV = () => {
 
 <style scoped>
 .create-game-session-view {
-    padding: 1rem;
+    padding: 2.5rem;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+	position: absolute;
+	top: 53%;
+	left: 56.5%;
+	transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 333px;
+    max-height: 500px;
 }
 
 .form-container {
-    max-width: 50%;
+    max-width: 600px;
+    margin: auto;
 }
 
 .buttons {
     display: flex;
+    margin-top: 5px;
     gap: 10px;
+    justify-content: center;
+    width: 100%;
 }
 
 .confirmation {
@@ -101,9 +121,7 @@ const exportDataToCSV = () => {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
+    max-height: 100%;
 }
 
 .confirmation > * {
@@ -111,8 +129,9 @@ const exportDataToCSV = () => {
 }
 
 .confirmation button {
-    align-self: flex-start;
-    padding: 5px 10px;
+    margin-top: 5px;
+    align-self: center;
+    padding: 10px 20px; 
     border: none;
     border-radius: 4px;
     background-color: #1976D2;
@@ -122,5 +141,36 @@ const exportDataToCSV = () => {
 
 .confirmation button:hover {
     background-color: #0056b3;
+}
+
+
+.title-container-image {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.check-image {
+    max-width: 50px;
+    height: auto;
+    align-self: flex-start;
+}
+
+.students-list {
+    max-height: 170px;
+    overflow-y: auto;
+    padding-right: 5px;
+    border: 1px solid #c1c1c1;
+}
+
+.students-list ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.students-list li {
+    padding: 5px 0;
 }
 </style>

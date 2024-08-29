@@ -80,14 +80,24 @@ const cancelForm = () => {
 </script>
 
 <style scoped>
+h2 {
+    margin-top: 0;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
 form {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 100%;
 }
 
 form label {
     display: block;
+    color: #444;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 form input {
@@ -105,12 +115,14 @@ form input {
 }
 
 form button {
-    padding: 10px;
+    padding: 10px 20px;
+    width: 100%;
     background-color: #1976D2;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 form button:hover {
@@ -118,7 +130,7 @@ form button:hover {
 }
 
 input, select {
-  width: 60%;
+  width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -127,7 +139,7 @@ input, select {
 }
 
 input:focus, select:focus {
-  border-color: #f6d365;
+  border-color: #4a90e2;
   outline: none;
   box-shadow: 0 0 5px rgba(246, 211, 101, 0.5);
 }

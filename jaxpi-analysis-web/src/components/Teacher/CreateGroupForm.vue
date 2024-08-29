@@ -116,8 +116,8 @@ const adjustHeight = (event) => {
 <style scoped>
 h2 {
     margin-top: 0;
-    color: #333;
     font-size: 1.8rem;
+    text-align: center;
 }
 
 form {

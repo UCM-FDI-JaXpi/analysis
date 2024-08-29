@@ -88,7 +88,7 @@ const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
     student: 'Students',
     numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement sent'
+    lastTimestamp: 'Last statement received'
 };
 
 onMounted(async () => {
