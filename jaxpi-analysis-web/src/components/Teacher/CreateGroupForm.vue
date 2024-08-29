@@ -11,15 +11,17 @@
         </select>
 
         <div v-if="generationType === 'random'">
-            <label for="numNames">Number of names (max 100) *</label>
-            <input type="number" v-model="numNames" id="numNames" min="1" max="100" required />
+            <label for="numNames" style="margin-bottom:10px;">Number of names (max 50) *</label>
+            <input type="number" v-model="numNames" id="numNames" min="1" max="50" required />
         </div>
 
         <div v-if="generationType === 'manual'">
-            <label for="students">Students (one per line) *</label>
-            <textarea v-model="groupData.students" id="students" required></textarea>
-            <small>Maximum 100 students</small>
+            <label for="students" style="margin-bottom:10px;">Students (one per line) *</label>
+            <textarea v-model="groupData.students" id="students" required @input="adjustHeight"></textarea>
+            <small>Maximum 50 students</small>
         </div>
+
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
         <div class="button-container">
             <button type="submit">Create</button>
@@ -41,7 +43,8 @@ const groupData = ref({
 });
 const generationType = ref('manual');
 const numNames = ref(1);
-const maxStudents = 100;
+const maxStudents = 50;
+const errorMessage = ref('');
 
 watch(generationType, (newType) => {
     if (newType === 'random') {
@@ -69,7 +72,7 @@ const addGroup = async () => {
         if (generationType.value === 'manual') {
            const studentsArray = validateStudentNames(groupData.value.students);
             if (studentsArray.length > maxStudents) {
-                alert(`You can only have up to ${maxStudents} students.`);
+                errorMessage.value = `You can only have up to ${maxStudents} students.`;
                 return;
             }
             createdGroup = await groupsStore.createGroupManual(groupToAdd.groupName, studentsArray);
@@ -82,10 +85,10 @@ const addGroup = async () => {
             resetForm();
             emit('submit', createdGroup);
         }else{
-            //aqui seteariamos para mostrar mensaje de error ya 
-            //que queremos mostrar el mensaje, y que el form siga abierto
+            errorMessage.value = 'Failed to create group. Please try again.';
         }
     } catch (error) {
+        errorMessage.value = 'An unexpected error occurred.';
         console.error('Error no controlado: ', error);
     }
 };
@@ -95,23 +98,40 @@ const resetForm = () => {
     groupData.value.students = '';
     generationType.value = 'manual';
     numNames.value = 1;
+    errorMessage.value = '';
 };
 
 const cancelForm = () => {
     resetForm();
     emit('cancel');
 };
+
+const adjustHeight = (event) => {
+    const textarea = event.target;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+};
 </script>
 
 <style scoped>
+h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.8rem;
+}
+
 form {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 100%;
 }
 
 form label {
     display: block;
+    color: #444;
+    font-weight: bold;
+    font-size: 1rem;
 }
 
 form input {
@@ -130,30 +150,34 @@ form input {
 
 form button {
     padding: 10px;
+    width: 100%;
     background-color: #1976D2;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 form button:hover {
     background-color: #1565C0;
 }
 
-input, select {
-  width: 60%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 14px;
-  box-sizing: border-box;
+input, select, textarea {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input:focus, select:focus {
-  border-color: #f6d365;
-  outline: none;
-  box-shadow: 0 0 5px rgba(246, 211, 101, 0.5);
+input:focus, select:focus, textarea:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
 }
 
 small {
@@ -162,7 +186,18 @@ small {
 }
 
 textarea {
-    width: 60%;
-    height: 100px;
+    width: 93%;
+    height: 100%;
+    max-width: 100%;
+    min-height: 100px;
+    max-height: 170px;
+    box-sizing: border-box;
+}
+
+.error-message {
+    text-align: center;
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
 }
 </style>

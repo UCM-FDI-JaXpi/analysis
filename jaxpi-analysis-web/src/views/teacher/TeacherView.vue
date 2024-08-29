@@ -10,9 +10,9 @@
             <p class="teacher-institution"><strong>Institution:</strong> {{ teacher.institution }}</p>
         </div>
 
-        <div class="groups">
-        <h1>Classes</h1>
-            <GroupList />
+        <div class="groups" v-if="teacher">
+            <h1>Classes</h1>
+                <GroupList />
         </div>
   </div>
 </template>
@@ -35,10 +35,7 @@ const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teac
     display: flex;
     flex-direction: column;
     padding-top:1rem;
-}
-
-h1 {
-    margin-bottom: 0;
+    gap: 2rem;
 }
 
 .teacher-details {
@@ -48,7 +45,7 @@ h1 {
     padding: 1.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd; 
-    margin-bottom: 20px;
+    margin: 1rem;
     width: -webkit-fill-available;
     max-width: 800px;
 }
@@ -77,5 +74,9 @@ h1 {
 
 .groups {
     padding: 1rem;
+}
+
+.groups h1 {
+    margin-top:0px;
 }
 </style>

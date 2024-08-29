@@ -42,18 +42,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="group-details-general-charts" v-else> ESTO ES POR SI CHARTSGENERAL
-        <h1>General charts</h1>
-        <ChartsComponent 
-            :originalData="originalData"
-            :filteredDataByGroupId ="filteredDataByGroupId"
-            :dataTableFormat="dataTableFormat"
-            :dataLevelCompletionTimes="dataLevelCompletionTimes"
-            :dataVerbCount="dataVerbCount"
-            :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-            :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel "/>
-    </div> -->
 </template>
 
 <script setup>
@@ -64,7 +52,6 @@ import socket from '@/socket';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
-import { useRouteStore } from '@/stores/routeStore.js';
 
 import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
@@ -77,7 +64,6 @@ const router = useRouter();
 const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const gameSessionsStore = useGameSessionsStore();
-const routeStore = useRouteStore();
 
 const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
@@ -97,6 +83,7 @@ const dataAttemptTimesForStudentLevel  = ref([]);
 const activeUsers  = ref(0);
 
 onMounted(async () => {
+  groupsStore.setSelectedGroupId(groupId.value);
   await fetchDataFromMongoDB();
   fetchGameSessions(groupId.value); // Al cambiar a esta vista y montarla, llamo a los gamesessions del group dado
 
@@ -181,9 +168,6 @@ onUnmounted(() => {
 });
 
 const navigateToCreateGameSession = () => {
-    if(!route.path.includes('/create-group')) {
-        routeStore.setOriginalRoute(route.fullPath);
-    }
     router.push('/create-game-session');
 };
 

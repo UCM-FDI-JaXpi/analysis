@@ -11,7 +11,7 @@
                     <p><strong>Created on: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p>
                 </div>
                 <div class="card-actions">
-                    <router-link :to="{ name: 'StudentGameSessionKeyView', params: { groupId: gameSession.groupId, gameSessionId: gameSession.sessionId } }" 
+                    <router-link :to="{ name: 'StudentGameSessionKeyView', params: { gameSessionId: gameSession.sessionId } }" 
                                  class="details-button"
                                  @click="selectSession(gameSession.sessionId)">
                         View students

@@ -23,7 +23,6 @@
     </div>
 </template>
 
-
 <script setup>
 import { computed } from 'vue';
 import { useGroupsStore } from '@/stores/groupsStore';
@@ -37,10 +36,6 @@ const selectGroup = (groupId) => {
 </script>
 
 <style scoped>
-.group-list {
-    padding-top: 20px;
-}
-
 .no-groups-message {
     text-align: center;
     color: #666;

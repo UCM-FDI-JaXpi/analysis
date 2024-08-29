@@ -27,13 +27,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useRouteStore } from '@/stores/routeStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 import CreateGameSessionForm from '@/components/teacher/CreateGameSessionForm.vue';
 
 const router = useRouter();
-const routeStore = useRouteStore();
 const gamesStore = useGamesStore();
 const groupsStore = useGroupsStore();
 
@@ -58,11 +56,11 @@ const handleGameSessionCreated = (gameSessionData) => {
 
 const redirectToGameSessionDetails = () => {
     showConfirmationCreatedGameSession.value = false;
-    router.push(routeStore.getOriginalRoute()); // Redirige a la ruta original
+    router.back();
 };
 
 const handleCancel = () => {
-    router.push(routeStore.getOriginalRoute()); // Redirige a la ruta original si se cancela
+    router.back();
 };
 
 const exportDataToCSV = () => {

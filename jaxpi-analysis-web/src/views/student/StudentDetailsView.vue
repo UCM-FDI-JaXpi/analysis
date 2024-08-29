@@ -81,9 +81,9 @@ import DataTable from '@/components/DataTable.vue';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
 
+const gameSessionsStore = useGameSessionsStore();
 const studentStore = useStudentStore();
 const groupsStore = useGroupsStore();
-const gameSessionsStore = useGameSessionsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 
 const selectedStudent = computed(() => studentStore.selectedStudent);

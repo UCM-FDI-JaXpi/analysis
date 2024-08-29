@@ -9,4 +9,11 @@ import GameList from '@/components/dev/GameList.vue';
 </script>
 
 <style scoped>
+.games{
+    padding: 1rem;
+}
+
+.games h1 {
+    margin-top: 0px;
+}
 </style>

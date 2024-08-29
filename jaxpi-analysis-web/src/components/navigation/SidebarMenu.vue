@@ -50,12 +50,10 @@ import { computed, ref, watch, onMounted } from 'vue';
 import { useRoute, useRouter  } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
-import { useRouteStore } from '@/stores/routeStore';
 import { useGamesStore } from '@/stores/gamesStore';
 
 const authStore = useAuthStore();
 const groupsStore = useGroupsStore();
-const routeStore = useRouteStore();
 const gamesStore = useGamesStore();
 const router = useRouter();
 const route = useRoute();
@@ -66,6 +64,17 @@ const games = computed(() => gamesStore.games);
 
 const isTeacherGroupsSubmenuOpen = ref(false);
 const isDevGamesSubmenuOpen = ref(false);
+
+const selectedGroupId = computed(() => groupsStore.selectedGroupId);
+const selectedGameId = computed(() => gamesStore.selectedGameId);
+
+watch(() => selectedGroupId.value, () => updateSidebarState2());
+watch(() => selectedGameId.value, () => updateSidebarState2());
+
+const updateSidebarState2 = () => {
+    isTeacherGroupsSubmenuOpen.value = !!selectedGroupId.value;
+    isDevGamesSubmenuOpen.value = !!selectedGameId.value;
+};
 
 onMounted(() => {
     updateSidebarState(route.path);
@@ -91,12 +100,10 @@ const updateSidebarState = (path) => {
 };
 
 const selectGroup = (groupId) => {
-  routeStore.setOriginalRoute(route.fullPath);
   groupsStore.setSelectedGroupId(groupId);
 };
 
 const selectGame = (gameId) => {
-  routeStore.setOriginalRoute(route.fullPath);
   gamesStore.setSelectedGameId(gameId);
 };
 
@@ -113,14 +120,10 @@ const isActiveRoute = (path) => { // Para comprobar si estamos en la misma ruta 
 };
 
 const navigateToCreateGroup = () => {
-    if(!route.path.includes('/create-game-session')) {
-        routeStore.setOriginalRoute(route.fullPath);
-    }
     router.push('/create-group');
 };
 
 const navigateToCreateGame = () => {
-    routeStore.setOriginalRoute(route.fullPath);
     router.push('/create-game');
 };
 </script>

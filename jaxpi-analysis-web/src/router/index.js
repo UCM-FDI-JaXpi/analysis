@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
-// import { useRouteStore } from '@/stores/routeStore'
 import HomeView from '@/views/HomeView.vue'
 import SelectRoleView from '@/views/SelectRoleView.vue'
 import StudentLoginView from '@/views/student/StudentLoginView.vue'
@@ -41,7 +40,7 @@ const routes = [
     { path: '/teacher', name: 'TeacherView', component: TeacherView }, /*************** Teacher **************/
     { path: '/groups', name: 'GroupsView', component: GroupsView },
     { path: '/group-details/:groupId?', name: 'GroupDetailsView', component: GroupDetailsView },
-    { path: '/group-details/:groupId/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
+    { path: '/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
     { path: '/student-game-session-details', name: 'StudentGameSessionDetailsView', component: StudentGameSessionDetailsView },
     { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
 
@@ -82,10 +81,4 @@ router.beforeEach((to, from, next) => {
     }
   });
   
-// // Sincroniza la ruta con el store
-// router.afterEach((to) => {
-//     const routeStore = useRouteStore();
-//     routeStore.setOriginalRoute(to.fullPath);
-// });
-
 export default router;

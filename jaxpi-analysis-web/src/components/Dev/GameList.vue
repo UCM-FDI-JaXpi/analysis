@@ -42,10 +42,6 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
 </script>
 
 <style scoped>
-.game-list {
-    padding: 20px;
-}
-
 .card-container {
     display: flex;
     flex-direction: column; /* Apila los elementos verticalmente */

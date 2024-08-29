@@ -10,6 +10,10 @@ import GroupList from '@/components/GroupList.vue';
 </script>
 
 <style scoped>
+.groups h1 {
+    margin-top: 0px;
+}
+
 .groups {
     padding: 1rem;
 }

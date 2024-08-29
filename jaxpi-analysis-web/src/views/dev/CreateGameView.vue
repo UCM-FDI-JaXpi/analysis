@@ -20,11 +20,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useRouteStore } from '@/stores/routeStore';
 import AddGameForm from '@/components/dev/AddGameForm.vue';
 
 const router = useRouter();
-const routeStore = useRouteStore();
 
 const showConfirmationCreatedGame = ref(false);
 const createdGame = ref({});
@@ -44,7 +42,7 @@ const redirectToGameDetails = () => {
 };
 
 const handleCancel = () => {
-    router.push(routeStore.getOriginalRoute()); // Redirige a la ruta original si se cancela
+    router.back();
 };
 </script>
 

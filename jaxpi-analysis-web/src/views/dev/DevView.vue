@@ -23,7 +23,7 @@
     </div>
 
     <div class="game-section" v-if="dev">
-      <h2>Game List</h2>
+      <h2>Games</h2>
       <GameList />
     </div>
   </div>
@@ -113,9 +113,5 @@ h1 {
 .label {
     color: #7c15dd;
     margin-top: -5px;
-}
-
-.game-section > * {
-    margin-bottom: 0;
 }
 </style>

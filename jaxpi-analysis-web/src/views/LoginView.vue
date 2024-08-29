@@ -26,12 +26,10 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useGamesStore } from '@/stores/gamesStore';
-import { useRouteStore } from '@/stores/routeStore';
 
 const email = ref('');
 const password = ref('');
 const router = useRouter();
-const routeStore = useRouteStore();
 const authStore = useAuthStore();
 const groupsStore = useGroupsStore();
 const gamesStore = useGamesStore();
@@ -43,12 +41,10 @@ const login = async () => {
 			case 'teacher':
 				groupsStore.fetchGroups();
 				gamesStore.fetchAllGames();
-				routeStore.setOriginalRoute('/teacher');
 				router.push('/teacher');
 				break;
 			case 'dev':
 				gamesStore.fetchGames();
-				routeStore.setOriginalRoute('/dev');
 				router.push('/dev');
 				break;
 			default:
