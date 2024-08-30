@@ -57,10 +57,6 @@
             </div>
           </div>
 
-
-
-
-
           <div class="marginBottom90" style="display: flex; gap:15%;">
             <div>
               <h2 style="text-align: center;">Students</h2>
@@ -81,18 +77,18 @@
           <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements">
             <StackedBarChart v-if="dataObjectCount.length > 0"
                   :data="dataObjectCount"
-                  chartId="stacked-bar-chart2"
+                  chartId="stacked-bar-chart-interaction-items"
                   title="Interaction of items" />
           </div>
 
           <div class="marginBottom90" style="align-self: center; width: 900px;" v-if="isStatements">
             <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
                   :data="dataCompletedLevelsCount"
-                  chartId="stacked-bar-chart1"
+                  chartId="stacked-bar-chart-number-completed-levels"
                   title="Number of completed levels by student" />
           </div>
 
-          <div  v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
+          <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
                   <h2>Last statements received</h2>
                   <form id="search">
                       Search <input name="query-teacher" v-model="searchQueryTeacher">
@@ -106,29 +102,40 @@
           <div v-else class="no-data-charts">
               No data for these students.
           </div>
+        </div>
+        <div v-else class="no-data-charts">
+            No data for these students.
+        </div>
+      </div>
 
-          <div class="marginBottom90" >
-            <BarChart v-if="dataLevelCompletionTimes.length > 0"
-                  :data="dataLevelCompletionTimes"
-                  chartId="bar-chart2"
-                  title="Completion time per level" />
-          </div>
+      <div v-if="activeTab === 1" class="tab-content-charts">
+        <div class="marginBottom90" >
+          <BarChart v-if="dataLevelCompletionTimes.length > 0"
+            :data="dataLevelCompletionTimes"
+            chartId="bar-chart2"
+            title="Completion time per level" />
+        </div>
 
-          <div class="marginBottom90" >
+        <div class="marginBottom90">
+          <BarChart v-if="dataBestCompletionTimePerLevel.length > 0"
+            :data="dataBestCompletionTimePerLevel"
+            chartId="bar-chart4"
+            title="Best completion time per level" 
+            :customTooltip="true"/>
+        </div>
+      </div>
+
+      <div v-if="activeTab === 2" class="tab-content-charts">
+        <div class="marginBottom90" >
             <BarChart v-if="dataVerbCount.length > 0" 
                   :data="dataVerbCount"
                   chartId="bar-chart1"
                   title="Verb count" /> 
           </div>
-        </div>
-        <div v-else class="no-data-charts">
-            No data for these students.
-        </div>
-
-        
       </div>
     </div>
 </template>
+
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
@@ -195,6 +202,7 @@ const dataFirstFilter  = ref([]);
 const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
 const dataAttemptTimesForStudentLevel  = ref([]);
 const name  = ref([]);
+const dataBestCompletionTimePerLevel = ref([]);
 
 onMounted(async () => {
     if (gameSessionsStore.gameSessions.length === 0) { // Si los datos de gameSessions no están cargados, los cargo
@@ -399,6 +407,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   setLevelCompletionTimes();
   setDataVerbCount();
   setDataPieChartGamesStartedCompleted();
+  setBestCompletionTimePerLevel();
   handleFilterNameStudentBarChart(name.value);
   handleFilterNameStudent(dataFirstFilter.value);
 }, { deep: true });
@@ -422,6 +431,38 @@ function setDataTableFormat(){
     }  else {
       cleanData()
     }
+}
+
+// MEJOR TIEMPO POR NIVEL DE LA GAME SESSION
+function setBestCompletionTimePerLevel (){
+  dataBestCompletionTimePerLevel.value = [];
+        dataGroup.value.forEach(actorInfo => {
+          const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level') && key != 'level 15' && actorInfo.actorData[key].length > 0); // [ 'level1','level2', ...] menos el level 15 y los levels que no tienen tiempos de completado
+          if(keys){
+            keys.forEach(key => {
+                if (dataBestCompletionTimePerLevel.value.find(e => e.nameObject == key)) {
+                  let resTempo = dataBestCompletionTimePerLevel.value.find(e => e.nameObject == key);
+                  let minTime;
+                  let times = actorInfo.actorData[key];
+                    if (times.length > 0){
+                      minTime = Math.min(...times);
+                      if ( minTime < resTempo.value || resTempo.value === 0){
+                        resTempo.value = minTime;
+                        resTempo.student = actorInfo.actorName;
+                      }
+                    }
+                } else {
+                    let times = actorInfo.actorData[key];
+                    let minTime;
+                    if (times.length > 0)
+                      minTime = Math.min(...times);
+                    else minTime = 0;
+                    let level = { nameObject: key, value: minTime, student: actorInfo.actorName};
+                    dataBestCompletionTimePerLevel.value.push(level);
+                }
+            });
+          }
+        }); 
 }
 
 // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL

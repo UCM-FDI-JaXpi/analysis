@@ -62,7 +62,6 @@ watch(() => props.data, (newData) => {
 
 // Configuración de c3 para crear el gráfico de tarta
 const drawPieChart = (data, chartId) => {
-  console.log(data);
   let res = [];
   data.forEach( elem => {
     let comp = [];

@@ -1,16 +1,20 @@
 <template>
-    <div class="charts-container">
-      <div class="tabs">
-        <button v-for="(tab, index) in tabs" :key="index" 
-                  @click="activeTab = index" 
-                  :class="{ 'active': activeTab === index }">
-          {{ tab }}
-        </button>
-      </div>
-      
-      <div v-if="activeTab === 0" class="tab-content-charts"> <!------------------------------------OVERVIEW TAB-->
+    <div class="charts-container">      
+      <!-- <div v-if="activeTab === 0" class="tab-content-charts"> ----------------------------------OVERVIEW TAB -->
         <div class="centerItems" v-if="dataTableFormat.length > 0">
           
+          <div class="datatable-charts">
+            <h2>Last statements received</h2>
+            <form id="search">
+              Search <input name="query-teacher" v-model="searchQueryTeacher">
+            </form>
+            <DataTable
+              :data="dataTableFormat" 
+              :columns="tableColumnsTeacher"
+              :columnTitles="dataTableColumnTitlesTeacher"
+              :filter-key="searchQueryTeacher"/>
+          </div>
+
           <!-- Primer chart (LineChart) -->
           <div class="chart-container-linechart marginBottom90">
               <LineChart
@@ -35,18 +39,6 @@
             </div>
           </div>
 
-          <div class="datatable-charts">
-            <h2>Last statements received</h2>
-            <form id="search">
-              Search <input name="query-teacher" v-model="searchQueryTeacher">
-            </form>
-            <DataTable
-              :data="dataTableFormat" 
-              :columns="tableColumnsTeacher"
-              :columnTitles="dataTableColumnTitlesTeacher"
-              :filter-key="searchQueryTeacher"/>
-          </div>
-
           <div style="margin-top: 90px;">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
               :data="dataPieChartGamesStartedCompleted"
@@ -57,9 +49,9 @@
         <div v-else class="no-data-charts">
           <p>No data available for this student.</p>
         </div>
-      </div>
+      <!-- </div> -->
   
-      <div v-if="activeTab === 1" class="tab-content-charts "> <!------------------------------------COMPLETION TIMES TAB-->
+      <!-- <div v-if="activeTab === 1" class="tab-content-charts "> ----------------------------------COMPLETION TIMES TAB -->
         <div class="centerItems"  v-if="dataTableFormat.length > 0">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
@@ -79,9 +71,9 @@
         <div v-else class="no-data-charts">
           <p>No data available for this student.</p>
         </div>
-      </div>
+      <!-- </div> -->
 
-      <div v-if="activeTab === 2" class="tab-content.charts centerItems"> <!-------------------------------------VERB COUNTS TAB-->
+      <!-- <div v-if="activeTab === 2" class="tab-content.charts centerItems"> -----------------------------------VERB COUNTS TAB -->
         <div v-if="dataTableFormat.length > 0">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
@@ -91,7 +83,7 @@
         <div v-else class="no-data-charts">
           <p>No data available for this student.</p>
         </div>
-      </div>
+      <!-- </div> -->
     </div>
 </template>
   
@@ -109,8 +101,6 @@ import { calculateLevelCompletionTimes, sortStatements } from '@/utils/utilities
 const authStore = useAuthStore();
 const studentName = authStore.userData.name;
 
-const tabs = ref(["Overview", "Completion Times", "Verb counts"]);
-const activeTab = ref(0);
 const searchQueryTeacher = ref('');
 const dataStatementsByTimestamp = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
@@ -274,7 +264,10 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz'
 </script>
   
 <style scoped>
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #pie-chart1, #stacked-bar-chart1, #line-chart1 {
+#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10,
+#pie-chart1,
+#line-chart1,
+#stacked-bar-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }

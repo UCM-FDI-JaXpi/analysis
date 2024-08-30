@@ -54,7 +54,7 @@ const student = computed(() => { // Devuelve todos los datos si usr_type = 'stud
     return studentData && studentData.usr_type === 'student' ? studentData : null;
 });
 
-const tabs = ref(["Stats", "Game sessions"]);
+const tabs = ref(["Overview", "Game sessions"]);
 const activeTab = ref(0); // Define active tab
 const groupId = ref('');
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy student al montar el componente

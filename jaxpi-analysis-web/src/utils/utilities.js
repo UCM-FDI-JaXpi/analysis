@@ -100,7 +100,6 @@ export function calculateForStatements(sortedStatements) {
     result['countCompletedLevel'] = res;
     result['interactions'] = interactionsTempo;
 
-    console.log('result:', result);
     return result;
 }
 

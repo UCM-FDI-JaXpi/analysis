@@ -1,5 +1,5 @@
 <template>
-    <div class="student-game-session-key" v-if="session">
+    <div class="student-game-session-key-by-student" v-if="session">
       <div class="card-details">
         <h1>{{ session.sessionName }}</h1>
         <p><strong>Game: </strong>{{ session.gameName }}</p>
@@ -7,31 +7,42 @@
         <p><strong>Your key: </strong>{{ session.key }}</p>
       </div>
 
-      <div class="blueCard centerItems" v-if="isStatements">
-        <div class="marginBottom90" style="align-self: center; width: 600px;">
-          <BarChart v-if="dataLevelCompletionTimes.length > 0"
-            :data="dataLevelCompletionTimes"
-            chartId="bar-chart2"
-            title="Completion time per level" />
-        </div>
-        <div class="marginBottom90" style="align-self: center; width: 600px;">
-          <BarChart v-if="dataVerbCount.length > 0" 
-            :data="dataVerbCount"
-            chartId="bar-chart1"
-            title="Verb count" /> 
-        </div>
-        <div class="marginBottom90">
-          <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-            :data="dataPieChartGamesStartedCompleted"
-            chartId="pie-chart1"
-            title="Games started and completed" />
-        </div>
+      <div class="tabs-charts">
+        <button v-for="(tab, index) in tabs" :key="index" 
+                  @click="activeTab = index" 
+                  :class="{ 'active': activeTab === index }">
+          {{ tab }}
+        </button>
       </div>
-      <div v-if="!isStatements" class="blueCard no-data-charts">
+
+      <div v-if="activeTab === 0" class="tab-content-charts">
+        <div class="centerItems" v-if="isStatements">
+          <div class="marginBottom90" style="align-self: center; width: 600px;">
+            <BarChart v-if="dataLevelCompletionTimes.length > 0"
+              :data="dataLevelCompletionTimes"
+              chartId="bar-chart2"
+              title="Completion time per level" />
+          </div>
+          <div class="marginBottom90" style="align-self: center; width: 600px;">
+            <BarChart v-if="dataVerbCount.length > 0" 
+              :data="dataVerbCount"
+              chartId="bar-chart1"
+              title="Verb count" /> 
+          </div>
+          <div class="marginBottom90">
+            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+              :data="dataPieChartGamesStartedCompleted"
+              chartId="pie-chart1"
+              title="Games started and completed" />
+          </div>
+        </div>
+        <div v-if="!isStatements" class="no-data-charts">
           No data for this student.
+        </div>
       </div>
     </div>
 </template>
+
 <script setup>
 import { useRoute } from 'vue-router';
 import { computed, ref, watch, onMounted } from 'vue';
@@ -47,11 +58,9 @@ import PieChart from '@/components/PieChart.vue';
 
 const route = useRoute();
 
-// const groupsStore = useGroupsStore();
 const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
 const gameSessionsStore = useGameSessionsStore();
 
-// const groupId = computed(() => groupsStore.selectedGroupId); 
 const userType = computed(() => authStore.userType);
 const session = computed(() => {
     const gameSessionId = route.params.gameSessionId;
@@ -67,6 +76,9 @@ const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 
 const isStatements = ref(false);
+
+const tabs = ref(["Overview", "Completion Times", "Verb count"]);
+const activeTab = ref(0);
 
 onMounted(async () => {
     if (gameSessionsStore.gameSessions.length === 0) { // Si los datos de gameSessions no están cargados, los cargo
@@ -207,16 +219,9 @@ function cleanData(){
 </script>
 
 <style scoped>
-.student-game-session-key {
+.student-game-session-key-by-student {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.no-data-message {
-    text-align: center;
-    color: #666;
-    font-size: 1.125rem;
 }
 </style>
