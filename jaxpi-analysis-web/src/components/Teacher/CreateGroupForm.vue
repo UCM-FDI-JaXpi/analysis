@@ -141,6 +141,44 @@ form input {
     border-radius: 4px;
 }
 
+input, select, textarea {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+textarea {
+    width: 93%;
+    height: 100%;
+    max-width: 100%;
+    min-height: 100px;
+    max-height: 170px;
+    box-sizing: border-box;
+}
+
+small {
+    display: block;
+    color: gray;
+}
+
+.error-message {
+    text-align: center;
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
 .button-container {
     display: flex;
     gap: 10px;
@@ -161,43 +199,5 @@ form button {
 
 form button:hover {
     background-color: #1565C0;
-}
-
-input, select, textarea {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: #4a90e2;
-    outline: none;
-    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
-}
-
-small {
-    display: block;
-    color: gray;
-}
-
-textarea {
-    width: 93%;
-    height: 100%;
-    max-width: 100%;
-    min-height: 100px;
-    max-height: 170px;
-    box-sizing: border-box;
-}
-
-.error-message {
-    text-align: center;
-    color: red;
-    font-size: 0.9rem;
-    margin-top: 10px;
 }
 </style>

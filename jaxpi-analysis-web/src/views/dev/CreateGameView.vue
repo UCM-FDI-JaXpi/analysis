@@ -1,5 +1,5 @@
 <template>
-    <div class="create-game-view">
+    <div class="create-game-view" v-if="authStore.isAuthenticated">
         <!-- Formulario para añadir juego -->
         <div v-if="!showConfirmationCreatedGame" class="form-container">
             <AddGameForm @submit="handleAddGame" @cancel="handleCancel"/>
@@ -7,22 +7,31 @@
 
         <!-- Mensaje de información de juego añadido -->
         <div v-if="showConfirmationCreatedGame" class="confirmation">
-            <h3>Game added</h3>
+            <div class="title-container-image">
+                <h3 style="font-size: 1.8rem; margin: 0px;">Game added</h3>
+                <img :src=checkImage alt="check image" class="check-image"/>
+            </div>
             <p><strong>Game name:</strong> {{ createdGame.name }}</p>
             <p><strong>Game id:</strong> {{ createdGame.id }}</p>
             <p><strong>Token:</strong> {{ createdGame.token }}</p>
-            <p><strong>Description:</strong> {{ createdGame.description }}</p>
+            <p><strong>Description:</strong></p>
+            <div class="description-container">
+                <p>{{ createdGame.description }}</p>
+            </div>
             <button @click="redirectToGameDetails">OK</button>
         </div>
     </div>
 </template>
 
 <script setup>
+import checkImage from '@/assets/check.png';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
 import AddGameForm from '@/components/dev/AddGameForm.vue';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const showConfirmationCreatedGame = ref(false);
 const createdGame = ref({});
@@ -48,11 +57,22 @@ const handleCancel = () => {
 
 <style scoped>
 .create-game-view {
-    padding: 1rem;
+    padding: 2.5rem;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+	position: absolute;
+	top: 53%;
+	left: 56.5%;
+	transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 333px;
+    max-height: 500px;
 }
 
 .form-container {
-    max-width: 50%;
+    max-width: 600px;
+    margin: auto;
 }
 
 .confirmation {
@@ -60,9 +80,7 @@ const handleCancel = () => {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
+    max-height: 100%;
 }
 
 .confirmation > * {
@@ -70,8 +88,9 @@ const handleCancel = () => {
 }
 
 .confirmation button {
-    align-self: flex-start;
-    padding: 5px 10px;
+    margin-top: 5px;
+    align-self: center;
+    padding: 10px 20px; 
     border: none;
     border-radius: 4px;
     background-color: #1976D2;
@@ -81,5 +100,30 @@ const handleCancel = () => {
 
 .confirmation button:hover {
     background-color: #0056b3;
+}
+
+.title-container-image {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.check-image {
+    max-width: 50px;
+    height: auto;
+}
+
+.description-container {
+    max-height: 170px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #c1c1c1;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.description-container p {
+    margin: 0;
 }
 </style>
