@@ -12,7 +12,7 @@
 
         <div class="groups" v-if="teacher">
             <h1>Classes</h1>
-                <GroupList />
+            <GroupList />
         </div>
   </div>
 </template>

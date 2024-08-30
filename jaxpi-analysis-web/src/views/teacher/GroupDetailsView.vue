@@ -20,15 +20,12 @@
 
       <div class="tab-content">
         <div v-if="activeTab === 0">
-          <ChartsComponent :groupId="group.id"
-                            :originalData="originalData"
-                            :filteredDataByGroupId ="filteredDataByGroupId"
+          <ChartsComponent :originalData="originalData"
                             :dataTableFormat="dataTableFormat"
                             :dataLevelCompletionTimes="dataLevelCompletionTimes"
                             :dataVerbCount="dataVerbCount"
                             :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-                            :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
-                            :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
+                            :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup" />
         </div>
 
         <div v-if="activeTab === 1">
@@ -37,8 +34,8 @@
 
         <div v-if="activeTab === 2">
             <StudentList :groupId="group.id"
-                        :dataStudentList = "dataTableFormat"
-                        :filteredDataByGroupId ="filteredDataByGroupId"/>
+                         :dataStudentList = "dataTableFormat"
+                         :filteredDataByGroupId ="filteredDataByGroupId"/>
         </div>
       </div>
     </div>
@@ -69,7 +66,7 @@ const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
 const userType = computed(() => authStore.userType);
 
-const tabs = ref(["Stats", "Game sessions", "Students"]);
+const tabs = ref(["Overview", "Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
@@ -79,7 +76,6 @@ const dataLevelCompletionTimes = ref([]);
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 const dataBestCompletionTimePerLevelPerGroup = ref([]);
-const dataAttemptTimesForStudentLevel  = ref([]);
 const activeUsers  = ref(0);
 
 onMounted(async () => {

@@ -4,6 +4,7 @@ export function calculateLevelCompletionTimes(groupData) {
         const sortedStatements = sortStatements(copyStatements);  // Por cada actor ordenamos sus statements
         const actorData = calculateForStatements(sortedStatements);
         return {
+            sessionId: actor.sessionId,
             actorName: actor.name,
             actorData: actorData
         };

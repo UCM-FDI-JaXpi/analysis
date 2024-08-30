@@ -60,7 +60,7 @@ const drawBarChart = (data, chartId) => {
     'bar-chart-student-detail1': 'Times',
     'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time',
-    'bar-chart4': 'Time',
+    'bar-chart4': 'Time (ms)',
     'bar-chart10': 'Time',
     'bar-chart-interactions-items': 'Times'
   };
