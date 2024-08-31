@@ -1,36 +1,35 @@
 <template>
     <div class="group-details-view">
-      <div class="card-details" v-if="group">
-        <h1>{{ group.name }}</h1>
-        <p><strong>Total students: </strong>{{ group.students.length }}</p>
-        <p><strong>Active students: </strong>{{ activeUsers }}</p>
-        <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>
-        <button @click="navigateToCreateGameSession">Create game session</button>
-      </div>
-      <div v-else>There are no details to show.</div>
+      <div v-if="!group">There are no details to show.</div>
 
-      <div class="tabs-container">
-        <div class="tabs">
-            <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
-                :class="{ 'active': activeTab === index }">
-                {{ tab }}
-            </button>
-        </div>
-      </div>
-
-      <div class="tab-content">
-        <div v-if="activeTab === 0">
-          <ChartsComponent  :dataTableFormat="dataTableFormat"/>
+      <div v-else>
+        <div class="card-details">
+          <h1>{{ group.name }}</h1>
+          <p><strong>Total students: </strong>{{ group.students.length }}</p>
+          <p><strong>Active students: </strong>{{ activeUsers }}</p>
+          <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>
+          <button @click="navigateToCreateGameSession">Create game session</button>
         </div>
 
-        <div v-if="activeTab === 1">
-            <GameSessionList />
+        <div class="tabs-container">
+          <div class="tabs">
+              <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index"
+                  :class="{ 'active': activeTab === index }">
+                  {{ tab }}
+              </button>
+          </div>
         </div>
 
-        <div v-if="activeTab === 2">
-            <StudentList :groupId="group.id"
-                         :dataStudentList = "dataTableFormat"
-                         :filteredDataByGroupId ="filteredDataByGroupId"/>
+        <div class="tab-content">
+          <div v-if="activeTab === 0">
+              <GameSessionList />
+          </div>
+
+          <div v-if="activeTab === 1">
+              <StudentList :groupId="group.id"
+                            :dataStudentList = "dataTableFormat"
+                            :filteredDataByGroupId ="filteredDataByGroupId"/>
+          </div>
         </div>
       </div>
     </div>
@@ -45,7 +44,6 @@ import { useGroupsStore } from '@/stores/groupsStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 
-import ChartsComponent from '@/components/ChartsComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
 import StudentList from '@/components/teacher/StudentList.vue';
 
@@ -59,7 +57,7 @@ const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
 const userType = computed(() => authStore.userType);
 
-const tabs = ref(["Overview", "Game sessions", "Students"]);
+const tabs = ref(["Game sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
@@ -203,7 +201,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
           const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
           return {
             student: actor.name,
-            session: actor.sessionName + " (" + actor.sessionId + ")",
+            session: actor.sessionName,
             game: actor.gameName,
             numberOfStatements: actor.statements.length,
             lastTimestamp: lastStatement

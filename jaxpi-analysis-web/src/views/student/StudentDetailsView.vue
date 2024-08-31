@@ -19,7 +19,6 @@
       </div>
       <div>
         <select v-model="selectedGameSession">
-          <option value="all" v-if="gameSessionOptions.length > 0">All game sessions</option>
           <option v-for="gameSessionData in gameSessionOptions" :key="gameSessionData.sessionId" :value="gameSessionData.sessionId">
             {{ gameSessionData.sessionName }}</option>
         </select>
@@ -101,9 +100,8 @@ const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 
 const searchQueryTeacher = ref('')
-const tableColumnsTeacher = ['student','session', 'game', 'numberOfStatements', 'lastTimestamp']
+const tableColumnsTeacher = ['session', 'game', 'numberOfStatements', 'lastTimestamp']
 const dataTableColumnTitlesTeacher = {
-    student: 'Students',
     session: 'Session',
     game: 'Game',
     numberOfStatements: 'Number of statements',
@@ -111,12 +109,12 @@ const dataTableColumnTitlesTeacher = {
 };
 
 // For select-dropdown
-const selectedGameSession = ref('all');
+const selectedGameSession = ref('');
 const gameSessionOptions = computed(() => gameSessionsStore.gameSessions); // Vincula las opciones del select con los datos del store de gameSessions
 
 const formatGameSessionsForTable = () => {
   formattedGameSessions.value = gameSessionOptions.value.map(session => ({
-    gameSession: session.sessionName + ' (' + session.sessionId + ')' ,
+    gameSession: session.sessionName,
     game: session.gameName,
     sessionKey: session.students.find( student => student.name == selectedStudent.value).key,
   }));
@@ -142,6 +140,10 @@ watch(selectedGameSession, (newValue) => {
 onMounted(async () => {
   formatGameSessionsForTable();
   console.log('formattedGameSessions:', formattedGameSessions.value);
+
+  if (gameSessionOptions.value.length > 0) {
+    selectedGameSession.value = gameSessionOptions.value[0].sessionId;
+  }
 
   await fetchDataFromMongoDB();
   
@@ -257,7 +259,7 @@ function setDataTableFormat(gameSession){ // Recibo gameSessionId (all o sus ids
             const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
             return {
               student: actor.name,
-              session: actor.sessionName + " (" + actor.sessionId + ")",
+              session: actor.sessionName,
               game: actor.gameName,
               numberOfStatements: actor.statements.length,
               lastTimestamp: lastStatement
@@ -270,7 +272,7 @@ function setDataTableFormat(gameSession){ // Recibo gameSessionId (all o sus ids
             const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
             return {
               student: actor.name,
-              session: actor.sessionName + " (" + actor.sessionId + ")",
+              session: actor.sessionName,
               game: actor.gameName,
               numberOfStatements: actor.statements.length,
               lastTimestamp: lastStatement

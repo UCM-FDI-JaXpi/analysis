@@ -17,6 +17,19 @@
 
       <div v-if="activeTab === 0" class="tab-content-charts">
         <div class="centerItems" v-if="dataTableFormat.length > 0">
+          <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
+                  <h2>Last statements received</h2>
+                  <form id="search">
+                      Search <input name="query-teacher" v-model="searchQueryTeacher">
+                  </form>
+                  <DataTable
+                      :data="dataTableFormat" 
+                      :columns="tableColumnsTeacher"
+                      :columnTitles="dataTableColumnTitlesTeacher"
+                      :filter-key="searchQueryTeacher"
+                      @student-selected="handleStudentSelected"/>
+          </div>
+          
           <!-- Primer filtro y chart (LineChart) -->
           <div class="chart-container-linechart marginBottom90">
             <div class="filter-container">
@@ -57,21 +70,11 @@
             </div>
           </div>
 
-          <div class="marginBottom90" style="display: flex; gap:15%;">
-            <div>
-              <h2 style="text-align: center;">Students</h2>
-              <BaseTable 
-                  :headers="['Name', 'Key','']"
-                  :rows="session.students"
-                  :rowKeys="['name', 'key','view']"
-                  @student-selected="handleStudentSelected" />
-            </div>  
-            <div>
-              <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-                  :data="dataPieChartGamesStartedCompleted"
-                  chartId="pie-chart1"
-                  title="Games started and completed" />
-            </div>
+          <div class="marginBottom90">
+            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+                :data="dataPieChartGamesStartedCompleted"
+                chartId="pie-chart1"
+                title="Games started and completed" />
           </div>
 
           <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements">
@@ -86,21 +89,6 @@
                   :data="dataCompletedLevelsCount"
                   chartId="stacked-bar-chart-number-completed-levels"
                   title="Number of completed levels by student" />
-          </div>
-
-          <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
-                  <h2>Last statements received</h2>
-                  <form id="search">
-                      Search <input name="query-teacher" v-model="searchQueryTeacher">
-                  </form>
-                  <DataTable
-                      :data="dataTableFormat" 
-                      :columns="tableColumnsTeacher"
-                      :columnTitles="dataTableColumnTitlesTeacher"
-                      :filter-key="searchQueryTeacher"/>
-          </div>
-          <div v-else class="no-data-charts">
-              No data for these students.
           </div>
         </div>
         <div v-else class="no-data-charts">
@@ -148,7 +136,6 @@ import { sortStatements, calculateForStatements, calculateLevelCompletionTimes }
 
 import axios from 'axios';
 import socket from '@/socket';
-import BaseTable from '@/components/BaseTable.vue';
 import DataTable from '@/components/DataTable.vue';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
@@ -185,11 +172,13 @@ const dataObjectCount = ref([]);
 
 const isStatements = ref('false');
 const searchQueryTeacher = ref('')
-const tableColumnsTeacher = ['student', 'numberOfStatements', 'lastTimestamp']
+const tableColumnsTeacher = ['student','key', 'numberOfStatements', 'lastTimestamp', 'view']
 const dataTableColumnTitlesTeacher = {
-    student: 'Students',
+    student: 'Student',
+    key: 'Key',
     numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement send'
+    lastTimestamp: 'Last statement send',
+    view:''
 };
 
 const tabs = ref(["Overview", "Completion Times", "Verb count"]);
@@ -424,10 +413,29 @@ function setDataTableFormat(){
             return {
               student: actor.name,
               numberOfStatements: actor.statements.length,
-              lastTimestamp: lastStatement
+              lastTimestamp: lastStatement,
+              view: true
             };
           });
       }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
+
+      session.value.students.forEach(student => {
+        let reg = dataTableFormat.value.find( e => e.student=== student.name);
+        if(reg){
+          reg.key=student.key;
+          reg.view = true;
+        } else {
+          let obj = {
+              student: student.name,
+              numberOfStatements: 0,
+              lastTimestamp: null,
+              key: student.key,
+              view: false
+            };
+            dataTableFormat.value.push(obj); 
+        }
+        
+      });
     }  else {
       cleanData()
     }
@@ -591,16 +599,10 @@ function cleanData(){
 }
 
 function handleStudentSelected(student) { // When you click on a row in the table selecting a student
-    studentStore.setSelectedStudent(student.name); // Seteo el name del estudiante
-    router.push({ name: 'StudentGameSessionDetailsView' }) // Go to StudentGameSessionDetailsView using useRouter
+  groupsStore.setSelectedGroupId(groupId.value); // Seteo el group seleccionado
+  studentStore.setSelectedStudent(student.student); // Seteo el name del estudiante
+  router.push({ name: 'StudentDetailsView', params: { name: student.student} })// Go to StudentGameSessionDetailsView using useRouter
 }
-
-// watch(() => groupId.value, (newGroupId, oldGroupId) => {
-//   if (newGroupId !== oldGroupId) {
-//     dataStatementsByTimestamp.value = [];
-//     dataAttemptTimesForStudentLevel.value = [];
-//   }
-// });
 </script>
 
 <style scoped>

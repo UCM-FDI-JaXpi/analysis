@@ -374,7 +374,7 @@ watch(route, () => {
     background-color: #b71c1c;
 }
 
-.tabs {
+/* .tabs {
     display: flex;
 }
 
@@ -387,7 +387,7 @@ watch(route, () => {
 
 .tabs button.active {
     background-color: #79c1fd;
-}
+} */
 
 .tab-content {
     display: flex;

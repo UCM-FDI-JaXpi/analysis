@@ -19,12 +19,7 @@
             <div v-if="activeTab === 0" class="tab-content-charts">
                 <ChartsStudentComponent :groupId="groupId"
                                         :filteredDataByGroupId ="filteredDataByGroupId"
-                                        :dataTableFormat="dataTableFormat"
-                                        :dataLevelCompletionTimes="dataLevelCompletionTimes"
-                                        :dataVerbCount="dataVerbCount"
-                                        :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-                                        :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
-                                        :dataAttemptTimesForStudentLevel ="dataAttemptTimesForStudentLevel" />
+                                        :dataTableFormat="dataTableFormat" />
             </div>
 
             <div v-if="activeTab === 1" class="tab-content-charts">
@@ -38,15 +33,15 @@
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore.js';
+import { useGroupsStore } from '@/stores/groupsStore';
 import socket from '@/socket';
 import axios from 'axios';
 import ChartsStudentComponent from '@/components/student/ChartsStudentComponent.vue';
 import GameSessionList from '@/components/teacher/GameSessionList.vue';
 
-import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
-
 const authStore = useAuthStore();
 const gameSessionsStore = useGameSessionsStore();
+const groupsStore = useGroupsStore();
 
 const userType = computed(() => authStore.userType);
 const student = computed(() => { // Devuelve todos los datos si usr_type = 'student', sino, null
@@ -60,14 +55,10 @@ const groupId = ref('');
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy student al montar el componente
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
-const dataLevelCompletionTimes = ref([]);
-const dataVerbCount = ref([]);
-const dataPieChartGamesStartedCompleted = ref([]);
-const dataBestCompletionTimePerLevelPerGroup = ref([]);
-const dataAttemptTimesForStudentLevel  = ref([]);
 
 onMounted(async () => {
   await fetchDataFromMongoDB();
+  await gameSessionsStore.fetchGameSessionsByStudentName(student.value.name);
 
   socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
     if (userType.value === 'student') {
@@ -126,6 +117,7 @@ const fetchDataFromMongoDB = async () => {
       console.log('response.data:', response.data);
       if (userType.value === 'student') {
         groupId.value = response.data[0].groupId;
+        groupsStore.setSelectedGroupId(response.data[0].groupId);
         originalData.value = response.data;
       }
   } catch (error) {
@@ -150,7 +142,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
         return {
           student: actor.name,
-          session: actor.sessionName + " (" + actor.sessionId + ")",
+          session: actor.sessionName,
           game: actor.gameName,
           numberOfStatements: actor.statements.length,
           lastTimestamp: lastStatement
@@ -158,126 +150,9 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
       });
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
   }  else { // Limpia todas las stats var si no hay datos
-    dataTableFormat.value = []; 
-    dataVerbCount.value = [];
-    dataLevelCompletionTimes.value = [];
-    dataPieChartGamesStartedCompleted.value = [];
-    dataBestCompletionTimePerLevelPerGroup.value = [];
-  }
-
-  // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
-  if (filteredDataByGroupId.value.length > 0) {
-    if (groupId.value) {
-      const dataGroup = calculateLevelCompletionTimes(filteredDataByGroupId.value[0]);
-      dataLevelCompletionTimes.value = [];
-      dataGroup.forEach(actorInfo => {
-        const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level'));
-        if (keys) { // [ 'level1','level2', ...]
-          keys.forEach(key => {
-            if (dataLevelCompletionTimes.value.find(e => e.nameObject == key)) {
-              let times = actorInfo.actorData[key];
-              let previousData = dataLevelCompletionTimes.value.find(e => e.nameObject == key);
-              const averageTime = (times.reduce((sum, num) => sum + num, 0) + previousData.sum) / (times.length + previousData.numElem);
-              previousData.completionTime = averageTime;
-              previousData.sum = times.reduce((sum, num) => sum + num, 0) + previousData.sum;
-              previousData.numElem = times.length + previousData.numElem;
-            } else {
-              let times = actorInfo.actorData[key];
-              if (times.length > 0) {
-                const averageTime = times.reduce((sum, time) => sum + time, 0) / times.length;
-                let level = { nameObject: key, completionTime: averageTime, sum: times.reduce((sum, num) => sum + num, 0), numElem: times.length };
-                dataLevelCompletionTimes.value.push(level);
-              }
-            }
-          }); 
-        }
-      });
-      // PARA PRIMER BARCHART DEL TAB COMPLETION TIME (el mejor tiempo por nivel del grupo)
-      dataBestCompletionTimePerLevelPerGroup.value = [];
-      dataGroup.forEach(actorInfo => {
-        const keys = Object.keys(actorInfo.actorData).filter(key => key.includes('level') && key != 'level 15' && actorInfo.actorData[key].length > 0); // [ 'level1','level2', ...] menos el level 15 y los levels que no tienen tiempos de completado
-        if(keys){
-          keys.forEach(key => {
-              if (dataBestCompletionTimePerLevelPerGroup.value.find(e => e.nameObject == key)) {
-                let resTempo = dataBestCompletionTimePerLevelPerGroup.value.find(e => e.nameObject == key);
-                let minTime;
-                let times = actorInfo.actorData[key];
-                  if (times.length > 0){
-                    minTime = Math.min(...times);
-                    if ( minTime < resTempo.value || resTempo.value === 0){
-                      resTempo.value = minTime;
-                      resTempo.student = actorInfo.actorName;
-                    }
-                  }
-              } else {
-                  let times = actorInfo.actorData[key];
-                  let minTime;
-                  if (times.length > 0)
-                    minTime = Math.min(...times);
-                  else minTime = 0;
-                  let level = { nameObject: key, value: minTime, student: actorInfo.actorName};
-                  dataBestCompletionTimePerLevelPerGroup.value.push(level);
-              }
-          });
-        }
-      }); 
-      console.log('dataBestCompletionTimePerLevelPerGroup', dataBestCompletionTimePerLevelPerGroup.value);
-      // PARA EL SEGUNDO BARCHART - COUNTVERBS 
-      dataVerbCount.value = [];
-      dataGroup.forEach(actorInfo => {
-          const keysVerbs = Object.keys(actorInfo.actorData.verbs);
-          if (keysVerbs) { // [ 'started','jumped', ...]
-            keysVerbs.forEach(key => {
-              if (dataVerbCount.value.find(e => e.nameObject == key)) {
-                let times = actorInfo.actorData.verbs[key];
-                let previousData = dataVerbCount.value.find(e => e.nameObject == key);
-                const sumVerbs = previousData.value + times;
-                previousData.value = sumVerbs;
-              } else { // No esta el verb por primera vez
-                let times = actorInfo.actorData.verbs[key];
-                let count = { nameObject: key, value: times};
-                dataVerbCount.value.push(count); 
-              }
-            }); 
-          }
-        });
-
-      // PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
-      dataPieChartGamesStartedCompleted.value = [];
-      dataGroup.forEach(actorInfo => {
-          // actorInfo.actorData.starteds = > [{"level": "level 1"},{"level": "level 2"}]
-          let levels1 = actorInfo.actorData.starteds.filter( start => start.level == 'level 1')
-          let completeds14 = actorInfo.actorData.completeds.filter( completed => completed.level == 'level 14')
-          if (levels1.length == 0 && completeds14.length == 0) { // No pinto el piechart si no hay datos
-            dataPieChartGamesStartedCompleted.value = [];
-          } else {
-            if (dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started')) {
-                let previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started');
-                const sumStarted = previousData.value + (levels1.length - completeds14.length);  // No completados 
-                previousData.value = sumStarted;
-                previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'completed');
-                const sumCompleted = previousData.value + completeds14.length;
-                previousData.value = sumCompleted;
-              } else { // No hay datos aun 
-                let countStarted = { nameObject: 'started', value: levels1.length - completeds14.length};
-                let countCompleted = { nameObject: 'completed', value: completeds14.length};
-                dataPieChartGamesStartedCompleted.value.push(countStarted); 
-                dataPieChartGamesStartedCompleted.value.push(countCompleted); 
-              }
-          }
-        });
-    }
-    console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
-    console.log('dataVerbCount:', dataVerbCount.value);
-    console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
+    dataTableFormat.value = [];
   }
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
-
-watch(activeTab, async (newTab) => {
-    if (newTab === 1) { // Si es la pestaña de "Game sessions"
-      await gameSessionsStore.fetchGameSessionsByStudentName(student.value.name);
-    }
-});
 </script>
 
 <style scoped>

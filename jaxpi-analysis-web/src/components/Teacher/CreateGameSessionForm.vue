@@ -2,7 +2,7 @@
     <h2>Create game session</h2>
     <form @submit.prevent="addGameSession">
         <label for="gameSessionName">Game session name *</label>
-        <input type="text" v-model="gameSessionData.gameSessionName" id="gameSessionName" />
+        <input type="text" v-model="gameSessionData.gameSessionName" id="gameSessionName" required />
 
         <label for="game">Game *</label>
         <select v-model="gameSessionData.gameName" id="game" required>
