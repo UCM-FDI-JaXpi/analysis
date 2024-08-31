@@ -15,7 +15,7 @@
             <p><strong>Game id:</strong> {{ createdGame.id }}</p>
             <p><strong>Token:</strong> {{ createdGame.token }}</p>
             <p><strong>Description:</strong></p>
-            <div class="description-container">
+            <div class="game-description-content">
                 <p>{{ createdGame.description }}</p>
             </div>
             <button @click="redirectToGameDetails">OK</button>
@@ -114,16 +114,10 @@ const handleCancel = () => {
     height: auto;
 }
 
-.description-container {
+.game-description-content {
     max-height: 170px;
     overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #c1c1c1;
-    border-radius: 4px;
+    border: 0px;
     box-sizing: border-box;
-}
-
-.description-container p {
-    margin: 0;
 }
 </style>

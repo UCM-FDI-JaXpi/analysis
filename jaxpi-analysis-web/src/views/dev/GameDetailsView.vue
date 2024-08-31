@@ -1,13 +1,20 @@
 <template>
     <div class="game-details-view" v-if="game">
       <div class="header-container">
-        <div class="game-header">
+        <div class="card-details">
           <div class="header">
               <h1>{{ game.name }}</h1>
               <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
           </div>
           <div class="game-details" v-if="game">
-              <p><strong>Game id: </strong> {{ game.id }}</p>
+            <div class="token-container">
+              <p><strong>Token:</strong><span class="token-text">{{ game.token }}</span></p>
+              <button @click="copyToken(game.token)" class="copy-button">Copy</button>
+            </div>
+              
+              <p><strong>Description: </strong></p>
+              <p class="game-description-content">{{ game.description }}</p>
+
               <p><strong>Users: </strong>{{  activeUsers }}</p>
               <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
               <p v-if="dataLastStatement && dataLastStatement.length > 0"><strong>Last played: </strong> {{ dataLastStatement }}</p>
@@ -155,6 +162,16 @@ const fetchDataFromMongoDB = async () => {
     } catch (error) {
         console.error('Error al obtener los datos de http://localhost:3000/records', error);
     }
+};
+
+const copyToken = (token) => {
+    navigator.clipboard.writeText(token)
+        .then(() => {
+            console.log('Token copied');
+        })
+        .catch(err => {
+            console.error('Failed to copy token:', err);
+        });
 };
   
 watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
@@ -341,77 +358,43 @@ watch(route, () => {
 
 <style scoped>
 .game-details-view {
-    padding: 1.5rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
-    background-color: #f9f9f9;
     gap: 30px;
 }
 
-.game-details > p {
-    margin-top: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
-    margin-bottom: 10px;
+.header-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 50px; /* Espacio entre el contenedor de encabezado y el contenedor adicional */
+}
+
+.card-details {
+  padding:35px;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .delete-button {
     background-color: #d32f2f;
     color: white;
+    font-weight: bold;
+    font-size: 0.975rem;
     border: none;
     border-radius: 4px;
     padding: 10px 20px;
     cursor: pointer;
-    transition: background-color 0.24s ease;
+    transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .delete-button:hover {
-    background-color: #b71c1c;
-}
-
-/* .tabs {
-    display: flex;
-}
-
-.tabs button {
-    padding: 10px 20px;
-    margin-right: 1px;
-    cursor: pointer;
-    border: none;
-}
-
-.tabs button.active {
-    background-color: #79c1fd;
-} */
-
-.tab-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 50px;
-    padding: 10px;
-    background-color: #79c1fd;
-}
-
-h1 {
-    font-size: 2rem;
-    margin: 0;
-}
-
-.header-container {
-    display: flex;
-    align-items: flex-start;
-    gap: 40px; /* Espacio entre el contenedor de encabezado y el contenedor adicional */
-}
-
-.game-header {
-    display: flex;
-    flex-direction: column;
-    flex: 1; /* Permite que .game-header ocupe el espacio disponible */
+    background-color: #e16c6c;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Nuevo contenedor vertical a la derecha */

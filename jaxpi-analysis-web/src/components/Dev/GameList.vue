@@ -9,8 +9,8 @@
                 <div class="game-info">
                     <h2>{{ game.name }}</h2>
                     <div class="token-container">
-                        <p><strong>Token:</strong> {{ game.token }}</p>
-                        <button @click.stop="copyToken(game.token)">Copy</button>
+                        <p><strong>Token:</strong><span class="token-text">{{ game.token }}</span></p>
+                        <button @click.stop="copyToken(game.token)" class="copy-button">Copy</button>
                     </div>
                 </div>
                 <div class="card-actions">
@@ -69,9 +69,7 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
 }
 
 .token-container {
-    display: flex;
-    align-items: center; /* Alinea verticalmente el texto y el botón */
-    gap: 10px; /* Espacio entre el texto y el botón */
+    margin-bottom: 0px;
 }
 
 .game-info h2 {

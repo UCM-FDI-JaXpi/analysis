@@ -147,10 +147,6 @@ html, body, #app {
   min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
 
-.charts-container {
-  padding: 10px;
-}
-
 .tabs-charts {
   display: flex;
 }
@@ -192,5 +188,44 @@ form#search {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+/* PARA DEV */
+.token-container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.token-text {
+  font-family: monospace;
+  font-size: 1rem;
+  padding: 0px 5px;
+}
+
+.copy-button {
+  background-color: #3498DB;
+  color: white;
+  font-size: 0.975rem;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #2980b9;
+}
+
+.game-description-content {
+  background-color: #f9f9f9;
+  padding: 10px;
+  line-height: 1.5;
+  white-space: pre-wrap; /* Preserva saltos de línea y espacios del texto original */
+  border-left: 3px solid #3498db;
+  border-right: 3px solid #3498db;
+  border-radius: 8px;
+  max-height: 155px;
+  overflow-y: auto;
 }
 </style>
