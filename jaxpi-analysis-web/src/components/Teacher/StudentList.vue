@@ -7,7 +7,7 @@
             <BaseTable 
                 :headers="['Name', 'Last interaction', '']"
                 :rows="formattedStudents"
-                :rowKeys="['name', 'lastInteraction', 'view']"
+                :rowKeys="['nameOriginal', 'lastInteraction', 'view']"
                 :cellClasses="computedCellClasses"
                 @student-selected="handleStudentSelected" />
         </div>
@@ -74,11 +74,13 @@ const getFormattedStudents = () => {
             if (info) {
                 tempo = {
                     name: info.student,
+                    nameOriginal: info.student.slice(0,-6),
                     lastInteraction: formatTimestamp(info.lastTimestamp)
                 };
             } else {
                 tempo = {
                     name: student,
+                    nameOriginal: info.student.slice(0,-6),
                     lastInteraction: 'Never'
                 };
             }
@@ -148,14 +150,14 @@ function formatTimestamp(timestamp) {
 
 <style>
 .never-connected {
-    color: red;
+    color: gray;
 }
 
 .long-time-ago {
-    color: #e19200;
+    color: #7ccfff;
 }
 
 .recent-activity {
-    color: #25CC64;
+    color: #00a2ff;
 }
 </style>

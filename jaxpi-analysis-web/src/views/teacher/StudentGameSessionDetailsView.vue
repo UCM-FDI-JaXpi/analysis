@@ -30,7 +30,7 @@
         <div class="marginBottom90" style="align-self: center; width: 600px;">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
-            chartId="bar-chart1"
+            chartId="bar-chart-verb-count"
             title="Verb count" /> 
         </div>
 

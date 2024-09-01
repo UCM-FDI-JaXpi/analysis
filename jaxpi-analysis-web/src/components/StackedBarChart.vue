@@ -68,6 +68,11 @@ const drawBarChart = (data, chartId) => {
             x: 'x',
             columns:  [categories, ...columns],
             type: 'bar',
+            labels:{
+                format: (value) => {
+                    return value === 0 ? '' : value; // Show the label only if value is not zero
+                }
+            },
             groups: [columns.map(col => col[0])]
         },
         axis: {

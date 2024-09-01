@@ -117,7 +117,7 @@
         <div class="marginBottom90" >
             <BarChart v-if="dataVerbCount.length > 0" 
                   :data="dataVerbCount"
-                  chartId="bar-chart1"
+                  chartId="bar-chart-verb-count"
                   title="Verb count" /> 
           </div>
       </div>
@@ -172,19 +172,19 @@ const dataObjectCount = ref([]);
 
 const isStatements = ref('false');
 const searchQueryTeacher = ref('')
-const tableColumnsTeacher = ['student','key', 'numberOfStatements', 'lastTimestamp', 'view']
+const tableColumnsTeacher = ['studentOriginal','key', 'numberOfStatements', 'lastTimestamp', 'view']
 const dataTableColumnTitlesTeacher = {
-    student: 'Student',
+    studentOriginal: 'Student',
     key: 'Key',
     numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement send',
+    lastTimestamp: 'Last statement received',
     view:''
 };
 
 const tabs = ref(["Overview", "Completion Times", "Verb count"]);
 const activeTab = ref(0);
 
-const arrayStudents = computed(() => groupsStore.getStudentsByGroupId(groupId.value).map(e => ({id:e, name:e}))); // Para los filtros
+const arrayStudents = computed(() => groupsStore.getStudentsByGroupId(groupId.value).map(e => ({id:e, name:e.slice(0, -6)}))); // Para los filtros
 const dataStatementsByTimestamp = ref([]);
 const dataFirstFilter  = ref([]);
 
@@ -412,6 +412,7 @@ function setDataTableFormat(){
             const lastStatement = copyStatements.length > 0 ? copyStatements[0].timestamp : null;
             return {
               student: actor.name,
+              studentOriginal: actor.name.slice(0,-6),
               numberOfStatements: actor.statements.length,
               lastTimestamp: lastStatement,
               view: true
@@ -427,6 +428,7 @@ function setDataTableFormat(){
         } else {
           let obj = {
               student: student.name,
+              studentOriginal: student.name.slice(0,-6),
               numberOfStatements: 0,
               lastTimestamp: null,
               key: student.key,
@@ -454,7 +456,7 @@ function setBestCompletionTimePerLevel (){
                   let times = actorInfo.actorData[key];
                     if (times.length > 0){
                       minTime = Math.min(...times);
-                      if ( minTime < resTempo.value || resTempo.value === 0){
+                      if ( minTime < resTempo.value){
                         resTempo.value = minTime;
                         resTempo.student = actorInfo.actorName;
                       }
@@ -493,7 +495,7 @@ function setLevelCompletionTimes(){
 
     let objects = [...new Set(dataGroup.value.flatMap( e => e.actorData.interactions.map( f => f.object)))]; 
     dataGroup.value.forEach(actorInfo => {
-      let objInteraction = {nameObject : actorInfo.actorName, interactions: objects};
+      let objInteraction = {nameObject : actorInfo.actorName.slice(0, -6), interactions: objects};
       let info = [];
       objects.forEach(element => {
         let interaction = actorInfo.actorData.interactions.find( e => e.object == element);
@@ -508,7 +510,7 @@ function setLevelCompletionTimes(){
       resInteractions.push(objInteraction);
       ///////////////////////////////////////////////////////////////
       let obj = {
-        nameObject: actorInfo.actorName,
+        nameObject: actorInfo.actorName.slice(0, -6),
         value: actorInfo.actorData.countCompletedLevel  //[]
       };
       res.push(obj);

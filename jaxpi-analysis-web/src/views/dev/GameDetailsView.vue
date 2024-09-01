@@ -263,7 +263,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
                   let times = actorInfo.actorData[key];
                     if (times.length > 0){
                       minTime = Math.min(...times);
-                      if ( minTime < resTempo.value || resTempo.value === 0){
+                      if ( minTime < resTempo.value){
                         resTempo.value = minTime;
                         resTempo.student = actorInfo.actorName;
                       }

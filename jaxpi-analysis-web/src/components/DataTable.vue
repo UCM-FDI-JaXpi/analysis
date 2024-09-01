@@ -24,9 +24,15 @@
                         </span>
                     </span>
                     <!-- Para las otras columnas muestra normalmente -->
-                    <span v-else>
-                        {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }}
-                    </span>
+                    <div v-else>
+                        <!-- {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }} -->
+                          <div v-if="key === 'lastTimestamp'" v-html="formatTimestamp(entry[key])">
+                          </div>
+                          <div v-else>
+                            {{entry[key]}}
+                          </div>
+                    </div>
+                    
                 </td>
             </tr>
         </tbody>
@@ -38,9 +44,9 @@
             </tr>
         </tbody>
     </table>
-    <p v-if="filteredData.length === 0">No matches found</p>
+    <p v-if="filteredData.length === 0" style="font-size: 1.3rem;">No matches found</p>
 
-    <PaginationComponent
+    <PaginationComponent v-if="paginatedData.length > 1"
         :totalItems="filteredData.length" 
         :itemsPerPage="itemsPerPage"
         @page-changed="changePage"/>
@@ -72,9 +78,12 @@ const filteredData = computed(() => {
     if (filterKey) {
         filterKey = filterKey.toLowerCase()
         data = data.filter((row) => {
-            return Object.keys(row).some((key) => {
-                return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-            })
+            return (
+                String(row.studentOriginal).toLowerCase().includes(filterKey) ||
+                String(row.key).toLowerCase().includes(filterKey) ||
+                String(row.numberOfStatements).toLowerCase().includes(filterKey) ||
+                (row.lastTimestamp && new Date(row.lastTimestamp).toLocaleString().toLowerCase().includes(filterKey))
+            );
         })
     }
     const key = sortKey.value
@@ -111,11 +120,26 @@ function sortBy(key) {
 
 // To format the timestamp in a readable format
 function formatTimestamp(timestamp) {
-    return timestamp ? new Date(timestamp).toLocaleString() : 'Never';
+    const now = new Date();
+    const timeDiff = now - new Date(timestamp);
+    const minutes = Math.floor(timeDiff / (1000 * 60));
+    const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    let res;
+    if (!timestamp){
+        res = "<div class='never-connected-datable '>Never</div>";
+    }
+    else if (minutes < 10) {
+        res = "<div class='recent-activity-datable '>" + new Date(timestamp).toLocaleString() + "</div>";
+    } else  if (hours < 2) {
+        res = "<div class='long-time-ago-datable '>" + new Date(timestamp).toLocaleString() + "</div>";
+    } else {
+        res = "<div class='long-long-time-ago-datable '>" + new Date(timestamp).toLocaleString() + "</div>";
+    }
+    return res ;
 }
 </script>
 
-<style scoped>
+<style>
 table {
     width: 81%;
     border: 2px solid #4276b9;
@@ -167,6 +191,7 @@ th.active .arrow {
     border-right: 4px solid transparent;
     border-top: 4px solid #fff;
 }
+
 .eye-icon {
     margin-left: 8px;
     cursor: pointer;
@@ -179,11 +204,27 @@ th.active .arrow {
 .eye-icon svg {
     width: 100%;
     height: 100%;
-    fill: #007BFF; /* Color azul para el icono */
+    fill: #007BFF;
     transition: fill 0.3s ease;
 }
 
 .eye-icon svg:hover {
-    fill: #0056b3; /* Cambio de color al pasar el cursor */
+    fill: #0056b3;
+}
+
+.never-connected-datable {
+    color: gray;
+}
+
+.long-long-time-ago-datable   {
+    color: rgba(255, 0, 0, 0.735);
+}
+
+.long-time-ago-datable  {
+    color: #f99e00;
+}
+
+.recent-activity-datable  {
+    color: #18d15e;
 }
 </style>

@@ -53,7 +53,7 @@
         <div v-if="dataVerbCount.length > 0">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
-            chartId="bar-chart1"
+            chartId="bar-chart-verb-count"
             title="Verb count" /> 
         </div>
         <div v-else class="no-data-charts">
@@ -213,7 +213,9 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 </script>
   
 <style>
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-interactions-items, #pie-chart-completed-game, #line-chart1 {
+#bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-interactions-items, #bar-chart-verb-count,
+#line-chart1,
+#pie-chart-completed-game {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }

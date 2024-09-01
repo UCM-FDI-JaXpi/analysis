@@ -42,6 +42,29 @@ watch(() => props.data, (newData) => {
 });
 
 const drawLineChart = (data, chartId) => {
+
+    // data = [[
+    //     {nameObject: '17/8/2024', value: 40,name: 'maria'},
+    //     {nameObject: '18/8/2024', value: 5,name: 'maria'},
+    //     {nameObject: '19/8/2024', value: 0,name: 'maria'},
+    //     {nameObject: '20/8/2024', value: 10,name: 'maria'}],
+    //     [
+    //     {nameObject: '18/8/2024', value: 25,name: 'ana'},
+    //     {nameObject: '20/8/2024', value: 4,name: 'ana'},
+    //     {nameObject: '21/8/2024', value: 10,name: 'ana'}]]
+
+    //     const chartData = [];
+    // data.forEach(element => {
+    //     const xAxisData = element.map(item => item.nameObject);
+    //     const yAxisData = element.map(item => item.value);
+    //     // const names = {
+    //     // 'line-chart1': 'Statements'
+    //     // };
+          
+    //     chartData.push(['x'].concat(xAxisData));
+    //     chartData.push([element[0].name].concat(yAxisData));
+
+    // });  
     const xAxisData = data.map(item => item.nameObject);
     const yAxisData = data.map(item => item.value);
 

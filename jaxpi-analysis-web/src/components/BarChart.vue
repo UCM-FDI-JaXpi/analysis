@@ -56,13 +56,13 @@ const drawBarChart = (data, chartId) => {
   const studentNamesHover = data.map(item => item.student);
 
   const names = {
-    'bar-chart1': 'Times',
     'bar-chart-student-detail1': 'Times',
     'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time',
     'bar-chart4': 'Time (ms)',
     'bar-chart10': 'Time',
-    'bar-chart-interactions-items': 'Times'
+    'bar-chart-interactions-items': 'Times',
+    'bar-chart-verb-count': 'Times',
   };
 
   const chartData = [
@@ -86,12 +86,21 @@ const drawBarChart = (data, chartId) => {
   }
   : {};
 
+  const labelOptions = chartId === 'bar-chart-verb-count' ? {
+    format: {
+      [names[chartId]]: function (value) {
+        return value;
+      }
+    }
+  } : {};
+
   chart.value = c3.generate({
     bindto: `#${chartId}`,
     data: {
       x: 'x',
       columns: chartData,
       type: 'bar',
+      labels: labelOptions,
       colors: {
         [names[chartId]]: props.colorPalette
       }
@@ -155,5 +164,9 @@ const drawBarChart = (data, chartId) => {
 
 .custom-tooltip strong {
   color: rgb(255, 192, 32);
+}
+
+.c3-text {
+  font-size: 15px; /* For all labels */
 }
 </style>

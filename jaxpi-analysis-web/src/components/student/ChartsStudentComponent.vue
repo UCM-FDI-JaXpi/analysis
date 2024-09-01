@@ -47,7 +47,7 @@ onMounted(() => {
 </script>
   
 <style scoped>
-#bar-chart1, #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10,
+#bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-verb-count,
 #pie-chart1,
 #line-chart1,
 #stacked-bar-chart1 {

@@ -2,7 +2,7 @@
 	<div class="student-details-container" v-if="selectedStudent">
     <div class="card-details">
       <div class="student-name">
-        <h1>{{ selectedStudent }}</h1>
+        <h1>{{ selectedStudent.slice(0, -6) }}</h1>
       </div>
       <div v-if="groupId" class="student-class">
         <p><strong>Class: </strong> {{ groupName }}</p>
@@ -44,7 +44,7 @@
       <div class="marginBottom90" v-if="dataTableFormat.length > 0">
         <BarChart v-if="dataVerbCount.length > 0" 
         :data="dataVerbCount"
-        chartId="bar-chart1"
+        chartId="bar-chart-verb-count"
         title="Verb count" />
       </div>
 
@@ -113,11 +113,17 @@ const selectedGameSession = ref('');
 const gameSessionOptions = computed(() => gameSessionsStore.gameSessions); // Vincula las opciones del select con los datos del store de gameSessions
 
 const formatGameSessionsForTable = () => {
-  formattedGameSessions.value = gameSessionOptions.value.map(session => ({
+  try{
+    formattedGameSessions.value = gameSessionOptions.value.map(session => ({
     gameSession: session.sessionName,
     game: session.gameName,
     sessionKey: session.students.find( student => student.name == selectedStudent.value).key,
   }));
+  } catch(error){
+    gameSessionOptions.value = [];
+    console.log('error in formatGameSessionsForTable')
+  }
+
 };
 
 const handleGameSessionChange = (gameSessionId) => {
@@ -142,7 +148,12 @@ onMounted(async () => {
   console.log('formattedGameSessions:', formattedGameSessions.value);
 
   if (gameSessionOptions.value.length > 0) {
-    selectedGameSession.value = gameSessionOptions.value[0].sessionId;
+    let gameSessionSel = gameSessionOptions.value.find(gs => gs.sessionId == gameSessionsStore.selectedGameSessionId);
+    if(gameSessionSel){
+      selectedGameSession.value = gameSessionSel.sessionId;
+    } else {
+      selectedGameSession.value = gameSessionOptions.value[0].sessionId;
+    }
   }
 
   await fetchDataFromMongoDB();
