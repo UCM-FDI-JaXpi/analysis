@@ -4,19 +4,19 @@
 
     <form @submit.prevent="register">
       <div class="input-container">
-        <label for="name">Name</label>
+        <label for="name">Name *</label>
         <input type="text" id="name" v-model="name" required>
       </div>
       <div class="input-container">
-        <label for="email">Email</label>
+        <label for="email">Email *</label>
         <input type="text" id="email" v-model="email" required>
       </div>
       <div class="input-container">
-        <label for="pwd">Password</label>
+        <label for="pwd">Password *</label>
         <input type="password" id="pwd" v-model="pwd" required>
       </div>
       <div class="input-container">
-        <label for="rep_pwd">Repeat password</label>
+        <label for="rep_pwd">Repeat password *</label>
         <input type="password" id="rep_pwd" v-model="rep_pwd" required>
       </div>
       <div class="input-container">
@@ -27,7 +27,7 @@
         </select>
       </div>
       <div v-if="userType === 'teacher'" class="input-container">
-        <label for="institution">Institution</label>
+        <label for="institution">Institution *</label>
         <input type="text" id="institution" v-model="institution" required>
       </div>
       <button type="submit">Register</button>

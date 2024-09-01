@@ -3,7 +3,6 @@ import { useAuthStore } from '@/stores/authStore'
 import HomeView from '@/views/HomeView.vue'
 import SelectRoleView from '@/views/SelectRoleView.vue'
 import StudentLoginView from '@/views/student/StudentLoginView.vue'
-import ChartsView from '@/views/ChartsView.vue'
 import AboutUsView from '@/views/AboutUsView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import LoginView from '@/views/LoginView.vue'
@@ -28,7 +27,6 @@ const routes = [
     { path: '/login', name: 'LoginView', component: LoginView },
     { path: '/select-role', name: 'SelectRoleView', component: SelectRoleView },
     { path: '/student-login', name: 'StudentLoginView', component: StudentLoginView },
-    { path: '/charts', name: 'ChartsView', component: ChartsView },
     { path: '/about-us', name: 'AboutUsView', component: AboutUsView },
     { path: '/register', name: 'RegisterView', component: RegisterView },
     { path: '/:pathMatch(.*)*', name: 'NotFoundView', component: NotFoundView }, // For undefined routes

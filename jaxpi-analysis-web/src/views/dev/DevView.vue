@@ -22,15 +22,15 @@
     </div>
 
      <!-- Instructions, only if we don´t have any games -->
-     <div class="instructions" v-if="gamesStore.games.length === 0">
+     <div class="instructions" v-if="dev && gamesStore.games.length === 0">
         <h2>Getting Started</h2>
         <p>To start viewing your games analytics, follow these steps:</p>
         <ol>
           <li><strong>Create a new game:</strong> Click the "Add Game" button in your sidebar.</li>
-          <li><strong>Obtain a token:</strong> When you add your game you will be given a <strong>token</strong> 
-            which will be available in your application so you can copy it and use it wherever you want.
-            <strong style="color: #FF8800;">IMPORTANT:</strong> you have to go to this link to know everything about how to use this token
-            and be able to see your statistics in our application. You will also have this link in your game details. <a :href="libUrl" target="_blank">How to use this token</a>.</li>
+          <li><strong>Obtain a token:</strong> When you add your game you will be given a <strong>token</strong>.
+            <strong style="color: #FF8800;">IMPORTANT:</strong> you have to go to this <a :href="libUrl" target="_blank">link</a>
+              to know everything about how to use this token and be able to see your statistics in our application.
+              You will have this token and this link in your game details.</li>
           <li><strong>View game statistics:</strong> Once you have followed the instructions in that link,
             all you have to do is wait to see the analytics of your added games.</li>
         </ol>
