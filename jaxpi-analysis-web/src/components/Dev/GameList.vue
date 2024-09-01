@@ -68,10 +68,6 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
     gap: 10px; /* Espacio entre el título y el contenedor del token */
 }
 
-.token-container {
-    margin-bottom: 0px;
-}
-
 .game-info h2 {
     margin: 0;
     font-size: 1.25rem;

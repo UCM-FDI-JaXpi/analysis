@@ -3,17 +3,18 @@
       <div class="header-container">
         <div class="card-details">
           <div class="header">
-              <h1>{{ game.name }}</h1>
+              <h1 style="margin-top:0;">{{ game.name }}</h1>
               <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
           </div>
           <div class="game-details" v-if="game">
             <div class="token-container">
-              <p><strong>Token:</strong><span class="token-text">{{ game.token }}</span></p>
+              <p><strong  style="background-color: #c6e8ff;">Token:</strong><span class="token-text" style="background-color: #c6e8ff;">{{ game.token }}</span></p>
               <button @click="copyToken(game.token)" class="copy-button">Copy</button>
             </div>
+            <p><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
               
-              <p><strong>Description: </strong></p>
-              <p class="game-description-content">{{ game.description }}</p>
+              <p v-if="game.description"><strong>Description: </strong></p>
+              <p v-if="game.description" class="game-description-content">{{ game.description }}</p>
 
               <p><strong>Users: </strong>{{  activeUsers }}</p>
               <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
@@ -371,13 +372,13 @@ watch(route, () => {
 }
 
 .card-details {
-  padding:35px;
+  padding: 35px;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Alinea los elementos en la parte superior */
 }
 
 .delete-button {
@@ -390,6 +391,7 @@ watch(route, () => {
     padding: 10px 20px;
     cursor: pointer;
     transition: background-color 0.2s, box-shadow 0.2s;
+    min-width: 135px;
 }
 
 .delete-button:hover {

@@ -174,7 +174,7 @@ small {
 
 .error-message {
     text-align: center;
-    color: red;
+    color: #ef0000;
     font-size: 0.9rem;
     margin-top: 10px;
 }

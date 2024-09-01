@@ -63,12 +63,6 @@ function showStudentDetail(studentName) {
 </script>
 
 <style scoped>
-table {
-    border: 2px solid #4276b9;
-    border-radius: 3px;
-    background-color: #fff;
-}
-
 td {
     background-color: #f7f5f5; /* Color por defecto cuando el mouse no está sobre la fila */
 }

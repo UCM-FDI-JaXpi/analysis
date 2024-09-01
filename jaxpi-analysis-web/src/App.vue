@@ -76,6 +76,7 @@ html, body, #app {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 62%;
+  max-width: 850px;
   display: flex;
   flex-direction: column;
   border: 1px solid #ddd; 
@@ -194,13 +195,13 @@ form#search {
 .token-container {
   display: flex;
   align-items: baseline;
-  margin-bottom: 8px;
 }
 
 .token-text {
   font-family: monospace;
   font-size: 1rem;
   padding: 0px 5px;
+  margin-right: 3px;
 }
 
 .copy-button {
@@ -225,7 +226,7 @@ form#search {
   border-left: 3px solid #3498db;
   border-right: 3px solid #3498db;
   border-radius: 8px;
-  max-height: 155px;
+  max-height: 140px;
   overflow-y: auto;
 }
 </style>

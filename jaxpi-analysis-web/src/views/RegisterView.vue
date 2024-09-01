@@ -90,7 +90,7 @@ h1 {
 }
 
 .error-message {
-  color: red;
+  color: #ef0000;
   font-weight: bold;
 }
 
@@ -101,7 +101,7 @@ h1 {
 	box-shadow: 0 4px 17px rgba(0, 0, 0, 0.1);
 	text-align: center;
 	width: 300px;
-	position: absolute;
+	position: relative;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);

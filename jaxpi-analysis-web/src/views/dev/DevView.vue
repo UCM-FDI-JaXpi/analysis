@@ -18,11 +18,26 @@
             <span class="label">games</span>
           </h3>
         </div>
-
       </div>
     </div>
 
-    <div class="game-section" v-if="dev">
+     <!-- Instructions, only if we don´t have any games -->
+     <div class="instructions" v-if="gamesStore.games.length === 0">
+        <h2>Getting Started</h2>
+        <p>To start viewing your games analytics, follow these steps:</p>
+        <ol>
+          <li><strong>Create a new game:</strong> Click the "Add Game" button in your sidebar.</li>
+          <li><strong>Obtain a token:</strong> When you add your game you will be given a <strong>token</strong> 
+            which will be available in your application so you can copy it and use it wherever you want.
+            <strong style="color: #FF8800;">IMPORTANT:</strong> you have to go to this link to know everything about how to use this token
+            and be able to see your statistics in our application. You will also have this link in your game details. <a :href="libUrl" target="_blank">How to use this token</a>.</li>
+          <li><strong>View game statistics:</strong> Once you have followed the instructions in that link,
+            all you have to do is wait to see the analytics of your added games.</li>
+        </ol>
+        <p style="margin-bottom: 0;">If you need more help, please <router-link to="/about-us">contact us</router-link>.</p>
+      </div>
+
+    <div class="game-section" v-if="dev && gamesStore.games.length > 0">
       <h2>Games</h2>
       <GameList />
     </div>
@@ -43,6 +58,8 @@ const dev = computed(() => { // devuelve todos los datos si usr_type = 'dev', si
   return devData && devData.usr_type === 'dev' ? devData : null;
 });
 const gamesCount = computed(() => gamesStore.games.length);
+
+const libUrl = 'https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md';
 </script>
 
 <style scoped>
@@ -113,5 +130,25 @@ h1 {
 .label {
     color: #7c15dd;
     margin-top: -5px;
+}
+
+.instructions {
+    background-color: #e7fcff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+}
+
+.instructions h2 {
+    margin-top: 0;
+}
+
+.instructions ol {
+    padding-left: 20px;
+}
+
+.instructions p, .instructions li {
+    line-height: 1.6;
 }
 </style>

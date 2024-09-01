@@ -1,9 +1,9 @@
 <template>
-    <div class="student-list">
+    <div class="centerItems student-list">
         <div v-if="formattedStudents.length === 0" class="no-data">
             <p>No students available.</p>
         </div>
-        <div v-else class="table-container">
+        <div v-else>
             <BaseTable 
                 :headers="['Name', 'Last interaction', '']"
                 :rows="formattedStudents"
@@ -65,7 +65,7 @@ const getFormattedStudents = () => {
     const students = groupsStore.getStudentsByGroupId(props.groupId);
     console.log('Students:', students);
     if (props.dataStudentList.length == 0){
-        return students.map(student => ({ name: student, lastInteraction: 'Never' }));
+        return students.map(student => ({ name: student, nameOriginal: student.slice(0,-6), lastInteraction: 'Never' }));
     } else {
         let res = [];
         students.forEach(student => {
@@ -80,7 +80,7 @@ const getFormattedStudents = () => {
             } else {
                 tempo = {
                     name: student,
-                    nameOriginal: info.student.slice(0,-6),
+                    nameOriginal: student.slice(0,-6),
                     lastInteraction: 'Never'
                 };
             }

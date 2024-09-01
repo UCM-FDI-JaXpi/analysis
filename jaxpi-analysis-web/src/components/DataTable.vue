@@ -141,7 +141,6 @@ function formatTimestamp(timestamp) {
 
 <style>
 table {
-    width: 81%;
     border: 2px solid #4276b9;
     border-radius: 3px;
     background-color: #fff;

@@ -14,10 +14,11 @@
             <p><strong>Game name:</strong> {{ createdGame.name }}</p>
             <p><strong>Game id:</strong> {{ createdGame.id }}</p>
             <p><strong>Token:</strong> {{ createdGame.token }}</p>
-            <p><strong>Description:</strong></p>
-            <div class="game-description-content">
+            <p v-if="createdGame.description.length > 0"><strong>Description:</strong></p>
+            <div class="game-description-content" v-if="createdGame.description.length > 0">
                 <p>{{ createdGame.description }}</p>
             </div>
+            <p style="text-align: center;"><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
             <button @click="redirectToGameDetails">OK</button>
         </div>
     </div>
@@ -61,9 +62,9 @@ const handleCancel = () => {
     background-color: #fff;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-	position: absolute;
-	top: 53%;
-	left: 56.5%;
+	position: relative;
+	top: 50%;
+	left: 50%;
 	transform: translate(-50%, -50%);
     width: 100%;
     max-width: 333px;
@@ -88,7 +89,7 @@ const handleCancel = () => {
 }
 
 .confirmation button {
-    margin-top: 5px;
+    margin-top: 7px;
     align-self: center;
     padding: 10px 20px; 
     border: none;
