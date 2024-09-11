@@ -12,13 +12,17 @@
                 <img :src=checkImage alt="check image" class="check-image"/>
             </div>
             <p><strong>Game name:</strong> {{ createdGame.name }}</p>
-            <p><strong>Game id:</strong> {{ createdGame.id }}</p>
-            <p><strong>Token:</strong> {{ createdGame.token }}</p>
+
+            <div class="token-container">
+              <p><strong>Token:</strong><span class="token-text" style="background-color: #c6e8ff;">{{ createdGame.token }}</span></p>
+              <button @click="copyToken(game.token)" class="copy-button">Copy</button>
+            </div>
+            <p><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integration-with-jaxpi-server" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
+              
             <p v-if="createdGame.description.length > 0"><strong>Description:</strong></p>
             <div class="game-description-content" v-if="createdGame.description.length > 0">
                 <p>{{ createdGame.description }}</p>
             </div>
-            <p style="text-align: center;"><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
             <button @click="redirectToGameDetails">OK</button>
         </div>
     </div>

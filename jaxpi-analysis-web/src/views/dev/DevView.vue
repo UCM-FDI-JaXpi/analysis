@@ -1,6 +1,6 @@
 <template>
   <div class="dev-view">
-    <h1 v-if="!dev">Dev's view</h1>
+    <h1 v-if="!dev" style="margin-bottom: 0;">Dev's view</h1>
     <p v-if="!dev">Please log in as a dev to view dev details.</p>
     
     <div class="dev-details" v-if="dev">
@@ -26,27 +26,27 @@
         <h2>Getting Started</h2>
         <p>To start viewing your games analytics, follow these steps:</p>
         <ol>
-          <li><strong>Create a new game:</strong> Click the "Add Game" button in your sidebar.</li>
+          <li><strong>Register your game:</strong> Click the "Add Game" button in your sidebar.</li>
           <li><strong>Obtain a token:</strong> When you add your game you will be given a <strong>token</strong>.
             <strong style="color: #FF8800;">IMPORTANT:</strong> you have to go to this <a :href="libUrl" target="_blank">link</a>
-              to know everything about how to use this token and be able to see your statistics in our application.
+              to know everything about how to use this token and be able to see your analytics in our application.
               You will have this token and this link in your game details.</li>
-          <li><strong>View game statistics:</strong> Once you have followed the instructions in that link,
+          <li><strong>View game analytics:</strong> Once you have followed the instructions in that link,
             all you have to do is wait to see the analytics of your added games.</li>
         </ol>
         <p style="margin-bottom: 0;">If you need more help, please <router-link to="/about-us">contact us</router-link>.</p>
       </div>
 
     <div class="game-section" v-if="dev && gamesStore.games.length > 0">
-      <h2>Games</h2>
+      <h1>Games</h1>
       <GameList />
     </div>
   </div>
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/authStore';
 import { computed } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
 import { useGamesStore } from '@/stores/gamesStore';
 import GameList from '@/components/dev/GameList.vue';
 
@@ -59,7 +59,7 @@ const dev = computed(() => { // devuelve todos los datos si usr_type = 'dev', si
 });
 const gamesCount = computed(() => gamesStore.games.length);
 
-const libUrl = 'https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md';
+const libUrl = 'https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integration-with-jaxpi-server';
 </script>
 
 <style scoped>
@@ -68,10 +68,6 @@ const libUrl = 'https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md';
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-h1 {
-    margin-bottom: 0;
 }
 
 .dev-details {

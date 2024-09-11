@@ -66,7 +66,7 @@
               <BarChart
                 :data="dataAttemptTimesForStudentLevel "
                 chartId="bar-chart10"
-                title="Time per Attempt (Student per Level)" />
+                title="Time per attempt (Student per level)" />
             </div>
           </div>
 
@@ -97,29 +97,38 @@
       </div>
 
       <div v-if="activeTab === 1" class="tab-content-charts">
-        <div class="marginBottom90" >
-          <BarChart v-if="dataLevelCompletionTimes.length > 0"
-            :data="dataLevelCompletionTimes"
-            chartId="bar-chart2"
-            title="Completion time per level" />
+        <div class="centerItems" v-if="dataTableFormat.length > 0">
+          <div class="marginBottom90">
+            <BarChart v-if="dataBestCompletionTimePerLevel.length > 0"
+              :data="dataBestCompletionTimePerLevel"
+              chartId="bar-chart4"
+              title="Best completion time per level" 
+              :customTooltip="true"/>
+          </div>
+          <div class="marginBottom90" >
+            <BarChart v-if="dataLevelCompletionTimes.length > 0"
+              :data="dataLevelCompletionTimes"
+              chartId="bar-chart2"
+              title="Completion time per level" />
+          </div>
         </div>
-
-        <div class="marginBottom90">
-          <BarChart v-if="dataBestCompletionTimePerLevel.length > 0"
-            :data="dataBestCompletionTimePerLevel"
-            chartId="bar-chart4"
-            title="Best completion time per level" 
-            :customTooltip="true"/>
+        <div v-else class="no-data-charts">
+            No data for these students.
         </div>
       </div>
 
       <div v-if="activeTab === 2" class="tab-content-charts">
-        <div class="marginBottom90" >
+        <div class="centerItems" v-if="dataTableFormat.length > 0">
+          <div class="marginBottom90" >
             <BarChart v-if="dataVerbCount.length > 0" 
-                  :data="dataVerbCount"
-                  chartId="bar-chart-verb-count"
-                  title="Verb count" /> 
+              :data="dataVerbCount"
+              chartId="bar-chart-verb-count"
+              title="Verb count" /> 
           </div>
+        </div>
+        <div v-else class="no-data-charts">
+            No data for these students.
+        </div>
       </div>
     </div>
 </template>

@@ -1,8 +1,21 @@
 <template>
     <div v-if="isTeacher" class="game-session-list">
-        <div v-if="gameSessions.length === 0" class="no-data-charts">
+        <!-- <div v-if="gameSessions.length === 0" class="no-data-charts">
             <p>No game sessions available for this class.</p>
+        </div> -->
+
+        <!-- Instructions, only if we don´t have any game sessions -->
+        <div class="instructions" v-if="isTeacher && gameSessions.length === 0">
+            <p><strong style="color: #FF8800;">Remember:</strong> If you want to see your students' analytics you have to create a game session.</p>
+            <ol>
+                <li><strong>Create game sessions:</strong> Click on the "Create game session" button and create
+                 session keys for your students.</li>
+                <li><strong>Give session keys to your students:</strong> Provide the generated session keys to you students
+                    so they can play the game and access the app.</li>
+            </ol>
+            <p>As soon as your students start playing, you'll be able to see their analytics!</p>
         </div>
+
         <div v-else class="card-container">
             <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">
                 <div class="game-session-info">
@@ -14,7 +27,7 @@
                     <router-link :to="{ name: 'StudentGameSessionKeyView', params: { gameSessionId: gameSession.sessionId } }" 
                                  class="details-button"
                                  @click="selectSession(gameSession.sessionId)">
-                        View students
+                        View analytics
                     </router-link>
                 </div>
             </div>
@@ -63,6 +76,26 @@ const selectSession = (sessionId) => {
 </script>
 
 <style scoped>
+.instructions {
+    background-color: #e7fcff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+}
+
+.instructions h2 {
+    margin-top: 0;
+}
+
+.instructions ol {
+    padding-left: 20px;
+}
+
+.instructions li {
+    line-height: 1.6;
+}
+
 .card-container {
     display: flex;
     flex-direction: column;

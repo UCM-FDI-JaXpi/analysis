@@ -8,7 +8,7 @@
         <textarea v-model="gameData.description" id="description" @input="adjustHeight"></textarea>
 
         <div class="button-container">
-            <button type="submit">Create</button>
+            <button type="submit">Add</button>
             <button type="button" @click="cancelForm">Cancel</button>
         </div>
     </form>

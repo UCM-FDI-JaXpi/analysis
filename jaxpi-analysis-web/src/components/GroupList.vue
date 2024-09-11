@@ -1,6 +1,6 @@
 <template>
     <div class="group-list">
-        <div v-if="groups.length === 0" class="no-groups-message">
+        <div v-if="groups.length === 0" class="blueCard no-data-charts">
             <p>There are no classes.</p>
         </div>
 

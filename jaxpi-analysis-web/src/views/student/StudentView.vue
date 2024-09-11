@@ -4,7 +4,7 @@
         <p v-if="!student">Please log in as a student to view student details.</p>
 
         <div class="student-details" v-if="student">
-            <h3 class="student-name">{{ student.name }}</h3>
+            <h3 class="student-name">{{ student.name.slice(0, -6) }}</h3>
             <p class="student-role">Role: {{ student.usr_type }}</p>
         </div>
 
@@ -58,7 +58,7 @@ const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de ori
 
 onMounted(async () => {
   await fetchDataFromMongoDB();
-  await gameSessionsStore.fetchGameSessionsByStudentName(student.value.name);
+  await gameSessionsStore.fetchGameSessionsByStudentName(student.value?.name);
 
   socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
     if (userType.value === 'student') {
@@ -157,7 +157,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 
 <style scoped>
 .student-view {
-    padding: 2rem;
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 20px;

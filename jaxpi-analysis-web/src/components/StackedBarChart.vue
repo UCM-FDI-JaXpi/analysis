@@ -84,6 +84,10 @@ const drawBarChart = (data, chartId) => {
                 }
             },
             y: {
+                label: {
+                    text: 'Times',
+                    position: 'outer-middle' // (outer-middle, outer-top, outer-bottom)
+                },
                 tick: {
                     format: d => Number.isInteger(d) ? d : null // Format without decimals
                 }

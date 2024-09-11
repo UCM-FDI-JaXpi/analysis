@@ -73,7 +73,7 @@ const drawBarChart = (data, chartId) => {
   const tooltipOptions = props.customTooltip ? {
       contents: function (d) { //Funcion que genera contenido HTML del tooltip, d->objeto del punto de datos que hacemos hover(index->ejex, value->ejey, _id->de la serie, para graficos con multiples series)
         const index = d[0].index; //valor del eje x
-        const studentNameHover = studentNamesHover[index];
+        const studentNameHover = studentNamesHover[index].slice(0, -6);
         const value = d[0].value; //valor del eje y
 
         return `<div class='custom-tooltip'>
@@ -86,7 +86,7 @@ const drawBarChart = (data, chartId) => {
   }
   : {};
 
-  const labelOptions = chartId === 'bar-chart-verb-count' ? {
+  const labelOptions = (chartId === 'bar-chart-verb-count' || chartId === 'bar-chart-interactions-items') ? {
     format: {
       [names[chartId]]: function (value) {
         return value;

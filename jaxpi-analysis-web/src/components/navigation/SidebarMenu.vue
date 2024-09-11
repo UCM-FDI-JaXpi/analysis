@@ -132,7 +132,7 @@ const navigateToCreateGame = () => {
 .sidebar {
     width: 200px;
     min-width: 200px;
-    background-color: #FFFFFF;;
+    background-color: #F9F9F9;;
     padding: 15px;
     display: flex;
     flex-direction: column;

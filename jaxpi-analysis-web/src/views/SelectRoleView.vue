@@ -3,7 +3,7 @@
         <h1>Select your role</h1>
         <div class="role-buttons">
             <button @click="selectRole('teacher')" class="role-button">Login</button>
-            <button @click="selectRole('student')" class="role-button student-button">Login as Student</button>
+            <button @click="selectRole('student')" class="role-button student-button">Login as student</button>
     </div>
     </div>
 </template>

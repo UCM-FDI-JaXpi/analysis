@@ -1,8 +1,7 @@
 <template>
-    <div class="charts-container">      
-      <div class="centerItems" v-if="dataTableFormat.length > 0">
-        
-        <div class="datatable-charts">
+    <div class="centerItems charts-container">      
+      <div v-if="dataTableFormat.length > 0">
+        <div class="centerItems datatable-charts">
           <h2>Last statements received</h2>
           <form id="search">
             Search <input name="query-teacher" v-model="searchQueryTeacher">
@@ -14,8 +13,10 @@
             :filter-key="searchQueryTeacher"/>
         </div>
       </div>
-      <div v-else class="no-data-charts">
-        <p>No data available for this student.</p>
+      <!-- Instructions, only if we haven't played yet -->
+      <div class="instructions" v-else>
+        <p style="margin:0px; font-size: 1.1rem;"><strong style="color: #FF8800;">Remember:</strong> There are no analytics 
+          because you haven't played yet, start playing to see them 🎮</p>
       </div>
     </div>
 </template>
@@ -53,5 +54,14 @@ onMounted(() => {
 #stacked-bar-chart1 {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
+}
+
+.instructions {
+    background-color: #e7fcff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    width: max-content;
 }
 </style>

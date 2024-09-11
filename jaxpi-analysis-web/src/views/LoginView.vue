@@ -107,6 +107,7 @@ input {
 	font-size: 14px;
 	box-sizing: border-box;
 }
+
 input:focus {
 	border-color: #74ddeb;
 	outline: none;
