@@ -55,4 +55,4 @@ En la aplicación web se muestran diferentes tipos de representaciones visuales 
 5. **Participación en línea de tiempo**: en un gráfico de líneas mostramos la actividad de un estudiante a lo largo del tiempo.  
 6. **Registro de últimas interacciones de los jugadores**: vemos en tablas las últimas trazas recibidas de las jugadas de los estudiantes.
 
-**Nota**: Las representaciones varían según el tipo de usuario que inicie sesión, ya que cada tipo de usuario tiene unas necesidades diferentes al realizar la analítica de datos.
+**Nota**: Las representaciones varían según el tipo de usuario que inicie sesión, ya que cada uno tiene unas necesidades diferentes al realizar la analítica de datos.
