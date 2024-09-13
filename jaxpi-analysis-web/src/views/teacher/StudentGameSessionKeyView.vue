@@ -99,7 +99,7 @@
         <div v-if="dataTableFormat.length === 0 && !loading" class="no-data-charts">
             No data for these students.
         </div>
-        <div v-if="loading" class="no-data-charts">
+        <div v-if="loading" class="no-data-charts loading-container">
             Loading...
         </div>
       </div>

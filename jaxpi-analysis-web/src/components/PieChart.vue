@@ -105,7 +105,18 @@ const drawPieChart = (data, chartId) => {
 button {
   margin-top: 10px;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-left: auto;
+  margin-right: auto; */
+  background-color: #3498DB;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2980b9;
 }
 </style>

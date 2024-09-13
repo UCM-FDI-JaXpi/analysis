@@ -8,8 +8,8 @@
         </button>
       </div>
       
-      <div v-if="activeTab === 0" class="tab-content-charts centerItems" style="min-height: 445px;"> <!------------------------------------OVERVIEW TAB-->
-        <div class="centerItems" v-if="dataPieChartGamesStartedCompleted.length > 0 || dataObjectCount.length > 0">
+      <div v-if="activeTab === 0" class="tab-content-charts centerItems" style="min-height: 445px;">
+        <div class="centerItems" v-if="(dataPieChartGamesStartedCompleted.length > 0 || dataObjectCount.length > 0) && !loading">
           <div class="marginBottom90">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
               :data="dataPieChartGamesStartedCompleted"
@@ -23,12 +23,15 @@
               title="Interactions of items" />
           </div>
         </div>
-        <div v-else class="no-data-charts">
+        <div v-if="(dataPieChartGamesStartedCompleted.length === 0 || dataObjectCount.length === 0) && !loading" class="no-data-charts">
           <p>No data available.</p>
+        </div>
+        <div v-if="loading" class="no-data-charts loading-container">
+            Loading...
         </div>
       </div>
   
-      <div v-if="activeTab === 1" class="tab-content-charts centerItems" style="min-height: 445px;"> <!------------------------------------COMPLETION TIMES TAB-->
+      <div v-if="activeTab === 1" class="tab-content-charts centerItems" style="min-height: 445px;">
         <div class="centerItems" v-if="dataBestCompletionTimePerLevelPerGroup.length > 0 || dataLevelCompletionTimes.length > 0">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
@@ -48,7 +51,7 @@
           <p>No data available.</p>
         </div>
       </div>
-      <div v-if="activeTab === 2" class="tab-content-charts centerItems" style="min-height: 445px;"> <!-------------------------------------VERB COUNTS TAB-->
+      <div v-if="activeTab === 2" class="tab-content-charts centerItems" style="min-height: 445px;">
         <div v-if="dataVerbCount.length > 0" class="marginBottom90">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
@@ -94,7 +97,8 @@ const props = defineProps({
   dataPieChartGamesStartedCompleted: Array,
   dataBestCompletionTimePerLevelPerGroup: Array,
   dataAttemptTimesForStudentLevel : Array,
-  dataObjectCount: Array
+  dataObjectCount: Array,
+  loading: Boolean
 });
 
 watch(() => props.filteredDataByGroupId,(newProps, oldProps) => {

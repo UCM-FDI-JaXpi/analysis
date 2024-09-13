@@ -229,4 +229,11 @@ form#search {
   max-height: 140px;
   overflow-y: auto;
 }
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: inherit;
+}
 </style>

@@ -62,7 +62,7 @@ const drawBarChart = (data, chartId) => {
     'bar-chart4': 'Time (ms)',
     'bar-chart-time-per-attempt': 'Time (ms)',
     'bar-chart-interactions-items': 'Number of interactions',
-    'bar-chart-verb-count': 'Number of verbs',
+    'bar-chart-verb-count': 'Number of verbs used',
   };
 
   const chartData = [

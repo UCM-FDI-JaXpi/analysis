@@ -57,6 +57,7 @@ const originalData = ref([]); // Guardo todo lo que me da response.data cuando s
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const loading = ref(true);
+
 onMounted(async () => {
   await fetchDataFromMongoDB();
   await gameSessionsStore.fetchGameSessionsByStudentName(student.value?.name);

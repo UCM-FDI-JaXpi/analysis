@@ -40,7 +40,8 @@
         :dataVerbCount="dataVerbCount"
         :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
         :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
-        :dataObjectCount="dataObjectCount" />
+        :dataObjectCount="dataObjectCount"
+        :loading="loading" />
 
       <ConfirmModal v-if="showDeleteModal"
         :visible="showDeleteModal"
@@ -97,6 +98,7 @@ const dataBestCompletionTimePerLevelPerGroup = ref([]);
 const activeUsers  = ref(0);
 const completedGameUsers = ref(0);
 const dataObjectCount = ref([]);
+const loading = ref(true);
 
 const deleteGame = async () => {
     try {
@@ -162,6 +164,10 @@ const fetchDataFromMongoDB = async () => {
         }
     } catch (error) {
         console.error('Error al obtener los datos de http://localhost:3000/records', error);
+    } finally {
+        setTimeout(() => {
+                    loading.value = false;
+        }, 400); 
     }
 };
 
@@ -181,6 +187,9 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     else 
       filteredDataByGroupId.value = newValue;
   
+      setTimeout(() => {
+                    loading.value = false;
+      }, 400); 
     if (filteredDataByGroupId.value.length > 0) {
         // Usuarios activos con statements
         const pseudoUsers = [...new Set(filteredDataByGroupId.value[0].actors.map( e => e.sessionKey))]; //['pesudo1','pseudo2',....]
@@ -343,6 +352,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 
 watch(() => gameId.value, (newGameId, oldGameId) => {
     if (newGameId !== oldGameId) {
+      loading.value = true;
       fetchDataFromMongoDB(newGameId);
     }
 });

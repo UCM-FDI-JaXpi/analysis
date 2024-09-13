@@ -1,9 +1,5 @@
 <template>
     <div v-if="isTeacher" class="game-session-list">
-        <!-- <div v-if="gameSessions.length === 0" class="no-data-charts">
-            <p>No game sessions available for this class.</p>
-        </div> -->
-
         <!-- Instructions, only if we don´t have any game sessions -->
         <div class="instructions" v-if="isTeacher && gameSessions.length === 0 && !gameSessionsStore.loading">
             <p><strong style="color: #FF8800;">Remember:</strong> If you want to see your students' analytics you have to create a game session.</p>
@@ -16,7 +12,7 @@
             <p>As soon as your students start playing, you'll be able to see their analytics!</p>
         </div>
 
-        <div v-if="isTeacher && gameSessionsStore.loading" class="no-data-charts">
+        <div v-if="isTeacher && gameSessionsStore.loading" class="no-data-charts loading-container">
             Loading...
         </div>
 
