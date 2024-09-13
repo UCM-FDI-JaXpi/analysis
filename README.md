@@ -1,14 +1,14 @@
 # Data Analysis Application - JaXpi
-Esta aplicación web realiza análisis de datos de videojuegos JavaScript, utilizando **Vue 3** y la librería **C3.js** para generar diferentes gráficos. Esta herramienta forma parte del ecosistema JaXpi, y ha sido desarrollada para estudiar la analítica de aprendizaje en los videojuegos educativos.
+Esta aplicación web realiza análisis de datos de videojuegos JavaScript, utilizando **Vue 3** y la librería **C3.js** para generar diferentes gráficos. Esta herramienta forma parte del ecosistema JaXpi, y ha sido desarrollada para estudiar las analíticas de aprendizaje en los videojuegos educativos.
 
 Permite a desarrolladores, profesores y estudiantes visualizar y analizar datos almacenados en una base de datos ***MongoDB***. Los datos son generados cuando los jugadores interactúan con los videojuegos, enviando trazas que siguen el estándar ***xAPI***, que luego se almacenan en la base de datos para su posterior análisis. De esta manera, los desarrolladores podrán evaluar el rendimiento de sus videojuegos, los profesores ver el rendimiento de sus estudiantes en los videojuegos y los estudiantes revisar sus propias analíticas.
 
 ## Prerrequisitos
-- Tener el [servidor de JaXpi](https://github.com/UCM-FDI-JaXpi/server) inicializado.  
+- Tener el [servidor JaXpi](https://github.com/UCM-FDI-JaXpi/server) inicializado.  
 - Tener un **videojuego** que envíe trazas con el estándar xAPI a una base de datos a través del servidor.
 
-Una opción que proponemos es utilizar todo el ecosistema JaXpi. Para ello, mira los manuales del  y de la [librería de JaXpi](https://github.com/UCM-FDI-JaXpi/lib).
-**Recuerda**, para utilizar nuestra librería te hará falta el código del videojuego JavaScript que se quiera analizar.
+Por ejemplo, para enviar trazas con la demo del videojuego *Prince of JS*, hemos utilizado la librería JaXpi. Si quieres utilizar esta librería en tus videojuegos, ve a su [manual](https://github.com/UCM-FDI-JaXpi/lib).
+**Recuerda**, para utilizar la librería JaXpi te hará falta el código del videojuego JavaScript que se quiera analizar.
 
 ## Guía de uso 
 1. **Clona este repositorio** en tu equipo.
