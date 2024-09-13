@@ -3,11 +3,18 @@
       <div v-if="!group">There are no details to show.</div>
 
       <div v-else>
-        <div class="card-details">
+        <div v-if="!loading" class="card-details">
           <h1>{{ group.name }}</h1>
           <p><strong>Total students: </strong>{{ group.students.length }}</p>
           <p><strong>Active students: </strong>{{ activeUsers }}</p>
           <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>
+          <button @click="navigateToCreateGameSession">Create game session</button>
+        </div>
+        <div v-else class="card-details">
+          <h1>{{ group.name }}</h1>
+          <p><strong>Total students: </strong>0</p>
+          <p><strong>Active students: </strong>0</p>
+          <p><strong>No active students: </strong>0</p>
           <button @click="navigateToCreateGameSession">Create game session</button>
         </div>
 
@@ -64,8 +71,10 @@ const originalData = ref([]); // Guardo todo lo que me da response.data cuando s
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const activeUsers  = ref(0);
+const loading = ref(true);
 
 onMounted(async () => {
+  gameSessionsStore.loading = true;
   groupsStore.setSelectedGroupId(groupId.value);
   await fetchDataFromMongoDB();
   fetchGameSessions(groupId.value); // Al cambiar a esta vista y montarla, llamo a los gamesessions del group dado
@@ -175,6 +184,7 @@ const fetchDataFromMongoDB = async () => {
           console.log('Unknown user type');
           console.log('response.data:', response.data);
         }
+        loading.value = false;
     } catch (error) {
         console.error('Error al obtener los datos de http://localhost:3000/records', error);
     }
@@ -216,6 +226,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 
 watch(() => groupId.value, (newGroupId, oldGroupId) => {
     if (newGroupId !== oldGroupId) {
+      loading.value = true;
       fetchDataFromMongoDB(newGroupId);
       fetchGameSessions(newGroupId);
       groupsStore.setSelectedGroupId(groupId.value);

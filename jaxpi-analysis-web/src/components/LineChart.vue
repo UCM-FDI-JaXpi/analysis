@@ -69,7 +69,7 @@ const drawLineChart = (data, chartId) => {
     const yAxisData = data.map(item => item.value);
 
     const names = {
-        'line-chart1': 'Statements'
+        'line-chart1': 'Number of statements'
     };
 
     const chartData = [

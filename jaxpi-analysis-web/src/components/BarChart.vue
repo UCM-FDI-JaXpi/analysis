@@ -60,9 +60,9 @@ const drawBarChart = (data, chartId) => {
     'bar-chart2': 'Time (ms)',
     'bar-chart3': 'Time',
     'bar-chart4': 'Time (ms)',
-    'bar-chart10': 'Time',
-    'bar-chart-interactions-items': 'Times',
-    'bar-chart-verb-count': 'Times',
+    'bar-chart-time-per-attempt': 'Time (ms)',
+    'bar-chart-interactions-items': 'Number of interactions',
+    'bar-chart-verb-count': 'Number of verbs',
   };
 
   const chartData = [

@@ -18,44 +18,53 @@
           :rowKeys="['gameSession', 'game', 'sessionKey']" />
       </div>
       <div>
-        <select v-model="selectedGameSession">
+        <select style="margin-bottom: 40px;" v-model="selectedGameSession">
           <option v-for="gameSessionData in gameSessionOptions" :key="gameSessionData.sessionId" :value="gameSessionData.sessionId">
             {{ gameSessionData.sessionName }}</option>
         </select>
       </div>
- 
-      <div class="centerItems marginBottom90" v-if="dataTableFormat.length > 0">
-        <h2>Last statements received</h2>
-        <form id="search">
-          Search <input name="query-teacher" v-model="searchQueryTeacher">
-        </form>
-        <DataTable
-          :data="dataTableFormat" 
-          :columns="tableColumnsTeacher"
-          :columnTitles="dataTableColumnTitlesTeacher"
-          :filter-key="searchQueryTeacher" />
-      </div>
-      <div class="marginBottom90" v-if="dataTableFormat.length > 0">
-        <BarChart v-if="dataLevelCompletionTimes.length > 0"
-          :data="dataLevelCompletionTimes"
-          chartId="bar-chart2"
-          title="Completion time per level" />
-      </div>
-      <div class="marginBottom90" v-if="dataTableFormat.length > 0">
-        <BarChart v-if="dataVerbCount.length > 0" 
-        :data="dataVerbCount"
-        chartId="bar-chart-verb-count"
-        title="Verb count" />
-      </div>
+      <div class="centerItems" v-if="!loading">
+        <div class="centerItems marginBottom90" v-if="dataTableFormat.length > 0">
+          <h2>Last statements received</h2>
+          <form id="search">
+            Search <input name="query-teacher" v-model="searchQueryTeacher">
+          </form>
+          <DataTable
+            :data="dataTableFormat" 
+            :columns="tableColumnsTeacher"
+            :columnTitles="dataTableColumnTitlesTeacher"
+            :filter-key="searchQueryTeacher" />
+        </div>
+        <div class="marginBottom90" v-if="dataTableFormat.length > 0">
+          <BarChart v-if="dataLevelCompletionTimes.length > 0"
+            :data="dataLevelCompletionTimes"
+            chartId="bar-chart2"
+            title="Completion time per level" />
+        </div>
+        <div class="marginBottom90" v-if="dataTableFormat.length > 0">
+          <BarChart v-if="dataVerbCount.length > 0" 
+          :data="dataVerbCount"
+          chartId="bar-chart-verb-count"
+          title="Verb count" />
+        </div>
 
-      <div class="marginBottom90" v-if="dataTableFormat.length > 0">
-        <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-          :data="dataPieChartGamesStartedCompleted"
-          chartId="pie-chart1"
-          title="Games started and completed" />
+        <div class="marginBottom90 for-pie-student" v-if="dataTableFormat.length > 0">
+          <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
+            :data="dataPieChartGamesStartedCompleted"
+            chartId="pie-chart1"
+            title="Games completed and not completed" />
+            <div>
+              <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
+              <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
+              <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
+            </div>
+        </div>
+        <div v-else style="margin-top:90px;" class="no-data-charts">
+          No data for this student.
+        </div>
       </div>
-      <div v-else style="margin-top:90px;" class="no-data-charts">
-        No data for this student.
+      <div v-if="loading" class="no-data-charts">
+        Loading...
       </div>
     </div>
     <div v-else class="blueCard no-data-charts">
@@ -112,6 +121,8 @@ const dataTableColumnTitlesTeacher = {
 const selectedGameSession = ref('');
 const gameSessionOptions = computed(() => gameSessionsStore.gameSessions); // Vincula las opciones del select con los datos del store de gameSessions
 
+const loading = ref(true);
+
 const formatGameSessionsForTable = () => {
   try{
     formattedGameSessions.value = gameSessionOptions.value.map(session => ({
@@ -140,6 +151,7 @@ const handleGameSessionChange = (gameSessionId) => {
 };
 
 watch(selectedGameSession, (newValue) => {
+  loading.value = true;
   handleGameSessionChange(newValue);
 });
 
@@ -250,6 +262,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   console.log(newValue);
   filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
 
+  loading.value = false;
   // FORMATEAR DATOS PARA CHARTS
   setDataTableFormat(selectedGameSession.value);
   setLevelCompletionTimes(selectedGameSession.value);
@@ -389,10 +402,10 @@ function setDataPieChartGamesStartedCompleted(){ // Recibo gameSessionId (all o 
           const sumCompleted = previousData.value + completeds14.length;
           previousData.value = sumCompleted;
         } else { // No hay datos aun 
-          let countStarted = { nameObject: 'started', value: levels1.length - completeds14.length};
+          let countStarted = { nameObject: 'not completed', value: levels1.length - completeds14.length};
           let countCompleted = { nameObject: 'completed', value: completeds14.length};
-          dataPieChartGamesStartedCompleted.value.push(countStarted); 
           dataPieChartGamesStartedCompleted.value.push(countCompleted); 
+          dataPieChartGamesStartedCompleted.value.push(countStarted); 
         }
     }
   });
@@ -424,5 +437,13 @@ select {
   border-color: #ffff00;
   outline: none;
   box-shadow: 0 0 5px rgba(246, 211, 101, 0.5);
+}
+
+.for-pie-student {
+  width: 100%;
+  place-content: center;
+  gap: 22px;
+  display: inline-grid;
+  text-align: center;
 }
 </style>

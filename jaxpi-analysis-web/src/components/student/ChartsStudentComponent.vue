@@ -1,6 +1,6 @@
 <template>
-    <div class="centerItems charts-container">      
-      <div v-if="dataTableFormat.length > 0">
+    <div class="centerItems charts-container" style="min-height: 445px;">      
+      <div v-if="dataTableFormat.length > 0 && !loading">
         <div class="centerItems datatable-charts">
           <h2>Last statements received</h2>
           <form id="search">
@@ -14,9 +14,12 @@
         </div>
       </div>
       <!-- Instructions, only if we haven't played yet -->
-      <div class="instructions" v-else>
+      <div class="instructions" v-if="dataTableFormat.length === 0 && !loading">
         <p style="margin:0px; font-size: 1.1rem;"><strong style="color: #FF8800;">Remember:</strong> There are no analytics 
           because you haven't played yet, start playing to see them 🎮</p>
+      </div>
+      <div v-if="loading" class="no-data-charts">
+        Loading...
       </div>
     </div>
 </template>
@@ -40,7 +43,8 @@ const dataTableColumnTitlesTeacher = {
 const props = defineProps({
   groupId: String,
   filteredDataByGroupId: Array,
-  dataTableFormat: Array
+  dataTableFormat: Array,
+  loading: Boolean
 });
 
 onMounted(() => {
@@ -48,7 +52,7 @@ onMounted(() => {
 </script>
   
 <style scoped>
-#bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-verb-count,
+#bar-chart2, #bar-chart3, #bar-chart4, #bar-chart-time-per-attempt, #bar-chart-verb-count,
 #pie-chart1,
 #line-chart1,
 #stacked-bar-chart1 {

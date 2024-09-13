@@ -5,7 +5,7 @@
         </div> -->
 
         <!-- Instructions, only if we don´t have any game sessions -->
-        <div class="instructions" v-if="isTeacher && gameSessions.length === 0">
+        <div class="instructions" v-if="isTeacher && gameSessions.length === 0 && !gameSessionsStore.loading">
             <p><strong style="color: #FF8800;">Remember:</strong> If you want to see your students' analytics you have to create a game session.</p>
             <ol>
                 <li><strong>Create game sessions:</strong> Click on the "Create game session" button and create
@@ -14,6 +14,10 @@
                     so they can play the game and access the app.</li>
             </ol>
             <p>As soon as your students start playing, you'll be able to see their analytics!</p>
+        </div>
+
+        <div v-if="isTeacher && gameSessionsStore.loading" class="no-data-charts">
+            Loading...
         </div>
 
         <div v-else class="card-container">
@@ -76,6 +80,10 @@ const selectSession = (sessionId) => {
 </script>
 
 <style scoped>
+.game-session-list {
+    min-height: 445px;
+}
+
 .instructions {
     background-color: #e7fcff;
     padding: 1.5rem;

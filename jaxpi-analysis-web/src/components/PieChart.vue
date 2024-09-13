@@ -1,7 +1,7 @@
 <template>
-  <div class="chart-container">
+  <div class="chart-container" style="text-align: -webkit-center;" >
     <h2 class="chart-title">{{ title }}</h2>
-    <div :id="chartId"></div>
+    <div :id="chartId" style="max-width: fit-content;"></div>
 
     <button v-if="chartId == 'pie-chart-completed-game'" @click="changeChartType">Change type chart</button>
   </div>

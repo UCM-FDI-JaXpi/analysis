@@ -19,7 +19,8 @@
             <div v-if="activeTab === 0" class="tab-content-charts">
                 <ChartsStudentComponent :groupId="groupId"
                                         :filteredDataByGroupId ="filteredDataByGroupId"
-                                        :dataTableFormat="dataTableFormat" />
+                                        :dataTableFormat="dataTableFormat"
+                                        :loading="loading"  />
             </div>
 
             <div v-if="activeTab === 1" class="tab-content-charts">
@@ -55,7 +56,7 @@ const groupId = ref('');
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy student al montar el componente
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
-
+const loading = ref(true);
 onMounted(async () => {
   await fetchDataFromMongoDB();
   await gameSessionsStore.fetchGameSessionsByStudentName(student.value?.name);
@@ -122,6 +123,8 @@ const fetchDataFromMongoDB = async () => {
       }
   } catch (error) {
       console.error('Error al obtener los datos de http://localhost:3000/records', error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -131,6 +134,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   else 
     filteredDataByGroupId.value = newValue;
 
+    loading.value = false;
   // FORMATEAR DATOS PARA TABLE
   if (filteredDataByGroupId.value.length > 0) {
     dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
@@ -158,6 +162,8 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 <style scoped>
 .student-view {
     padding: 1rem;
+    padding-left: 11rem;
+    padding-right: 11rem;
     display: flex;
     flex-direction: column;
     gap: 20px;

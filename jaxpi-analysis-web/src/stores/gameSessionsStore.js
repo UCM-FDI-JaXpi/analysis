@@ -5,7 +5,7 @@ import { useGamesStore } from './gamesStore';
 export const useGameSessionsStore = defineStore('gameSessions', {
     state: () => ({
         gameSessions: [],
-        loading: false,
+        loading: true,
         error: null,
         selectedGameSessionId: null,
     }),
@@ -57,7 +57,9 @@ export const useGameSessionsStore = defineStore('gameSessions', {
                 this.error = error.response?.data?.message || error.message;
                 alert('Error fetching game sessions');
             } finally {
-                this.loading = false;
+                setTimeout(() => {
+                    this.loading = false;
+                  }, 400);                
             }
         },
         async fetchGameSessionsByStudentName(studentName) {

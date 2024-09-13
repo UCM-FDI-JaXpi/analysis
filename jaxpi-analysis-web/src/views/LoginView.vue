@@ -39,12 +39,12 @@ const login = async () => {
 		const userData = await authStore.login({ email: email.value, password: password.value });
 		switch (userData.usr_type) {
 			case 'teacher':
-				groupsStore.fetchGroups();
-				gamesStore.fetchAllGames();
+				await groupsStore.fetchGroups();
+				await gamesStore.fetchAllGames();
 				router.push('/teacher');
 				break;
 			case 'dev':
-				gamesStore.fetchGames();
+				await gamesStore.fetchGames();
 				router.push('/dev');
 				break;
 			default:

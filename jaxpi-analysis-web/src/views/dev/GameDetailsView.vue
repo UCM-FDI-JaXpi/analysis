@@ -16,7 +16,7 @@
               <p v-if="game.description"><strong>Description: </strong></p>
               <p v-if="game.description" class="game-description-content">{{ game.description }}</p>
 
-              <p><strong>Users: </strong>{{  activeUsers }}</p>
+              <p><strong>Users who have played: </strong>{{  activeUsers }}</p>
               <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
               <p v-if="dataLastStatement && dataLastStatement.length > 0"><strong>Last played: </strong> {{ dataLastStatement }}</p>
           </div>

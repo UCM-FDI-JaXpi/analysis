@@ -140,7 +140,7 @@ html, body, #app {
   gap: 22px;
 }
 
-#bar-chart2, #bar-chart3, #bar-chart4, #bar-chart10, #bar-chart-verb-count,
+#bar-chart2, #bar-chart3, #bar-chart4, #bar-chart-time-per-attempt, #bar-chart-verb-count,
 #pie-chart1,
 #line-chart1,
 #stacked-bar-chart-interaction-items, #stacked-bar-chart-number-completed-levels {

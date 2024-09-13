@@ -40,7 +40,7 @@ const routes = [
     { path: '/group-details/:groupId?', name: 'GroupDetailsView', component: GroupDetailsView },
     { path: '/student-gamesessionkey/:gameSessionId', name: 'StudentGameSessionKeyView', component: StudentGameSessionKeyView },
     { path: '/student-game-session-details', name: 'StudentGameSessionDetailsView', component: StudentGameSessionDetailsView },
-    { path: '/student-detail/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
+    { path: '/student-details/:name/:groupId?', name: 'StudentDetailsView', component: StudentDetailsView},
 
     { path: '/create-group', name: 'CreateGroupView', component: CreateGroupView },
     { path: '/create-game-session', name: 'CreateGameSessionView', component: CreateGameSessionView },

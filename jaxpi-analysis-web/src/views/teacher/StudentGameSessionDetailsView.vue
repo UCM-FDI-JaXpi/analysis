@@ -38,7 +38,7 @@
           <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
-            title="Games started and completed" />
+            title="Games completed and not completed" />
         </div>
       </div>
       <div v-else class="blueCard centerItems no-data-charts">

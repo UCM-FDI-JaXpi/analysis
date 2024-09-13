@@ -15,8 +15,8 @@
         </button>
       </div>
 
-      <div v-if="activeTab === 0" class="tab-content-charts">
-        <div class="centerItems" v-if="dataTableFormat.length > 0">
+      <div v-if="activeTab === 0" class="tab-content-charts" style="min-height: 445px;">
+        <div class="centerItems" v-if="dataTableFormat.length > 0 && !loading">
           <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
                   <h2>Last statements received</h2>
                   <form id="search">
@@ -65,16 +65,21 @@
             <div>
               <BarChart
                 :data="dataAttemptTimesForStudentLevel "
-                chartId="bar-chart10"
+                chartId="bar-chart-time-per-attempt"
                 title="Time per attempt (Student per level)" />
             </div>
           </div>
 
-          <div class="marginBottom90">
+          <div class="marginBottom90 for-pie-student">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
                 :data="dataPieChartGamesStartedCompleted"
                 chartId="pie-chart1"
-                title="Games started and completed" />
+                title="Games completed and not completed" />
+            <div>
+              <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
+              <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
+              <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
+            </div>
           </div>
 
           <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements">
@@ -91,12 +96,15 @@
                   title="Number of completed levels by student" />
           </div>
         </div>
-        <div v-else class="no-data-charts">
+        <div v-if="dataTableFormat.length === 0 && !loading" class="no-data-charts">
             No data for these students.
+        </div>
+        <div v-if="loading" class="no-data-charts">
+            Loading...
         </div>
       </div>
 
-      <div v-if="activeTab === 1" class="tab-content-charts">
+      <div v-if="activeTab === 1" class="tab-content-charts" style="min-height: 445px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevel.length > 0"
@@ -117,7 +125,7 @@
         </div>
       </div>
 
-      <div v-if="activeTab === 2" class="tab-content-charts">
+      <div v-if="activeTab === 2" class="tab-content-charts" style="min-height: 445px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0">
           <div class="marginBottom90" >
             <BarChart v-if="dataVerbCount.length > 0" 
@@ -201,6 +209,7 @@ const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
 const dataAttemptTimesForStudentLevel  = ref([]);
 const name  = ref([]);
 const dataBestCompletionTimePerLevel = ref([]);
+const loading = ref(true);
 
 onMounted(async () => {
     if (gameSessionsStore.gameSessions.length === 0) { // Si los datos de gameSessions no están cargados, los cargo
@@ -366,10 +375,11 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz', datagroup
     }
   }); 
   resTempo = resTempo.flat();
+  resTempo = resTempo.slice(-10); // me quedo con los ultimos 10 attempts
   let cont = 0;
   resTempo.forEach(attemp => {
       let obj = {
-        nameObject: 'Attempt ' + cont,
+        nameObject: 'Attempt ' + (cont+1),
         value: attemp,
       };
       cont++;
@@ -400,6 +410,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   console.log(newValue);
   filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
 
+  loading.value = false;
   // FORMATEAR DATOS PARA CHARTS
   setDataTableFormat();
   setLevelCompletionTimes();
@@ -584,18 +595,18 @@ function setDataPieChartGamesStartedCompleted(){
     if (levels1.length == 0 && completeds14.length == 0) { // No pinto el piechart si no hay datos
       dataPieChartGamesStartedCompleted.value = [];
     } else {
-      if (dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started')) {
-          let previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'started');
+      if (dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'not completed')) {
+          let previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'not completed');
           const sumStarted = previousData.value + (levels1.length - completeds14.length);  // No completados 
           previousData.value = sumStarted;
           previousData = dataPieChartGamesStartedCompleted.value.find(e => e.nameObject == 'completed');
           const sumCompleted = previousData.value + completeds14.length;
           previousData.value = sumCompleted;
         } else { // No hay datos aun 
-          let countStarted = { nameObject: 'started', value: levels1.length - completeds14.length};
+          let countStarted = { nameObject: 'not completed', value: levels1.length - completeds14.length};
           let countCompleted = { nameObject: 'completed', value: completeds14.length};
-          dataPieChartGamesStartedCompleted.value.push(countStarted); 
           dataPieChartGamesStartedCompleted.value.push(countCompleted); 
+          dataPieChartGamesStartedCompleted.value.push(countStarted); 
         }
     }
   });
@@ -621,5 +632,13 @@ function handleStudentSelected(student) { // When you click on a row in the tabl
     padding: 1rem;
     display: flex;
     flex-direction: column;
+}
+
+.for-pie-student {
+  width: 100%;
+  place-content: center;
+  gap: 22px;
+  display: inline-grid;
+  text-align: center;
 }
 </style>
