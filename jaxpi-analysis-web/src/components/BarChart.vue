@@ -45,7 +45,6 @@ onUnmounted(() => {
   }
 });
 
-// Watch for changes in the data prop
 watch(() => props.data, (newData) => {
     drawBarChart(newData, props.chartId);
 });
@@ -127,14 +126,14 @@ const drawBarChart = (data, chartId) => {
     legend: {
       show: false
     },
-    tooltip: tooltipOptions // Aquí se aplican las opciones del tooltip
+    tooltip: tooltipOptions
   });
 }
 </script>
 
 <style>
 .chart-title {
-  text-align: center; /* Centra el texto dentro del h2 */
+  text-align: center;
 }
 
 .widthBarChart{

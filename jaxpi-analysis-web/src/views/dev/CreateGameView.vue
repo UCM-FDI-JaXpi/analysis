@@ -1,11 +1,11 @@
 <template>
     <div class="create-game-view" v-if="authStore.isAuthenticated">
-        <!-- Formulario para añadir juego -->
+        <!-- Add game form -->
         <div v-if="!showConfirmationCreatedGame" class="form-container">
             <AddGameForm @submit="handleAddGame" @cancel="handleCancel"/>
         </div>
 
-        <!-- Mensaje de información de juego añadido -->
+        <!-- Information message: game added -->
         <div v-if="showConfirmationCreatedGame" class="confirmation">
             <div class="title-container-image">
                 <h3 style="font-size: 1.8rem; margin: 0px;">Game added</h3>
@@ -43,16 +43,12 @@ const createdGame = ref({});
 
 const handleAddGame = (gameData) => {
     createdGame.value = gameData;
-    //llamada al back
-    // si todo ha ido bien
     showConfirmationCreatedGame.value = true;
-    //si ha ido mal
-    //showErrorCreatedGameSession.value = true;
 };
 
 const redirectToGameDetails = () => {
     showConfirmationCreatedGame.value = false;
-    router.push(`/game-details/${createdGame.value.id}`); // Redirige a la pagina de gameDetails del nuevo juego añadido
+    router.push(`/game-details/${createdGame.value.id}`);
 };
 
 const handleCancel = () => {

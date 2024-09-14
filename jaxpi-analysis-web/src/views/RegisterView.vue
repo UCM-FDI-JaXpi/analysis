@@ -62,7 +62,7 @@ const register = async () => {
       pwd: pwd.value,
       rep_pwd: rep_pwd.value,
       usr_type: userType.value,
-      ...(userType.value === 'teacher' && { institution: institution.value }),  // Solo agregar institution si es un teacher
+      ...(userType.value === 'teacher' && { institution: institution.value }),
     };
 
     await authStore.register(userDetails);

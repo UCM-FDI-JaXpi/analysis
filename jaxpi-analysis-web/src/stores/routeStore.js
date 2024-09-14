@@ -9,7 +9,7 @@ export const useRouteStore = defineStore('route', {
             this.originalRoute = route;
         },
         getOriginalRoute() {
-            return this.originalRoute || '/'; // Valor por defecto
+            return this.originalRoute || '/';
         },
     },
 });

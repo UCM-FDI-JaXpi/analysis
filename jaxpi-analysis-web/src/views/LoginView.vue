@@ -52,7 +52,7 @@ const login = async () => {
 				break;
 		}
 	} catch (error) {
-		console.error('Login failed:', error); // El error esta seteado en el store, este catch es por seguridad
+		console.error('Login failed:', error);
 	}
 };
 

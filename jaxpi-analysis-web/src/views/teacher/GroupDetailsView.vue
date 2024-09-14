@@ -244,13 +244,13 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 }
 
 .card-details {
-    position: relative; /* Permite el posicionamiento absoluto del botón */
+    position: relative;
 }
 
 .card-details button {
-    position: absolute; /* Posiciona el botón en la esquina superior derecha */
-    top: 30px; /* Ajusta la distancia desde el borde superior */
-    right: 20px; /* Ajusta la distancia desde el borde derecho */
+    position: absolute;
+    top: 30px;
+    right: 20px;
     padding: 10px;
     font-size: 0.975rem;
     color: white;
@@ -289,12 +289,12 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 }
 
 .tab-content {
-    padding: 1rem;
+    padding: 2rem;
     background-color: #a8d8ff;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     max-width: 1300px;
-    box-sizing: border-box; /* Incluye el padding y el border en el ancho total */
-    overflow-y: auto; /* Permite desplazamiento si el contenido es demasiado grande */
+    box-sizing: border-box;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     min-height: 477px;

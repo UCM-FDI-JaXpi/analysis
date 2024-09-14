@@ -4,6 +4,7 @@
             <p>No students available.</p>
         </div>
         <div v-else>
+            <h2 style="text-align: center; margin-top: 0px;">List of students</h2>
             <BaseTable 
                 :headers="['Name', 'Last interaction', '']"
                 :rows="formattedStudents"
@@ -91,7 +92,7 @@ const getFormattedStudents = () => {
 };
 
 const fetchGroups = async () => {
-    if (groupsStore.groups.length === 0) { // Solo carga si no hay datos
+    if (groupsStore.groups.length === 0) {
         await groupsStore.fetchGroups();
     }
 };
@@ -102,7 +103,6 @@ onMounted(() => {
     console.log('formattedStudents:', formattedStudents.value);
 });
 
-// Observamos los cambios en groupId y llamamos a fetchGroups cuando cambie
 watch(() => props.groupId, (newGroupId, oldGroupId) => {
     if (newGroupId !== oldGroupId) {
         fetchGroups();

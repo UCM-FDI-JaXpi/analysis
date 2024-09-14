@@ -55,14 +55,14 @@ watch(route, () => {
 
 <style scoped>
 .navbar {
-  display: flex; /* Flexbox para alinear los elementos */
-  justify-content: center; /* Centrar los elementos horizontalmente */
+  display: flex;
+  justify-content: center;
   background-color: #1976d2;
   padding: 0.5em;
 }
 
 .nav-item {
-  padding: 0.5rem 2rem; /* Espaciado interno de los enlaces */
+  padding: 0.5rem 2rem;
   cursor: pointer;
   color: rgba(255, 255, 255, 0.876);
   text-decoration: none;
@@ -71,11 +71,11 @@ watch(route, () => {
 
 .nav-item:hover,
 .nav-item.router-link-exact-active:hover {
-  background-color: #7bb3e0; /* Color de fondo al pasar el mouse */
-  color: rgba(255, 255, 255, 0.87); /* Color de texto al pasar el mouse */
+  background-color: #7bb3e0;
+  color: rgba(255, 255, 255, 0.87);
 }
 
-.nav-item.router-link-exact-active { /* Cuando un link esta seleccionado */
+.nav-item.router-link-exact-active {
   background-color: transparent;
   color: #ffffff; 
   font-weight: bold;

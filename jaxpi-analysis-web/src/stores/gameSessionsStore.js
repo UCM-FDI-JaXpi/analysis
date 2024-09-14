@@ -24,7 +24,7 @@ export const useGameSessionsStore = defineStore('gameSessions', {
                         'Content-Type': 'application/json',
                     },
                 });
-                if (response.status === 201) { // exito
+                if (response.status === 201) { // success
                     this.gameSessions.push(response.data);
                     return response.data;
                 }
@@ -45,7 +45,7 @@ export const useGameSessionsStore = defineStore('gameSessions', {
                 });
                 if (response.status === 200) {
                     const gameSessions = response.data;
-                    const gamesStore = useGamesStore(); // Obtener instancia del store de juegos
+                    const gamesStore = useGamesStore();
 
                     // Mapear las sesiones de juego para incluir el nombre del juego usando el gamesStore
                     this.gameSessions = gameSessions.map(session => ({

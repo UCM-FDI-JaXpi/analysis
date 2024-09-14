@@ -85,7 +85,7 @@ const libUrl = 'https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integ
 .dev-info {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Alinea el contenido hacia arriba */
+    align-items: flex-start;
 }
 
 .dev-left {
@@ -114,7 +114,7 @@ const libUrl = 'https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integ
 
 .games-count {
     display: flex;
-    flex-direction: column; /* Apila los elementos dentro del h3 verticalmente */
+    flex-direction: column;
     margin: 0;
 }
 

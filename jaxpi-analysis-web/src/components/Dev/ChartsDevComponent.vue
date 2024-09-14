@@ -26,7 +26,7 @@
         <div v-if="(dataPieChartGamesStartedCompleted.length === 0 || dataObjectCount.length === 0) && !loading" class="no-data-charts">
           <p>No data available.</p>
         </div>
-        <div v-if="loading" class="no-data-charts loading-container">
+        <div v-if="loading" class="no-data-charts loading-nodata-container">
             Loading...
         </div>
       </div>
@@ -76,9 +76,9 @@ import { calculateLevelCompletionTimes, sortStatements } from '@/utils/utilities
 const groupsStore = useGroupsStore();
 
 const groupId = computed(() => groupsStore.selectedGroupId);
-const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
+const arrayLevelsPerStudent = ref([]);
 
-const tabs = ref(["Overview", "Completion Times", "Verb counts"]);
+const tabs = ref(["Overview", "Completion Times", "Verb Count"]);
 const activeTab = ref(0);
 const dataStatementsByTimestamp = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
@@ -115,7 +115,7 @@ const handleFilterNameStudent = async (data) => {
     dataStatementsByTimestamp.value = [];
     return;
   }
-  let tempo = props.filteredDataByGroupId[0]?.actors /////////////////////////////////////////////
+  let tempo = props.filteredDataByGroupId[0]?.actors
     .filter(e => e.name === data)
     .flatMap(f => f.statements);
   sortStatements(tempo);
@@ -191,7 +191,7 @@ const handleFilterNameStudentBarChart = async (studentName) => { // Recibo el st
       if(keys){
         resLevels.push(keys);
       }
-    }); 
+  }); 
 
   resLevels = [...new Set(resLevels.flat())];
 
@@ -201,9 +201,9 @@ const handleFilterNameStudentBarChart = async (studentName) => { // Recibo el st
     let obj = {
         id: level+'//'+studentName,
         name: level,
-      };
-      res.push(obj);
-    }); 
+    };
+    res.push(obj);
+  }); 
   arrayLevelsPerStudent.value = res;
 };
 

@@ -96,10 +96,10 @@
                   title="Number of completed levels by student" />
           </div>
         </div>
-        <div v-if="dataTableFormat.length === 0 && !loading" class="no-data-charts">
+        <div v-if="dataTableFormat.length === 0 && !loading" class="no-data-charts loading-nodata-container">
             No data for these students.
         </div>
-        <div v-if="loading" class="no-data-charts loading-container">
+        <div v-if="loading" class="no-data-charts loading-nodata-container">
             Loading...
         </div>
       </div>
@@ -113,28 +113,28 @@
               title="Best completion time per level" 
               :customTooltip="true"/>
           </div>
-          <div class="marginBottom90" >
+          <div>
             <BarChart v-if="dataLevelCompletionTimes.length > 0"
               :data="dataLevelCompletionTimes"
               chartId="bar-chart2"
               title="Completion time per level" />
           </div>
         </div>
-        <div v-else class="no-data-charts">
+        <div v-else class="no-data-charts loading-nodata-container">
             No data for these students.
         </div>
       </div>
 
       <div v-if="activeTab === 2" class="tab-content-charts" style="min-height: 445px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0">
-          <div class="marginBottom90" >
+          <div>
             <BarChart v-if="dataVerbCount.length > 0" 
               :data="dataVerbCount"
               chartId="bar-chart-verb-count"
               title="Verb count" /> 
           </div>
         </div>
-        <div v-else class="no-data-charts">
+        <div v-else class="no-data-charts loading-nodata-container">
             No data for these students.
         </div>
       </div>
@@ -198,7 +198,7 @@ const dataTableColumnTitlesTeacher = {
     view:''
 };
 
-const tabs = ref(["Overview", "Completion Times", "Verb count"]);
+const tabs = ref(["Overview", "Completion Times", "Verb Count"]);
 const activeTab = ref(0);
 
 const arrayStudents = computed(() => groupsStore.getStudentsByGroupId(groupId.value).map(e => ({id:e, name:e.slice(0, -6)}))); // Para los filtros
@@ -272,7 +272,7 @@ const handleFilterNameStudent = async (data) => { //datagroup no esta filtrada p
     dataStatementsByTimestamp.value = [];
     return;
   }
-  let tempo = filteredDataByGroupId.value[0]?.actors /////////////////////////////////////////////
+  let tempo = filteredDataByGroupId.value[0]?.actors
     .filter(e => e.name === data && e.sessionId == session.value.sessionId)
     .flatMap(f => f.statements);
   sortStatements(tempo);
@@ -307,7 +307,7 @@ const handleFilterNameStudent = async (data) => { //datagroup no esta filtrada p
       if (res.find( e=> e.nameObject == dateInitial.toLocaleDateString())){
         copyArray.push(res.find( e => e.nameObject == dateInitial.toLocaleDateString()));
       } else {
-        let obj = { // No le pongo el campo timestamp porque realmente en esa fecha no hubo statements, es para dibuarlo en el chart
+        let obj = { // No le pongo el campo timestamp porque realmente en esa fecha no hubo statements, es para dibujarlo en el chart
             nameObject: dateInitial.toLocaleDateString(),
             value: 0
           };
@@ -375,7 +375,7 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz', datagroup
     }
   }); 
   resTempo = resTempo.flat();
-  resTempo = resTempo.slice(-10); // me quedo con los ultimos 10 attempts
+  resTempo = resTempo.slice(-10); // last 10 attempts in chart
   let cont = 0;
   resTempo.forEach(attemp => {
       let obj = {
@@ -498,7 +498,6 @@ function setBestCompletionTimePerLevel (){
 // FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
 function setLevelCompletionTimes(){
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
-    
     dataGroup.value = filteredDataByGroupId.value[0].actors.filter(e => e.sessionId === session.value.sessionId).map(actor => { // Proceso todos los actores
       let copyStatements = [...actor.statements]; // Hago una copia para que no salte el watch
       const sortedStatements = sortStatements(copyStatements);  // Por cada actor ordenamos sus statements
@@ -621,8 +620,8 @@ function cleanData(){
 }
 
 function handleStudentSelected(student) { // When you click on a row in the table selecting a student
-  groupsStore.setSelectedGroupId(groupId.value); // Seteo el group seleccionado
-  studentStore.setSelectedStudent(student.student); // Seteo el name del estudiante
+  groupsStore.setSelectedGroupId(groupId.value);
+  studentStore.setSelectedStudent(student.student);
   router.push({ name: 'StudentDetailsView', params: { name: student.student} })// Go to StudentGameSessionDetailsView using useRouter
 }
 </script>

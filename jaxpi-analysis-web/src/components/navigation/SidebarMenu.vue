@@ -1,5 +1,5 @@
 <template>
-    <div v-if="userType === 'teacher'" class="sidebar"> <!--Ni Dev ni Student tienen sidebar-->
+    <div v-if="userType === 'teacher'" class="sidebar">
         <div class="menu-item create-menu-item" @click="navigateToCreateGroup">
             Create class
         </div>
@@ -181,8 +181,8 @@ const navigateToCreateGame = () => {
     background-color: #3eaf2a;
     color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
+    justify-content: center;
+    align-items: center;
     padding: 12px;
 }
 

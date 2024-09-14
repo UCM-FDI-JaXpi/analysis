@@ -11,7 +11,7 @@
 
 <style scoped>
 h1 {
-  font-size: 25px;
+    font-size: 25px;
 }
 
 .not-found {

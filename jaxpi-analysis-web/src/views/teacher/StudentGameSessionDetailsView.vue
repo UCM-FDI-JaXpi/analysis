@@ -56,13 +56,12 @@ import { useStudentStore } from '@/stores/studentStore';
 import { sortStatements, calculateForStatements } from '../../utils/utilities.js';
 
 import axios from 'axios';
-// import socket from '@/socket';
 import DataTable from '@/components/DataTable.vue';
 import BarChart from '@/components/BarChart.vue';
 import PieChart from '@/components/PieChart.vue';
 
 const groupsStore = useGroupsStore();
-const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
+const authStore = useAuthStore();
 const gameSessionsStore = useGameSessionsStore();
 const studentStore = useStudentStore();
 
@@ -78,7 +77,7 @@ const originalData = ref([]); // Guardo todo lo que me da response.data
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataLevelCompletionTimes = ref([]);
-const dataGroup = ref([]); ////////////////////////////////////// FOR CHARTS
+const dataGroup = ref([]);
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
 
@@ -92,17 +91,11 @@ const dataTableColumnTitlesTeacher = {
 };
 
 onMounted(async () => {
-    if (gameSessionsStore.gameSessions.length === 0) { // Si los datos de gameSessions no están cargados, los cargo
+    if (gameSessionsStore.gameSessions.length === 0) {
         await gameSessionsStore.fetchGameSessions();
     }
     await fetchDataFromMongoDB();
 });
-
-// onUnmounted(() => {
-//   // Remove all socket listeners
-//   socket.off('message');
-//   socket.off('newStatement');
-// });
 
 const fetchDataFromMongoDB = async () => {
   try {
@@ -153,7 +146,7 @@ function setDataTableFormat(){
     }
 }
 
-// FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
+// FORMATEAR DATOS PARA EL BARCHART - COMPLETION TIME PER LEVEL
 function setLevelCompletionTimes(){
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
     
@@ -195,7 +188,7 @@ function setLevelCompletionTimes(){
     }
 }
 
-//PARA EL SEGUNDO BARCHART - COUNTVERBS tiene q ser llamado despues de actualizar dataGroup
+//PARA EL BARCHART - COUNTVERBS tiene q ser llamado despues de actualizar dataGroup
 function setDataVerbCount(){
   dataVerbCount.value = [];
   dataGroup.value.forEach(actorInfo => {
@@ -217,7 +210,7 @@ function setDataVerbCount(){
   });
 }
 
-//PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
+//PARA EL PIECHART - GAMES STARTED AND COMPLETED
 function setDataPieChartGamesStartedCompleted(){
   dataPieChartGamesStartedCompleted.value = [];
   dataGroup.value.forEach(actorInfo => {

@@ -11,7 +11,6 @@
             <tr v-for="(row, rowIndex) in rows" :key="rowIndex" >
                 <td v-for="(key, colIndex) in rowKeys" :key="colIndex"
                     :class="cellClasses ? cellClasses[rowIndex] ? cellClasses[rowIndex][key] : '' : ''">
-                    <!-- {{ row[key] }} -->
 
                     <span v-if="key === 'view'">
                         {{ row[key] }}
@@ -53,7 +52,6 @@ const props = defineProps({
     }
 });
 
-// let highlightRow = ref(null);
 const emit = defineEmits(['student-selected']); // Definir evento personalizado
 
 function showStudentDetail(studentName) {
@@ -64,12 +62,11 @@ function showStudentDetail(studentName) {
 
 <style scoped>
 td {
-    background-color: #f7f5f5; /* Color por defecto cuando el mouse no está sobre la fila */
+    background-color: #f7f5f5;
 }
 
-/* Estilo para td cuando el mouse está sobre la fila */
 tr.highlight td {
-    background-color: #b4dffca4; /* Color cuando el mouse está sobre la fila */
+    background-color: #b4dffca4;
     cursor: pointer;
 }
 
@@ -126,11 +123,11 @@ th.active .arrow {
 .eye-icon svg {
     width: 100%;
     height: 100%;
-    fill: #007BFF; /* Color azul para el icono */
+    fill: #007BFF;
     transition: fill 0.3s ease;
 }
 
 .eye-icon svg:hover {
-    fill: #0056b3; /* Cambio de color al pasar el cursor */
+    fill: #0056b3;
 }
 </style>

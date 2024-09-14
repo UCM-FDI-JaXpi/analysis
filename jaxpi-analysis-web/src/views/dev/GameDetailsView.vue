@@ -79,7 +79,7 @@ import { calculateLevelCompletionTimes } from '../../utils/utilities.js';
 const route = useRoute();
 const router = useRouter();
 const gamesStore = useGamesStore();
-const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
+const authStore = useAuthStore();
 
 const gameId = computed(() => route.params.gameId);
 const game = computed(() => gamesStore.getGameById(gameId.value));
@@ -118,16 +118,6 @@ const handleSuccessModalOk = () => {
 onMounted(async () => {
   await fetchDataFromMongoDB();
 
-  // EVENTOS DE SOCKET
-  // To send data to the server
-  const hello = 'hello websocket'
-  socket.emit('message', hello);
-
-  // Data received from server
-  socket.on('message', (msg) => {
-    console.log('Message received from server:', msg);
-  });
-  
   socket.on('devDataPost', (updatedData) => { // Recibe record a record, no un array de records
     if (userType.value === 'dev') {
       if (Array.isArray(originalData.value)) { // Comprueba si originalData es un array o no (sea vacio o con algo), lo hago con originalData porque es el que tiene TODOS los groups
@@ -361,7 +351,7 @@ const hideDeleteModal = () => {
   showDeleteModal.value = false;
 };
 
-// Observa los cambios en la ruta para cerrar el modal
+// Note the changes in the path to close the modal
 watch(route, () => {
   hideDeleteModal();
 });
@@ -378,7 +368,7 @@ watch(route, () => {
 .header-container {
     display: flex;
     align-items: flex-start;
-    gap: 50px; /* Espacio entre el contenedor de encabezado y el contenedor adicional */
+    gap: 50px;
 }
 
 .card-details {
@@ -388,7 +378,7 @@ watch(route, () => {
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Alinea los elementos en la parte superior */
+    align-items: flex-start;
 }
 
 .delete-button {
@@ -420,7 +410,7 @@ watch(route, () => {
 
 .top3 {
     display: flex;
-    flex-direction: column; /* Apila los elementos dentro del h3 verticalmente */
+    flex-direction: column;
     margin: 0;
 }
 .up {

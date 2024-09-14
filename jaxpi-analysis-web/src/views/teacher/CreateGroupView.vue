@@ -1,11 +1,11 @@
 <template>
     <div class="create-group-view" v-if="authStore.isAuthenticated">
-        <!-- Formulario para crear clase -->
+        <!-- Form to create class -->
         <div v-if="!showConfirmationCreatedGroup" class="form-container">
             <CreateGroupForm @submit="handleGroupCreated" @cancel="handleCancel" />
         </div>
 
-        <!-- Mensaje de información de clase creada -->
+        <!-- Information message: class created -->
         <div v-if="showConfirmationCreatedGroup" class="confirmation">
             <div class="title-container-image">
                 <h3 style="font-size: 1.8rem; margin: 0px;">Class created</h3>
@@ -41,20 +41,16 @@ const createdGroup = ref({});
 
 const handleGroupCreated = (groupData) => {
     createdGroup.value = groupData;
-    //llamada al back
-    // si todo ha ido bien
     showConfirmationCreatedGroup.value = true;
-    //si ha ido mal
-    //showErrorCreatedGameSession.value = true;
 };
 
 const redirectToGroupDetails = () => {
     showConfirmationCreatedGroup.value = false;
-    router.push(`/group-details/${createdGroup.value.id}`); // Redirige a la pagina de groupDetails del nuevo group creado
+    router.push(`/group-details/${createdGroup.value.id}`); // Redirects to the groupDetails page of the newly created group
 };
 
 const handleCancel = () => {
-    router.back(); // Redirige a la ruta original si se cancela
+    router.back(); // Redirect to original route if cancelled
 };
 </script>
 

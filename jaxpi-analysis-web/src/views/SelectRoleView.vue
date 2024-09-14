@@ -17,7 +17,7 @@ const selectRole = (role) => {
     if (role === 'student')
         router.push('/student-login');
     else
-        router.push('/login'); // Redirige al login común para 'dev' y 'teacher'
+        router.push('/login');
 };
 </script>
 

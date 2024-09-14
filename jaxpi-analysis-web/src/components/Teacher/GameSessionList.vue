@@ -12,7 +12,7 @@
             <p>As soon as your students start playing, you'll be able to see their analytics!</p>
         </div>
 
-        <div v-if="isTeacher && gameSessionsStore.loading" class="no-data-charts loading-container">
+        <div v-if="isTeacher && gameSessionsStore.loading" class="no-data-charts loading-nodata-container">
             Loading...
         </div>
 

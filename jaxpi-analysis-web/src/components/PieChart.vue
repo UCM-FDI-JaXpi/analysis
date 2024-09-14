@@ -52,12 +52,11 @@ const changeChartType = () => {
   }
 };
 
-// Watch for changes in the data prop
 watch(() => props.data, (newData) => {
     if (chart.value) {
-        chart.value.destroy(); // Destruir el gráfico anterior
+        chart.value.destroy();
     }
-    drawPieChart(newData, props.chartId); // Redibujar el gráfico con los nuevos datos
+    drawPieChart(newData, props.chartId);
 });
 
 // Configuración de c3 para crear el gráfico de tarta
@@ -99,7 +98,7 @@ const drawPieChart = (data, chartId) => {
 
 <style scoped>
 .chart-title {
-  text-align: center; /* Centra el texto dentro del h2 */
+  text-align: center;
 }
 
 button {

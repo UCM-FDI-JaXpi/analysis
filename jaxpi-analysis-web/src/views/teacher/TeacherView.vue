@@ -46,7 +46,7 @@ import GroupList from '@/components/GroupList.vue';
 const authStore = useAuthStore();
 const groupsStore = useGroupsStore();
 
-const teacher = computed(() => { // Devuelve todos los datos si usr_type = 'teacher', sino, null
+const teacher = computed(() => {
     const teacherData = authStore.userData
     return teacherData && teacherData.usr_type === 'teacher' ? teacherData : null;
 });
@@ -87,7 +87,7 @@ const groupsCount = computed(() => groupsStore.groups.length);
 
 .teacher-email {
     margin-top: 0px;
-    margin-bottom: 10px; /* Reduce el espacio entre Email e Institution */
+    margin-bottom: 10px;
 }
 
 .teacher-institution {

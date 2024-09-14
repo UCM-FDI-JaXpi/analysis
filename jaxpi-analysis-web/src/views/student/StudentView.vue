@@ -45,13 +45,13 @@ const gameSessionsStore = useGameSessionsStore();
 const groupsStore = useGroupsStore();
 
 const userType = computed(() => authStore.userType);
-const student = computed(() => { // Devuelve todos los datos si usr_type = 'student', sino, null
+const student = computed(() => {
     const studentData = authStore.userData
     return studentData && studentData.usr_type === 'student' ? studentData : null;
 });
 
-const tabs = ref(["Overview", "Game sessions"]);
-const activeTab = ref(0); // Define active tab
+const tabs = ref(["Overview", "Game Sessions"]);
+const activeTab = ref(0);
 const groupId = ref('');
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy student al montar el componente
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
@@ -62,7 +62,7 @@ onMounted(async () => {
   await fetchDataFromMongoDB();
   await gameSessionsStore.fetchGameSessionsByStudentName(student.value?.name);
 
-  socket.on('newStatement', (updatedData) => { // Recibe record a record, no un array de records
+  socket.on('newStatement', (updatedData) => {
     if (userType.value === 'student') {
       if (originalData.value[0] && (updatedData.context.contextActivities.parent.id == originalData.value[0].groupId) 
           && student.value.session_keys.find( e => e == updatedData.context.extensions["https://www.jaxpi.com/sessionKey"]) ) {
@@ -154,7 +154,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         };
       });
     }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
-  }  else { // Limpia todas las stats var si no hay datos
+  }  else {
     dataTableFormat.value = [];
   }
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
@@ -187,7 +187,7 @@ h1 {
 }
 
 .student-details > * {
-    margin: 0; /* Elimina el margin de todos los elementos dentro de student-details */
+    margin: 0;
 }
 
 .student-name {
@@ -196,7 +196,7 @@ h1 {
 
 .student-role {
     font-size: 0.9rem;
-    color: #727171; /* Color gris claro para los detalles */
+    color: #727171;
     font-weight: bold;
 }
 
@@ -216,10 +216,10 @@ h1 {
 }
 
 .tab-content {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los elementos se muevan a la siguiente fila cuando no quepan */
-    gap: 50px;
     padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
     background-color: #79c1fd;
 }
 </style>

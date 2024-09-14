@@ -5,11 +5,12 @@
           Welcome to our About us page! <br>
           Feel free to contact us if you have any questions or inquiries.
         </p>
+        <h3 style="color: #005ebc; margin-bottom: 10px;">Attributions</h3>
+        <a href="https://www.flaticon.es/iconos-gratis/hecho" title="hecho iconos">Icono de marca de verificación creado por Octopocto - Flaticon</a>
     </div>
 </template>
 
 <script setup></script>
-
 
 <style scoped>
 .about-us-container {

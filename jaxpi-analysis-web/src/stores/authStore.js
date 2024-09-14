@@ -52,8 +52,8 @@ export const useAuthStore = defineStore('auth', {
                 });
 
                 if (response.status === 200) {
-                    console.log(response.data.message);  // Imprimir mensaje del servidor (exito)
-                    const userDataResponse = await axios.get('http://localhost:3000/api/session', { // podria dar error??
+                    console.log(response.data.message);  // success
+                    const userDataResponse = await axios.get('http://localhost:3000/api/session', {
                         withCredentials: true
                     });
                     const userData = userDataResponse.data.user;
@@ -81,27 +81,27 @@ export const useAuthStore = defineStore('auth', {
                 });
 
                 if (response.status === 200) {
-                    this.$reset(); // Limpiar authStore
+                    this.$reset();
 
                     const gameSessionsStore = useGameSessionsStore();
-                    gameSessionsStore.$reset(); // Limpiar gameSessionsStore
+                    gameSessionsStore.$reset();
 
                     const gamesStore = useGamesStore();
-                    gamesStore.$reset(); // Limpiar gamesStore
+                    gamesStore.$reset();
 
                     const groupsStore = useGroupsStore();
-                    groupsStore.$reset(); // Limpiar groupsStore                    
+                    groupsStore.$reset();               
 
                     const studentStore = useStudentStore();
-                    studentStore.$reset(); // Limpiar studentStore
+                    studentStore.$reset();
 
                     const routeStore = useRouteStore();
-                    routeStore.$reset(); // Limpiar routeStore
+                    routeStore.$reset();
 
                     const paginationStore = usePaginationStore();
-                    paginationStore.$reset(); // Limpiar paginationStore
+                    paginationStore.$reset();
 
-                    console.log(response.data.message); // Imprimir mensaje del servidor (exito)
+                    console.log(response.data.message); // Imprimir mensaje del servidor (success)
                 }
                 else
                     console.error('Logout failed');

@@ -21,9 +21,8 @@ import SidebarMenu from './components/navigation/SidebarMenu.vue';
 import socket from './socket';
 
 const route = useRoute();
-const authStore = useAuthStore(); // To use Pinia store 
+const authStore = useAuthStore();
 
-// Watch for changes in authStore.userData
 watch(() => authStore.userData,
   (newValue) => {
     if (newValue) {
@@ -98,7 +97,7 @@ html, body, #app {
 
 .blueCard {
   background-color: #A8D8FF;
-  padding: 20px;
+  padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -127,7 +126,7 @@ html, body, #app {
   padding: 1rem;
   box-sizing: border-box;
   max-height: 365px;
-  overflow-y: auto; /* Muestra scrollbar vertical cuando el contenido desborda */
+  overflow-y: auto;
   scrollbar-color: #79c1fd #f0f0f0;
   margin-top: 22px;
   padding-top: 0px;
@@ -168,7 +167,7 @@ html, body, #app {
 }
 
 .tab-content-charts {
-  padding: 20px;
+  padding: 2rem;
   background-color: #79C1FDBA;
 }
 
@@ -191,7 +190,6 @@ form#search {
   align-items: center;
 }
 
-/* PARA DEV */
 .token-container {
   display: flex;
   align-items: baseline;
@@ -222,7 +220,7 @@ form#search {
   background-color: #f9f9f9;
   padding: 10px;
   line-height: 1.5;
-  white-space: pre-wrap; /* Preserva saltos de línea y espacios del texto original */
+  white-space: pre-wrap;
   border-left: 3px solid #3498db;
   border-right: 3px solid #3498db;
   border-radius: 8px;
@@ -230,10 +228,10 @@ form#search {
   overflow-y: auto;
 }
 
-.loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: inherit;
+.loading-nodata-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: inherit;
 }
 </style>

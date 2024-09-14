@@ -11,7 +11,7 @@
 
     <div class="blueCard centerItems" v-if="gameSessionOptions.length > 0">
       <div class="marginBottom90">
-        <h2 style="text-align: center;">Game sessions</h2>
+        <h2 style="text-align: center; margin-top: 0px;">Game sessions</h2>
         <BaseTable
           :headers="['Game session', 'Game', 'Session key']"
           :rows="formattedGameSessions"
@@ -48,7 +48,7 @@
           title="Verb count" />
         </div>
 
-        <div class="marginBottom90 for-pie-student" v-if="dataTableFormat.length > 0">
+        <div class="for-pie-student" v-if="dataTableFormat.length > 0">
           <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
@@ -79,11 +79,10 @@ import { useStudentStore } from '@/stores/studentStore'
 import { useGroupsStore } from '@/stores/groupsStore';
 import { useGameSessionsStore } from '@/stores/gameSessionsStore';
 import { useAuthStore } from '@/stores/authStore';
+import axios from 'axios';
 
 import { sortStatements, calculateForStatements } from '../../utils/utilities.js';
 
-import axios from 'axios';
-// import socket from '@/socket';
 import BaseTable from '@/components/BaseTable.vue';
 import DataTable from '@/components/DataTable.vue';
 import BarChart from '@/components/BarChart.vue';
@@ -92,7 +91,7 @@ import PieChart from '@/components/PieChart.vue';
 const gameSessionsStore = useGameSessionsStore();
 const studentStore = useStudentStore();
 const groupsStore = useGroupsStore();
-const authStore = useAuthStore(); // To use Pinia store (desestructuracion)
+const authStore = useAuthStore();
 
 const selectedStudent = computed(() => studentStore.selectedStudent);
 const groupId = computed(() => groupsStore.selectedGroupId);
@@ -104,9 +103,10 @@ const originalData = ref([]); // Guardo todo lo que me da response.data
 const dataTableFormat = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataLevelCompletionTimes = ref([]);
-const dataGroup = ref([]); ////////////////////////////////////// FOR CHARTS
+const dataGroup = ref([]);
 const dataVerbCount = ref([]);
 const dataPieChartGamesStartedCompleted = ref([]);
+const loading = ref(true);
 
 const searchQueryTeacher = ref('')
 const tableColumnsTeacher = ['session', 'game', 'numberOfStatements', 'lastTimestamp']
@@ -119,9 +119,8 @@ const dataTableColumnTitlesTeacher = {
 
 // For select-dropdown
 const selectedGameSession = ref('');
-const gameSessionOptions = computed(() => gameSessionsStore.gameSessions); // Vincula las opciones del select con los datos del store de gameSessions
+const gameSessionOptions = computed(() => gameSessionsStore.gameSessions);
 
-const loading = ref(true);
 
 const formatGameSessionsForTable = () => {
   try{
@@ -310,7 +309,7 @@ function setDataTableFormat(gameSession){ // Recibo gameSessionId (all o sus ids
     }
 }
 
-// FORMATEAR DATOS PARA EL PRIMER BARCHART - COMPLETION TIME PER LEVEL
+// FORMATEAR DATOS PARA EL BARCHART - COMPLETION TIME PER LEVEL
 function setLevelCompletionTimes(gameSession){ // Recibo gameSessionId (all o sus ids...)
   if (filteredDataByGroupId.value.length > 0) { // Pueden venir varios grupos
     if ( gameSession == 'all'){
@@ -362,7 +361,7 @@ function setLevelCompletionTimes(gameSession){ // Recibo gameSessionId (all o su
     }
 }
 
-//PARA EL SEGUNDO BARCHART - COUNTVERBS tiene q ser llamado despues de actualizar dataGroup
+//PARA EL BARCHART - COUNTVERBS tiene q ser llamado despues de actualizar dataGroup
 function setDataVerbCount(){ // Recibo gameSessionId (all o sus ids...)
   dataVerbCount.value = [];
   dataGroup.value.forEach(actorInfo => {
@@ -384,7 +383,7 @@ function setDataVerbCount(){ // Recibo gameSessionId (all o sus ids...)
   });
 }
 
-//PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
+//PARA EL PIECHART - GAMES STARTED AND COMPLETED
 function setDataPieChartGamesStartedCompleted(){ // Recibo gameSessionId (all o sus ids...)
   dataPieChartGamesStartedCompleted.value = [];
   dataGroup.value.forEach(actorInfo => {
@@ -424,6 +423,7 @@ function cleanData(){
 .student-details-container {
   padding:1rem;
 }
+
 select {
   width: 100%;
   padding: 10px;

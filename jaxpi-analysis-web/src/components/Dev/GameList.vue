@@ -30,7 +30,7 @@ import { useGamesStore } from '@/stores/gamesStore';
 const gamesStore = useGamesStore();
 const games = computed(() => gamesStore.games);
 
-const copyToken = (token) => { // Copiar al portapapeles del usuario
+const copyToken = (token) => {
     navigator.clipboard.writeText(token)
         .then(() => {
             console.log('Token copied to clipboard');
@@ -44,7 +44,7 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
 <style scoped>
 .card-container {
     display: flex;
-    flex-direction: column; /* Apila los elementos verticalmente */
+    flex-direction: column;
     gap: 10px;
 }
 
@@ -62,10 +62,10 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
     box-sizing: border-box;
 }
 .game-info {
-    flex-grow: 1; /* Permite que esta sección crezca y tome el espacio disponible */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Espacio entre el título y el contenedor del token */
+    gap: 10px;
 }
 
 .game-info h2 {
@@ -74,12 +74,12 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
 }
 
 .game-info p {
-    margin: 0; /* Elimina el margen por defecto */
+    margin: 0;
     color: #666;
 }
 
 .card-actions {
-    flex-shrink: 0; /* Para que el div del botón no se reduzca */
+    flex-shrink: 0;
 }
 
 .details-button {
@@ -91,7 +91,7 @@ const copyToken = (token) => { // Copiar al portapapeles del usuario
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.24s ease;
-    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    white-space: nowrap;
 }
 
 .details-button:hover {

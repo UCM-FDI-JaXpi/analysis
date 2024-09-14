@@ -1,11 +1,11 @@
 <template>
     <div class="create-game-session-view">
-        <!-- Formulario para crear sesión -->
+        <!-- Form to create session -->
         <div v-if="!showConfirmationCreatedGameSession" class="form-container">
             <CreateGameSessionForm @submit="handleGameSessionCreated" @cancel="handleCancel" />
         </div>
 
-         <!-- Mensaje de información de game sesion creada -->
+         <!-- Information message: game session created -->
          <div v-if="showConfirmationCreatedGameSession" class="confirmation">
             <div class="title-container-image">
                 <h3 style="font-size: 1.8rem; margin: 0px; margin-top: 7px; margin-bottom: 10px;">Game session created</h3>
@@ -53,11 +53,7 @@ const groupName = computed(() => {
 
 const handleGameSessionCreated = (gameSessionData) => {
     createdGameSession.value = gameSessionData;
-    //llamada al back
-    // si todo ha ido bien
     showConfirmationCreatedGameSession.value = true;
-    //si ha ido mal
-    //showErrorCreatedGameSession.value = true;
 };
 
 const redirectToGameSessionDetails = () => {
@@ -125,7 +121,7 @@ const exportDataToCSV = () => {
 }
 
 .confirmation > * {
-    margin: 0; /* Elimina el margin de todos los elementos dentro de teacher-details */
+    margin: 0;
 }
 
 .confirmation button {
