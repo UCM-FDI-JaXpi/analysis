@@ -16,7 +16,6 @@
                 <td v-for="key in columns" :key="`_${index}_${key}`">
                     
                     <span v-if="key === 'view'">
-                        <!-- {{ row[key] }} -->
                         <span v-if="entry[key]" class="eye-icon" @click.stop="showStudentDetail(entry)">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12c-2.48 0-4.5-2.02-4.5-4.5S9.52 7.5 12 7.5s4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5zm0-7c-1.38 0-2.5 1.12-2.5 2.5S10.62 14.5 12 14.5s2.5-1.12 2.5-2.5S13.38 9.5 12 9.5z"/>
@@ -25,7 +24,6 @@
                     </span>
                     <!-- Para las otras columnas muestra normalmente -->
                     <div v-else>
-                        <!-- {{ key === 'lastTimestamp' ? formatTimestamp(entry[key]) : entry[key] }} -->
                           <div v-if="key === 'lastTimestamp'" v-html="formatTimestamp(entry[key])">
                           </div>
                           <div v-else>
@@ -147,7 +145,7 @@ table {
 }
 
 td {
-    background-color: #f7f5f5; /* Color por defecto cuando el mouse no está sobre la fila */
+    background-color: #f7f5f5;
 }
 
 th,td {
