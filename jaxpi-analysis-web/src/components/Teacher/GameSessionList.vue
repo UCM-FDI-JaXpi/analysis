@@ -4,7 +4,7 @@
         <div class="instructions" v-if="isTeacher && gameSessions.length === 0 && !gameSessionsStore.loading">
             <p><strong style="color: #FF8800;">Remember:</strong> If you want to see your students' analytics you have to create a game session.</p>
             <ol>
-                <li><strong>Create game sessions:</strong> Click on the "Create game session" button and create
+                <li><strong>Create Game Sessions:</strong> Click on the "Create game session" button and create
                  session keys for your students.</li>
                 <li><strong>Give session keys to your students:</strong> Provide the generated session keys to you students
                     so they can play the game and access the app.</li>
@@ -21,13 +21,13 @@
                 <div class="game-session-info">
                     <h2>{{ gameSession.sessionName }}</h2>
                     <p><strong>Game: </strong>{{ gameSession.gameName }}</p>
-                    <p><strong>Created on: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p>
+                    <p><strong>Created On: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p>
                 </div>
                 <div class="card-actions">
                     <router-link :to="{ name: 'StudentGameSessionKeyView', params: { gameSessionId: gameSession.sessionId } }" 
                                  class="details-button"
                                  @click="selectSession(gameSession.sessionId)">
-                        View analytics
+                        View Analytics
                     </router-link>
                 </div>
             </div>
@@ -43,14 +43,14 @@
                 <div class="game-session-info">
                     <h2>{{ gameSession.sessionName }}</h2>
                     <p><strong>Game: </strong>{{ gameSession.gameName }}</p>
-                    <p><strong>Created on: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p> <br>
-                    <p><strong>Your key: </strong>{{ gameSession.key }}</p>
+                    <p><strong>Created On: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p> <br>
+                    <p><strong>Your Key: </strong>{{ gameSession.key }}</p>
                 </div>
                 <div class="card-actions">
                     <router-link :to="{ name: 'GameSessionDetailsByStudentView', params: { gameSessionId: gameSession.sessionId } }" 
                                  class="details-button"
                                  @click="selectSession(gameSession.sessionId)">
-                        View details
+                        View Details
                     </router-link>
                 </div>
             </div>
@@ -77,7 +77,7 @@ const selectSession = (sessionId) => {
 
 <style scoped>
 .game-session-list {
-    min-height: 445px;
+    min-height: 407px;
 }
 
 .instructions {

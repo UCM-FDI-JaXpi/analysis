@@ -142,7 +142,7 @@ html, body, #app {
 #bar-chart2, #bar-chart3, #bar-chart4, #bar-chart-time-per-attempt, #bar-chart-verb-count,
 #pie-chart1,
 #line-chart1,
-#stacked-bar-chart-interaction-items, #stacked-bar-chart-number-completed-levels {
+#stacked-bar-chart-interactions-items, #stacked-bar-chart-number-completed-levels {
   background-color: rgba(255, 255, 255, 0.8);
   min-width: 110px; /* Por si la grafica tiene solo una barra en la grafica para que tenga como min un tamaño a cuando hay mas datos */
 }
@@ -181,6 +181,7 @@ html, body, #app {
 
 form#search {
   margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .centerItems {

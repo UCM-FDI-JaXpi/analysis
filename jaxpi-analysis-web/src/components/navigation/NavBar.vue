@@ -9,11 +9,11 @@
         <router-link v-if="!isLoggedIn" class="nav-item" to="/select-role">Login</router-link>
         <router-link v-if="!isLoggedIn" class="nav-item" to="/register">Register</router-link>
         <a v-if="isLoggedIn" class="nav-item" @click="showLogoutModal = true">Logout</a> <!-- a en vez de routerlink ya que no admite eventos personalizados como @click-->
-        <router-link class="nav-item" to="/about-us">About us</router-link>
+        <router-link class="nav-item" to="/about-us">About Us</router-link>
 
         <ConfirmModal v-if="showLogoutModal"
           :visible="showLogoutModal"
-          title="Confirm logout"
+          title="Confirm Logout"
           message="Are you sure you want to logout?"
           @confirm="logout" 
           @cancel="hideLogoutModal"

@@ -1,8 +1,8 @@
 <template>
-    <div class="centerItems charts-container" style="min-height: 445px;">      
+    <div class="centerItems charts-container" style="min-height: 407px;">      
       <div v-if="dataTableFormat.length > 0 && !loading">
         <div class="centerItems datatable-charts">
-          <h2>Last statements received</h2>
+          <h2>Your Last Interactions</h2>
           <form id="search">
             Search <input name="query-teacher" v-model="searchQueryTeacher">
           </form>
@@ -11,6 +11,7 @@
             :columns="tableColumnsTeacher"
             :columnTitles="dataTableColumnTitlesTeacher"
             :filter-key="searchQueryTeacher"/>
+          <p style="color: darkblue; margin-bottom: 20px;"><strong>Note:</strong> there is no guarantee that all interactions have been received correctly.</p>
         </div>
       </div>
       <!-- Instructions, only if we haven't played yet -->
@@ -35,8 +36,8 @@ const tableColumnsTeacher = ['session', 'game', 'numberOfStatements', 'lastTimes
 const dataTableColumnTitlesTeacher = {
   session: 'Session',
   game: 'Game',
-  numberOfStatements: 'Number of statements',
-  lastTimestamp: 'Last statement received'
+  numberOfStatements: 'Number of Interactions',
+  lastTimestamp: 'Your Last Interaction'
 };
 
 // eslint-disable-next-line

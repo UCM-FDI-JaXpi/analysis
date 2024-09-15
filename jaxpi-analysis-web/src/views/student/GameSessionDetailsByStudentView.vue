@@ -3,8 +3,8 @@
     <div class="card-details">
       <h1>{{ session.sessionName }}</h1>
       <p><strong>Game: </strong>{{ session.gameName }}</p>
-      <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
-      <p><strong>Your key: </strong>{{ session.key }}</p>
+      <p><strong>Created On: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
+      <p><strong>Your Key: </strong>{{ session.key }}</p>
     </div>
 
     <div class="tabs-charts">
@@ -15,13 +15,13 @@
       </button>
     </div>
 
-    <div v-if="activeTab === 0" class="centerItems tab-content-charts" style="min-height: 445px;">
+    <div v-if="activeTab === 0" class="centerItems tab-content-charts" style="min-height: 407px;">
       <div v-if="isStatements && !loading">
         <div class="marginBottom90 for-pie-student">
           <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
-            title="Games completed and not completed" />
+            title="Games Completed and Not Completed" />
             <div>
               <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
               <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
@@ -33,7 +33,7 @@
             <LineChart
               :data="dataStatementsByTimestamp"
               chartId="line-chart1"
-              title="Statements by timestamp" />
+              title="Statements by Timestamp" />
         </div>
 
         <!-- Filter and chart (BarChart) -->
@@ -41,14 +41,15 @@
           <div v-if="arrayLevelsPerStudent.length > 0" class="filter-container">
             <FilterChartsComponent 
               :data="arrayLevelsPerStudent"
-              title="Filter by level"
+              title="Filter by Level"
               @selectElem="handleFilterLevel"/>
           </div>
           <div>
             <BarChart
               :data="dataAttemptTimesForStudentLevel"
               chartId="bar-chart-time-per-attempt"
-              title="Time per attempt (Student per level)" />
+              title="Time per Attempt" />
+            <p style="text-align: center; color: darkblue;"><strong>Note: </strong>This chart shows a maximum of the last 10 attempts.</p>
           </div>
         </div>
       </div>
@@ -62,20 +63,20 @@
       </div>
     </div>
 
-    <div v-if="activeTab === 1" class="centerItems tab-content-charts" style="min-height: 445px;">
+    <div v-if="activeTab === 1" class="centerItems tab-content-charts" style="min-height: 407px;">
       <div class="centerItems" v-if="isStatements">
         <div class="marginBottom90">
           <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
             :data="dataBestCompletionTimePerLevelPerGroup"
             chartId="bar-chart4"
-            title="Your best completion time per level" 
+            title="Your Best Completion Time per Level" 
             :customTooltip="true"/>
         </div>
         <div class="marginBottom90" style="align-self: center; width: 600px;">
           <BarChart v-if="dataLevelCompletionTimes.length > 0"
             :data="dataLevelCompletionTimes"
             chartId="bar-chart2"
-            title="Completion time per level" />
+            title="Average Completion Time per Level" />
         </div>
       </div>
       <!-- Instructions, only if we haven't played yet -->
@@ -85,13 +86,13 @@
       </div>
     </div>
 
-    <div v-if="activeTab === 2" class="centerItems tab-content-charts" style="min-height: 445px;">
+    <div v-if="activeTab === 2" class="centerItems tab-content-charts" style="min-height: 407px;">
       <div class="centerItems" v-if="isStatements">
         <div class="marginBottom90" style="align-self: center; width: 600px;">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
             chartId="bar-chart-verb-count"
-            title="Verb count" /> 
+            title="Count of Verbs Used" /> 
         </div>
       </div>
       <!-- Instructions, only if we haven't played yet -->
@@ -414,10 +415,11 @@ const handleFilterLevel = async (levelData) => { // 'level1//ana xyz'
     }
   }); 
   resTempo = resTempo.flat();
+  resTempo = resTempo.slice(-10); // last 10 attempts in chart
   let cont = 0;
   resTempo.forEach(attemp => {
       let obj = {
-        nameObject: 'Attempt ' + cont,
+        nameObject: 'Attempt ' + (cont+1),
         value: attemp,
       };
       cont++;

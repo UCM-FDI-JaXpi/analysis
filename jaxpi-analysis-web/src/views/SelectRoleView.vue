@@ -1,9 +1,9 @@
 <template>
     <div class="select-role-container">
-        <h1>Select your role</h1>
+        <h1>Select Your Role</h1>
         <div class="role-buttons">
             <button @click="selectRole('teacher')" class="role-button">Login</button>
-            <button @click="selectRole('student')" class="role-button student-button">Login as student</button>
+            <button @click="selectRole('student')" class="role-button student-button">Login as Student</button>
     </div>
     </div>
 </template>

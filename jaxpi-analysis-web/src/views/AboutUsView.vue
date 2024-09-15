@@ -1,12 +1,12 @@
 <template>
     <div class="about-us-container">
-        <h1>About us</h1>
+        <h1>About Us</h1>
         <p class="about-us-text">
-          Welcome to our About us page! <br>
+          Welcome to our About Us page! <br>
           Feel free to contact us if you have any questions or inquiries.
         </p>
         <h3 style="color: #005ebc; margin-bottom: 10px;">Attributions</h3>
-        <a href="https://www.flaticon.es/iconos-gratis/hecho" title="hecho iconos">Icono de marca de verificación creado por Octopocto - Flaticon</a>
+        <a href="https://www.flaticon.es/iconos-gratis/hecho" title="hecho iconos">Checkmark icon created by Octopocto - Flaticon</a>
     </div>
 </template>
 

@@ -1,6 +1,7 @@
 <template>
   <div class="widthBarChart">
     <h2 class="chart-title">{{ title }}</h2>
+    <p v-if="description" class="chart-description">{{ description }}</p>
     <div :id="chartId"></div>
   </div>
 </template>
@@ -22,6 +23,10 @@ const props = defineProps({
   title: {
     type: String,
     required: true
+  },
+  description: {
+    type: String,
+    required: false
   },
   colorPalette: {
     type: Array,

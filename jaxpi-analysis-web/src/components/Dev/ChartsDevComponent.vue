@@ -8,7 +8,7 @@
         </button>
       </div>
       
-      <div v-if="activeTab === 0" class="tab-content-charts centerItems" style="min-height: 445px;">
+      <div v-if="activeTab === 0" class="tab-content-charts centerItems" style="min-height: 407px;">
         <div class="centerItems" v-if="(dataPieChartGamesStartedCompleted.length > 0 || dataObjectCount.length > 0) && !loading">
           <div class="marginBottom90">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
@@ -20,7 +20,7 @@
             <BarChart v-if="dataObjectCount.length > 0"
               :data="dataObjectCount"
               chartId="bar-chart-interactions-items"
-              title="Interactions of items" />
+              title="Number of Interactions with Items" />
           </div>
         </div>
         <div v-if="(dataPieChartGamesStartedCompleted.length === 0 || dataObjectCount.length === 0) && !loading" class="no-data-charts">
@@ -31,7 +31,7 @@
         </div>
       </div>
   
-      <div v-if="activeTab === 1" class="tab-content-charts centerItems" style="min-height: 445px;">
+      <div v-if="activeTab === 1" class="tab-content-charts centerItems" style="min-height: 407px;">
         <div class="centerItems" v-if="dataBestCompletionTimePerLevelPerGroup.length > 0 || dataLevelCompletionTimes.length > 0">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
@@ -43,7 +43,7 @@
             <BarChart v-if="dataLevelCompletionTimes.length > 0"
               :data="dataLevelCompletionTimes"
               chartId="bar-chart2"
-              title="Completion time per level"
+              title="Average Completion time per level"
               :colorPalette="colorPalettes[1]" />
           </div>
         </div>
@@ -51,12 +51,12 @@
           <p>No data available.</p>
         </div>
       </div>
-      <div v-if="activeTab === 2" class="tab-content-charts centerItems" style="min-height: 445px;">
+      <div v-if="activeTab === 2" class="tab-content-charts centerItems" style="min-height: 407px;">
         <div v-if="dataVerbCount.length > 0" class="marginBottom90">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
             chartId="bar-chart-verb-count"
-            title="Verb count" /> 
+            title="Count of Verbs Used" /> 
         </div>
         <div v-else class="no-data-charts">
           <p>No data available.</p>
@@ -225,16 +225,30 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 
 .tabs {
   display: flex;
+  border-bottom: 2px solid #ddd;
+  max-width: 1300px;
 }
 
 .tabs button {
   padding: 10px 20px;
-  margin-right: 1px;
+  margin-right: 2px;
   cursor: pointer;
   border: none;
+  background-color: #f0f0f0;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .tabs button.active {
   background-color: #79c1fd;
+  color: white;
+}
+
+.tab-content {
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    background-color: #79c1fd;
 }
 </style>

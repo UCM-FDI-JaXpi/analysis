@@ -1,7 +1,7 @@
 <template>
     <div v-if="userType === 'teacher'" class="sidebar">
         <div class="menu-item create-menu-item" @click="navigateToCreateGroup">
-            Create class
+            Create Class
         </div>
 
         <!-- Existing class menu -->

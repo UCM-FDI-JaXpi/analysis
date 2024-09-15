@@ -63,8 +63,8 @@ const selectGroup = (groupId) => {
 }
 
 .group-info {
-    flex-grow: 1; /* Permite que esta sección crezca y tome el espacio disponible */
-    margin-right: 10px; /* Espacio entre la información del grupo y el botón */
+    flex-grow: 1;
+    margin-right: 10px;
 }
 
 .group-info h2 {

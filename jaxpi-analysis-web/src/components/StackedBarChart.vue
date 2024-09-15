@@ -49,7 +49,7 @@ const drawBarChart = (data, chartId) => {
         if (index === 0) {
             if (props.chartId == "stacked-bar-chart-number-completed-levels")
                 categories.push(...item.value.map((_, i) => `Level ${i + 1}`));
-            else if (props.chartId == "stacked-bar-chart-interaction-items")
+            else if (props.chartId == "stacked-bar-chart-interactions-items")
                 categories.push(...item.interactions.map((e) => `${e}`));
         }
         columns.push([item.nameObject, ...item.value]);
@@ -85,7 +85,7 @@ const drawBarChart = (data, chartId) => {
             },
             y: {
                 label: {
-                    text: 'Times',
+                    text: 'Number of Times',
                     position: 'outer-middle' // (outer-middle, outer-top, outer-bottom)
                 },
                 tick: {

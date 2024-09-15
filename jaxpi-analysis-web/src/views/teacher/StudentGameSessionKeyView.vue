@@ -4,7 +4,7 @@
         <h1>{{ session.sessionName }}</h1>
         <p><strong>Game: </strong>{{ session.gameName }}</p>
         <p><strong>Group: </strong>{{ groupName }}</p>
-        <p><strong>Created on: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
+        <p><strong>Created On: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
       </div>
 
       <div class="tabs-charts">
@@ -15,10 +15,12 @@
         </button>
       </div>
 
-      <div v-if="activeTab === 0" class="tab-content-charts" style="min-height: 445px;">
+      <div v-if="activeTab === 0" class="tab-content-charts" style="min-height: 407px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0 && !loading">
           <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
-                  <h2>Last statements received</h2>
+                  <h2>Last Interactions Received</h2>
+                  <p>You can see the latest interactions of students with the game
+                    in the selected session, sorted from the most recent to the oldest.</p>
                   <form id="search">
                       Search <input name="query-teacher" v-model="searchQueryTeacher">
                   </form>
@@ -28,6 +30,7 @@
                       :columnTitles="dataTableColumnTitlesTeacher"
                       :filter-key="searchQueryTeacher"
                       @student-selected="handleStudentSelected"/>
+                      <p style="color: darkblue;"><strong>Note:</strong> there is no guarantee that all interactions have been received correctly.</p>
           </div>
           
           <!-- Primer filtro y chart (LineChart) -->
@@ -35,29 +38,29 @@
             <div class="filter-container">
               <FilterChartsComponent 
                 :data="arrayStudents"
-                title="Filter by student"
+                title="Filter by Student"
                 @selectElem="handleFilterNameStudent"/>
             </div>
             <div>
               <LineChart
                 :data="dataStatementsByTimestamp"
                 chartId="line-chart1"
-                title="Statements by timestamp" />
+                title="Statements by Timestamp" />
             </div>
           </div>
 
           <!-- Segundo filtro y gráfico (BarChart) -->
           <div class="chart-container-barchart marginBottom90">
-            <div class="filter-container">
+            <div class="filter-container" style="max-height: 418px">
               <FilterChartsComponent 
                 :data="arrayStudents"
-                title="Filter by student"
+                title="Filter by Student"
                 @selectElem="handleFilterNameStudentBarChart"/>
                 <!-- Filtro del filtro que se mostrará al seleccionar un student -->
                 <div v-if="arrayLevelsPerStudent.length > 0">
                   <FilterChartsComponent 
                     :data="arrayLevelsPerStudent"
-                    title="Filter by level"
+                    title="Filter by Level"
                     :hasMargin="true"
                     @selectElem="handleFilterLevel"/>
                 </div>
@@ -66,7 +69,10 @@
               <BarChart
                 :data="dataAttemptTimesForStudentLevel "
                 chartId="bar-chart-time-per-attempt"
-                title="Time per attempt (Student per level)" />
+                title="Time per Attempt (Student per Level)"
+                description="You can see the time a student has taken on each attempt
+                             of the selected level. You can only select levels played by the student."/>
+              <p style="text-align: center; color: darkblue;"><strong>Note: </strong>This chart shows a maximum of the last 10 attempts.</p>
             </div>
           </div>
 
@@ -74,7 +80,7 @@
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
                 :data="dataPieChartGamesStartedCompleted"
                 chartId="pie-chart1"
-                title="Games completed and not completed" />
+                title="Games Completed and Not Completed" />
             <div>
               <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
               <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
@@ -85,15 +91,15 @@
           <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements">
             <StackedBarChart v-if="dataObjectCount.length > 0"
                   :data="dataObjectCount"
-                  chartId="stacked-bar-chart-interaction-items"
-                  title="Interaction of items" />
+                  chartId="stacked-bar-chart-interactions-items"
+                  title="Number of Interactions with Items" />
           </div>
 
-          <div class="marginBottom90" style="align-self: center; width: 900px;" v-if="isStatements">
+          <div style="align-self: center; width: 900px; margin-bottom: 20px;" v-if="isStatements">
             <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
                   :data="dataCompletedLevelsCount"
                   chartId="stacked-bar-chart-number-completed-levels"
-                  title="Number of completed levels by student" />
+                  title="Number of Completed Levels by Student" />
           </div>
         </div>
         <div v-if="dataTableFormat.length === 0 && !loading" class="no-data-charts loading-nodata-container">
@@ -104,20 +110,20 @@
         </div>
       </div>
 
-      <div v-if="activeTab === 1" class="tab-content-charts" style="min-height: 445px;">
+      <div v-if="activeTab === 1" class="tab-content-charts" style="min-height: 407px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevel.length > 0"
               :data="dataBestCompletionTimePerLevel"
               chartId="bar-chart4"
-              title="Best completion time per level" 
+              title="Best Completion Time per Level" 
               :customTooltip="true"/>
           </div>
-          <div>
+          <div style="margin-bottom: 20px;">
             <BarChart v-if="dataLevelCompletionTimes.length > 0"
               :data="dataLevelCompletionTimes"
               chartId="bar-chart2"
-              title="Completion time per level" />
+              title="Average Completion Time per Level" />
           </div>
         </div>
         <div v-else class="no-data-charts loading-nodata-container">
@@ -125,13 +131,13 @@
         </div>
       </div>
 
-      <div v-if="activeTab === 2" class="tab-content-charts" style="min-height: 445px;">
+      <div v-if="activeTab === 2" class="tab-content-charts" style="min-height: 407px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0">
-          <div>
+          <div style="margin-bottom: 20px;">
             <BarChart v-if="dataVerbCount.length > 0" 
               :data="dataVerbCount"
               chartId="bar-chart-verb-count"
-              title="Verb count" /> 
+              title="Count of Verbs Used" /> 
           </div>
         </div>
         <div v-else class="no-data-charts loading-nodata-container">
@@ -193,8 +199,8 @@ const tableColumnsTeacher = ['studentOriginal','key', 'numberOfStatements', 'las
 const dataTableColumnTitlesTeacher = {
     studentOriginal: 'Student',
     key: 'Key',
-    numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement received',
+    numberOfStatements: 'Number of Interactions',
+    lastTimestamp: 'Last Interaction Received',
     view:''
 };
 
@@ -639,5 +645,9 @@ function handleStudentSelected(student) { // When you click on a row in the tabl
   gap: 22px;
   display: inline-grid;
   text-align: center;
+}
+
+h2 {
+  margin-bottom: 0px;
 }
 </style>

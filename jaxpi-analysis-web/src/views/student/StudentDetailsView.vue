@@ -11,9 +11,9 @@
 
     <div class="blueCard centerItems" v-if="gameSessionOptions.length > 0">
       <div class="marginBottom90">
-        <h2 style="text-align: center; margin-top: 0px;">Game sessions</h2>
+        <h2 style="text-align: center; margin-top: 0px;">Game Sessions List</h2>
         <BaseTable
-          :headers="['Game session', 'Game', 'Session key']"
+          :headers="['Game Session', 'Game', 'Session Key']"
           :rows="formattedGameSessions"
           :rowKeys="['gameSession', 'game', 'sessionKey']" />
       </div>
@@ -25,7 +25,8 @@
       </div>
       <div class="centerItems" v-if="!loading">
         <div class="centerItems marginBottom90" v-if="dataTableFormat.length > 0">
-          <h2>Last statements received</h2>
+          <h2 style="margin-bottom: 0px;">Last Interactions Received</h2>
+          <p>You can see information about this student's interactions in this game session.</p>
           <form id="search">
             Search <input name="query-teacher" v-model="searchQueryTeacher">
           </form>
@@ -34,25 +35,26 @@
             :columns="tableColumnsTeacher"
             :columnTitles="dataTableColumnTitlesTeacher"
             :filter-key="searchQueryTeacher" />
+            <p style="color: darkblue;"><strong>Note:</strong> there is no guarantee that all interactions have been received correctly.</p>
         </div>
         <div class="marginBottom90" v-if="dataTableFormat.length > 0">
           <BarChart v-if="dataLevelCompletionTimes.length > 0"
             :data="dataLevelCompletionTimes"
             chartId="bar-chart2"
-            title="Completion time per level" />
+            title="Average Completion Time per Level" />
         </div>
         <div class="marginBottom90" v-if="dataTableFormat.length > 0">
           <BarChart v-if="dataVerbCount.length > 0" 
           :data="dataVerbCount"
           chartId="bar-chart-verb-count"
-          title="Verb count" />
+          title="Count of Verbs Used" />
         </div>
 
         <div class="for-pie-student" v-if="dataTableFormat.length > 0">
           <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
-            title="Games completed and not completed" />
+            title="Games Completed and Not Completed" />
             <div>
               <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
               <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
@@ -113,14 +115,13 @@ const tableColumnsTeacher = ['session', 'game', 'numberOfStatements', 'lastTimes
 const dataTableColumnTitlesTeacher = {
     session: 'Session',
     game: 'Game',
-    numberOfStatements: 'Number of statements',
-    lastTimestamp: 'Last statement received'
+    numberOfStatements: 'Number of Interactions',
+    lastTimestamp: 'Last Interaction Received'
 };
 
 // For select-dropdown
 const selectedGameSession = ref('');
 const gameSessionOptions = computed(() => gameSessionsStore.gameSessions);
-
 
 const formatGameSessionsForTable = () => {
   try{
@@ -133,7 +134,6 @@ const formatGameSessionsForTable = () => {
     gameSessionOptions.value = [];
     console.log('error in formatGameSessionsForTable')
   }
-
 };
 
 const handleGameSessionChange = (gameSessionId) => {
@@ -149,9 +149,10 @@ const handleGameSessionChange = (gameSessionId) => {
     console.log('Selected game session ID:', gameSessionId);
 };
 
-watch(selectedGameSession, (newValue) => {
+watch(selectedGameSession, async (newValue) => {
   loading.value = true;
   handleGameSessionChange(newValue);
+  loading.value = false;
 });
 
 onMounted(async () => {
@@ -261,12 +262,12 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   console.log(newValue);
   filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
 
-  loading.value = false;
   // FORMATEAR DATOS PARA CHARTS
   setDataTableFormat(selectedGameSession.value);
   setLevelCompletionTimes(selectedGameSession.value);
   setDataVerbCount();
   setDataPieChartGamesStartedCompleted();
+    loading.value = false;
 }, { deep: true });
 
 // FORMATEAR DATOS PARA DATATABLE - LAST STATEMENT

@@ -79,12 +79,12 @@ h1 {
 	padding: 40px;
 	border-radius: 12px;
 	box-shadow: 0 4px 17px rgba(0, 0, 0, 0.1);
-	text-align: center;
 	width: 300px;
 	position: relative;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	text-align: -webkit-center;
 }
 
 .input-container {
@@ -133,10 +133,11 @@ button:hover {
 .link {
 	display: block;
 	margin-top: 15px;
-	color: #5ce8cf;
+	color: #6bf3da;
 	text-decoration: none;
 	font-weight: bold;
 	transition: color 0.2s ease;
+	max-width: fit-content;
 }
 
 .link:hover {

@@ -1,6 +1,6 @@
 <template>
     <div class="student-login-container">
-        <h1>Student login</h1>
+        <h1>Student Login</h1>
         <form @submit.prevent="login">
             <div class="input-container">
                 <label for="sessionKey">Key </label>
@@ -8,6 +8,9 @@
             </div>
             <button type="submit">Login</button>
         </form>
+
+		<router-link to="/register" class="link">Register</router-link>
+
         <p v-if="authStore.errorMessage" class="error-message">{{ authStore.errorMessage }}</p>
     </div>
 </template>
@@ -52,12 +55,12 @@ h1 {
 	padding: 40px;
 	border-radius: 12px;
 	box-shadow: 0 4px 17px rgba(0, 0, 0, 0.1);
-	text-align: center;
 	width: 300px;
 	position: relative;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	text-align: -webkit-center;
 }
 
 .input-container {
@@ -101,5 +104,19 @@ button {
 
 button:hover {
 	background-color: #1dcce3;
+}
+
+.link {
+	display: block;
+	margin-top: 15px;
+	color: #6bf3da;
+	text-decoration: none;
+	font-weight: bold;
+	transition: color 0.2s ease;
+	max-width: fit-content;
+}
+
+.link:hover {
+	color: #168a9a;
 }
 </style>

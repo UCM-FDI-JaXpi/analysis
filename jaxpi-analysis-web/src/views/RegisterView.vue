@@ -16,11 +16,11 @@
         <input type="password" id="pwd" v-model="pwd" required>
       </div>
       <div class="input-container">
-        <label for="rep_pwd">Repeat password *</label>
+        <label for="rep_pwd">Repeat Password *</label>
         <input type="password" id="rep_pwd" v-model="rep_pwd" required>
       </div>
       <div class="input-container">
-        <label for="usr_type">I am a </label>
+        <label for="usr_type">I am a *</label>
         <select id="usr_type" v-model="userType" required>
           <option value="teacher">Teacher</option>
           <option value="dev">Developer</option>
@@ -33,7 +33,7 @@
       <button type="submit">Register</button>
     </form>
 
-    <router-link to="/login" class="link">Login</router-link>
+    <router-link to="/select-role" class="link">Login</router-link>
 
     <p v-if="authStore.errorMessage" class="error-message">{{ authStore.errorMessage }}</p>
   </div>
@@ -99,12 +99,12 @@ h1 {
 	padding: 40px;
 	border-radius: 12px;
 	box-shadow: 0 4px 17px rgba(0, 0, 0, 0.1);
-	text-align: center;
 	width: 300px;
 	position: relative;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+  text-align: -webkit-center;
 }
 
 .input-container {
@@ -153,13 +153,14 @@ button:hover {
 .link {
   display: block;
   margin-top: 15px;
-  color: #ffdad0;
+  color: #eb7d28;
   text-decoration: none;
   font-weight: bold;
   transition: color 0.1s ease;
+  max-width: fit-content;
 }
 
 .link:hover {
-  color: #e38000;
+  color: #945707;
 }
 </style>

@@ -24,14 +24,14 @@
           <BarChart v-if="dataLevelCompletionTimes.length > 0"
             :data="dataLevelCompletionTimes"
             chartId="bar-chart2"
-            title="Completion time per level" />
+            title="Average Completion time per level" />
         </div>
 
         <div class="marginBottom90" style="align-self: center; width: 600px;">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
             chartId="bar-chart-verb-count"
-            title="Verb count" /> 
+            title="Count of Verbs Used" /> 
         </div>
 
         <div class="marginBottom90" >

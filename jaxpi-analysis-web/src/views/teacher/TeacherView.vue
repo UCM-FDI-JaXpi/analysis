@@ -1,6 +1,6 @@
 <template>
     <div class="teacher-view">
-        <h1 v-if="!teacher" style="margin-bottom: 0;">Teacher's view</h1>
+        <h1 v-if="!teacher" style="margin-bottom: 0;">Teacher's View</h1>
         <p v-if="!teacher">Please log in as a teacher to view teacher details.</p>
 
         <div class="teacher-details" v-if="teacher">
@@ -15,9 +15,9 @@
             <h2>Getting Started</h2>
             <p>To start viewing your student's analytics, follow these steps:</p>
             <ol>
-            <li><strong>Create a class:</strong> Click the "Create class" button in your sidebar 
+            <li><strong>Create a class:</strong> Click the "Create Class" button in your sidebar 
                 and include at least one student.</li>
-            <li><strong>Create game sessions:</strong> Once your class is created, go to the 
+            <li><strong>Create Game Sessions:</strong> Once your class is created, go to the 
                 class details and click the "Create game session" button.</li>
             <li><strong>Get session keys:</strong> When you create a game session, session keys
                  are generated for each student. These keys allow you to monitor student interactions

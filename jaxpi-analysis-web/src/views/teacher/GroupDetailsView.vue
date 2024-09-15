@@ -64,7 +64,7 @@ const groupId = computed(() => route.params.groupId);
 const group = computed(() => groupsStore.getGroupById(groupId.value));
 const userType = computed(() => authStore.userType);
 
-const tabs = ref(["Game sessions", "Students"]);
+const tabs = ref(["Game Sessions", "Students"]);
 const activeTab = ref(0); // Define active tab
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
