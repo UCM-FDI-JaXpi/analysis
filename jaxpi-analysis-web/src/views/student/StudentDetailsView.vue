@@ -27,9 +27,6 @@
         <div class="centerItems marginBottom90" v-if="dataTableFormat.length > 0">
           <h2 style="margin-bottom: 0px;">Last Interactions Received</h2>
           <p>You can see information about this student's interactions in this game session.</p>
-          <form id="search">
-            Search <input name="query-teacher" v-model="searchQueryTeacher">
-          </form>
           <DataTable
             :data="dataTableFormat" 
             :columns="tableColumnsTeacher"
@@ -37,8 +34,8 @@
             :filter-key="searchQueryTeacher" />
             <p style="color: darkblue;"><strong>Note:</strong> there is no guarantee that all interactions have been received correctly.</p>
         </div>
-        <div class="marginBottom90" v-if="dataTableFormat.length > 0">
-          <BarChart v-if="dataLevelCompletionTimes.length > 0"
+        <div class="marginBottom90" v-if="dataLevelCompletionTimes.length > 0">
+          <BarChart 
             :data="dataLevelCompletionTimes"
             chartId="bar-chart2"
             title="Average Completion Time per Level" />
@@ -61,8 +58,8 @@
               <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
             </div>
         </div>
-        <div v-else style="margin-top:90px;" class="no-data-charts">
-          No data for this student.
+        <div v-else style="margin-top:10px;" class="no-data-charts">
+          No data for this student in this game session.
         </div>
       </div>
       <div v-if="loading" class="no-data-charts">
@@ -382,6 +379,7 @@ function setDataVerbCount(){ // Recibo gameSessionId (all o sus ids...)
       }); 
     }
   });
+  dataVerbCount.value = dataVerbCount.value.sort((a, b) => b.value - a.value);
 }
 
 //PARA EL PIECHART - GAMES STARTED AND COMPLETED

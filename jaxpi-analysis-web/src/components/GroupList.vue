@@ -15,7 +15,7 @@
                     <router-link :to="{ name: 'GroupDetailsView', params: { groupId: group.id } }"
                                  class="details-button"
                                  @click="selectGroup(group.id)">
-                        View details
+                        View Details
                     </router-link>
                 </div>
             </div>

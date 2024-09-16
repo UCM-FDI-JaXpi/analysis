@@ -252,7 +252,7 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
     top: 30px;
     right: 20px;
     padding: 10px;
-    font-size: 0.975rem;
+    font-size: 1rem;
     color: white;
     font-weight: bold;
     background-color: #3eaf2a;

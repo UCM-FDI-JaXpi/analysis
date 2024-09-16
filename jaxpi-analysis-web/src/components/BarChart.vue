@@ -117,10 +117,20 @@ const drawBarChart = (data, chartId) => {
         }
       },
       y: {
+        tick: {
+          format: function (value) {
+            return Math.round(value);
+          }
+        },
         label: {
           text: names[chartId],
           position: 'outer-middle'
         }
+      }
+    },
+    bar: {
+      width: {
+        ratio: (chartData[0].length === 2) ? 0.2 : 0.5 // Adjust the width if there is only one bar
       }
     },
     grid: {

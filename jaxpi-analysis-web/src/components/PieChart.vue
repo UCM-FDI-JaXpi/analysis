@@ -3,7 +3,7 @@
     <h2 class="chart-title">{{ title }}</h2>
     <div :id="chartId" style="max-width: fit-content;"></div>
 
-    <button v-if="chartId == 'pie-chart-completed-game'" @click="changeChartType">Change type chart</button>
+    <button v-if="chartId == 'pie-chart-completed-game'" @click="changeChartType">Change Type Chart</button>
   </div>
 </template>
 
@@ -104,14 +104,12 @@ const drawPieChart = (data, chartId) => {
 button {
   margin-top: 10px;
   display: block;
-  /* margin-left: auto;
-  margin-right: auto; */
   background-color: #3498DB;
   color: white;
   font-size: 1rem;
   border: none;
   border-radius: 4px;
-  padding: 5px 7px;
+  padding: 8px 15px;
   cursor: pointer;
 }
 

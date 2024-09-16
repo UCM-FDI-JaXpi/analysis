@@ -44,12 +44,24 @@ watch(() => props.data, (newData) => {
 const drawBarChart = (data, chartId) => {
     const columns = [];
     const categories = ['x'];
+    
+    let long = 0;
+    let result;
+    data.forEach(element => {
+      if(element.value.length >= long){
+        result=element;
+        long =element.value.length;
+      }
+    }); 
+    if (props.chartId == "stacked-bar-chart-number-completed-levels")
+        categories.push(...result.value.map((_, i) => `Level ${i + 1}`));
 
     data.forEach((item, index) => {
         if (index === 0) {
-            if (props.chartId == "stacked-bar-chart-number-completed-levels")
-                categories.push(...item.value.map((_, i) => `Level ${i + 1}`));
-            else if (props.chartId == "stacked-bar-chart-interactions-items")
+            // if (props.chartId == "stacked-bar-chart-number-completed-levels")
+            //     categories.push(...item.value.map((_, i) => `Level ${i + 1}`));
+            // else 
+            if (props.chartId == "stacked-bar-chart-interactions-items")
                 categories.push(...item.interactions.map((e) => `${e}`));
         }
         columns.push([item.nameObject, ...item.value]);

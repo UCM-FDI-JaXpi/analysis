@@ -33,7 +33,7 @@
             <LineChart
               :data="dataStatementsByTimestamp"
               chartId="line-chart1"
-              title="Statements by Timestamp" />
+              title="History of Interactions" />
         </div>
 
         <!-- Filter and chart (BarChart) -->
@@ -174,7 +174,10 @@ const fetchDataFromMongoDB = async () => {
 
 watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   filteredDataByGroupId.value = newValue;
-  loading.value = false;
+  setTimeout(() => {
+                    loading.value = false;
+        }, 300); 
+  
   // FORMATEAR DATOS PARA CHARTS
   setLevelCompletionTimes();
   setBestCompletionTimePerLevel();

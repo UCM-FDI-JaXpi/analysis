@@ -15,7 +15,7 @@
                 </div>
                 <div class="card-actions">
                     <router-link :to="{ name: 'GameDetailsView', params: { gameId: game.id } }" class="details-button">
-                        View details
+                        View Details
                     </router-link>
                 </div>
             </div>

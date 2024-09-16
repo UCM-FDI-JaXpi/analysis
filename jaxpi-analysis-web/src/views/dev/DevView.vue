@@ -15,7 +15,9 @@
         <div class="games-right">
           <h3 class="games-count">
             <span class="count">{{ gamesCount }}</span>
-            <span class="label">games</span>
+            <span class="label">
+              {{ gamesCount === 1 ? 'game' : 'games' }}
+            </span>
           </h3>
         </div>
       </div>
@@ -28,7 +30,7 @@
         <ol>
           <li><strong>Register your game:</strong> Click the "Add Game" button in your sidebar.</li>
           <li><strong>Obtain a token:</strong> When you add your game you will be given a <strong>token</strong>.
-            <strong style="color: #FF8800;">IMPORTANT:</strong> you have to go to this <a :href="libUrl" target="_blank">link</a>
+            <strong style="color: #FF8800;">IMPORTANT:</strong> You have to go to this <a :href="libUrl" target="_blank">link</a>
               to know everything about how to use this token and be able to see your analytics in our application.
               You will have this token and this link in your game details.</li>
           <li><strong>View game analytics:</strong> Once you have followed the instructions in that link,

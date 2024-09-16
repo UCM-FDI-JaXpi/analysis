@@ -24,7 +24,7 @@
     <div v-if="userType === 'dev'" class="sidebar">
         <!-- Add game-->
         <div class="menu-item create-menu-item" @click="navigateToCreateGame">
-            Add game
+            Add Game
         </div>
 
         <!-- Existing games menu -->

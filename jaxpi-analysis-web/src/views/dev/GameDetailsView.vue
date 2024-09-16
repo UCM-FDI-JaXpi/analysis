@@ -4,7 +4,7 @@
         <div class="card-details">
           <div class="header">
               <h1 style="margin-top:0;">{{ game.name }}</h1>
-              <button @click="showDeleteModal = true" class="delete-button">Delete game</button>
+              <button @click="showDeleteModal = true" class="delete-button">Delete Game</button>
           </div>
           <div class="game-details" v-if="game">
             <div class="token-container">
@@ -12,24 +12,31 @@
               <button @click="copyToken(game.token)" class="copy-button">Copy</button>
             </div>
             <p><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integration-with-jaxpi-server" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
-              
               <p v-if="game.description"><strong>Description: </strong></p>
               <p v-if="game.description" class="game-description-content">{{ game.description }}</p>
-
-              <p><strong>Users who have played: </strong>{{  activeUsers }}</p>
-              <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
-              <p v-if="dataLastStatement && dataLastStatement.length > 0"><strong>Last played: </strong> {{ dataLastStatement }}</p>
           </div>
         </div>
         <div class="additional-content">
           <h3 class="top3">
             <span class="up"> Top 3</span>
-            <span class="down">Most popular objects</span>
-            <span>{{ dataObjectCount && dataObjectCount[0] && dataObjectCount[0].value ? '1. ' + dataObjectCount[0].nameObject +' '+dataObjectCount[0].value : ''}}</span>
-            <span>{{ dataObjectCount && dataObjectCount[1] && dataObjectCount[1].value ? '2. '+ dataObjectCount[1].nameObject +' '+dataObjectCount[1].value : ''}}</span>
-            <span>{{ dataObjectCount && dataObjectCount[2] && dataObjectCount[2].value ? '3. ' + dataObjectCount[2].nameObject +' '+dataObjectCount[2].value : ''}}</span>
-            <span v-if="!dataObjectCount || dataObjectCount.length === 0">Not used yet</span>
+            <span class="down">Most Popular Objects</span>
           </h3>
+          <div class="object-list" style="font-size: 19px;">
+            <template v-if="dataObjectCount && dataObjectCount.length > 0">
+              <span v-if="dataObjectCount[0] && dataObjectCount[0].value">
+                <strong>1. {{ dataObjectCount[0].nameObject }}</strong>: {{ dataObjectCount[0].value }} time<span v-if="dataObjectCount[0].value > 1">s</span>
+              </span>
+              <br v-if="dataObjectCount[1] && dataObjectCount[1].value">
+              <span v-if="dataObjectCount[1] && dataObjectCount[1].value">
+                <strong>2. {{ dataObjectCount[1].nameObject }}</strong>: {{ dataObjectCount[1].value }} time<span v-if="dataObjectCount[1].value > 1">s</span>
+              </span>
+              <br v-if="dataObjectCount[2] && dataObjectCount[2].value">
+              <span v-if="dataObjectCount[2] && dataObjectCount[2].value">
+                <strong>3. {{ dataObjectCount[2].nameObject }}</strong>: {{ dataObjectCount[2].value }} time<span v-if="dataObjectCount[2].value > 1">s</span>
+              </span>
+            </template>
+            <span v-else>Not used yet</span>
+          </div>
         </div>
       </div>
 
@@ -41,11 +48,14 @@
         :dataBestCompletionTimePerLevelPerGroup="dataBestCompletionTimePerLevelPerGroup"
         :dataPieChartGamesStartedCompleted="dataPieChartGamesStartedCompleted"
         :dataObjectCount="dataObjectCount"
-        :loading="loading" />
+        :loading="loading"
+        :activeUsers="activeUsers"
+        :completedGameUsers="completedGameUsers"
+        :dataLastStatement="dataLastStatement" />
 
       <ConfirmModal v-if="showDeleteModal"
         :visible="showDeleteModal"
-        title="Confirm deletion"
+        title="Confirm Deletion"
         message="Are you sure you want to delete this game?<br>This action cannot be undone. Data will be lost."
         @confirm="deleteGame"
         @cancel="hideDeleteModal"
@@ -89,7 +99,7 @@ const showDeleteModal = ref(false);
 const showSuccessModal = ref(false);
 
 const originalData = ref([]); // Guardo todo lo que me da response.data cuando soy profesor al montar el componente
-const dataLastStatement = ref([]); // De filteredDataByGroupId preparo bien los campos de la tabla y se lo paso a DataTable
+const dataLastStatement = ref('');
 const filteredDataByGroupId = ref([]); // Datos del filtrados por groupID de originalData
 const dataLevelCompletionTimes = ref([]);
 const dataVerbCount = ref([]);
@@ -199,7 +209,7 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
 
     // Hallar ultima hora jugada (ultimo statement recibido)
     if (filteredDataByGroupId.value.length > 0) {
-      dataLastStatement.value = filteredDataByGroupId.value.flatMap(item => {
+      let tempo =  filteredDataByGroupId.value.flatMap(item => {
         return item.actors.map(actor => {
           // Ordenar los timestamps dentro de cada actor del más reciente al más antiguo
           let copyStatements = [...actor.statements];
@@ -211,16 +221,15 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
           };
         });
       }).sort((a, b) => new Date(b.lastTimestamp) - new Date(a.lastTimestamp)); // Sort by timestamp, from latest to oldest
-      dataLastStatement.value = new Date(dataLastStatement.value[0].lastTimestamp).toLocaleString();
+      dataLastStatement.value = new Date(tempo[0].lastTimestamp).toLocaleString();
     }  else { // Limpia todas las stats var si no hay datos
-      dataLastStatement.value = []; 
       dataVerbCount.value = [];
       dataLevelCompletionTimes.value = [];
       dataPieChartGamesStartedCompleted.value = [];
       dataBestCompletionTimePerLevelPerGroup.value = [];
       activeUsers.value = 0;
       completedGameUsers.value = 0;
-      dataLastStatement.value = [];
+      dataLastStatement.value = '';
       dataObjectCount.value = [];
     }
   
@@ -302,8 +311,9 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
                 }
               }); 
             }
-          });
-  
+        });
+
+        dataVerbCount.value = dataVerbCount.value.sort((a, b) => b.value - a.value);
         // PARA EL PIECHART
         dataPieChartGamesStartedCompleted.value = [];
         let res = [ {nameObject:'Yes', value:completedGameUsers.value }, {nameObject: 'No',value: activeUsers.value - completedGameUsers.value }];
@@ -334,10 +344,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
         resInteractions = resInteractions.sort((a, b) => b.value - a.value);
         dataObjectCount.value = resInteractions;
     }
-
-    console.log('dataLevelCompletionTimes:', dataLevelCompletionTimes.value);
-    console.log('dataVerbCount:', dataVerbCount.value);
-    console.log('dataPieChartGamesStartedCompleted:', dataPieChartGamesStartedCompleted.value);
 }, { deep: true }); // Observa cambios profundos, cambios en propiedades internas del objeto o los elementos del array
 
 watch(() => gameId.value, (newGameId, oldGameId) => {
@@ -399,7 +405,6 @@ watch(route, () => {
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Nuevo contenedor vertical a la derecha */
 .additional-content {
     width: 200px;
     background-color: #70c4cf;
@@ -411,7 +416,7 @@ watch(route, () => {
 .top3 {
     display: flex;
     flex-direction: column;
-    margin: 0;
+    margin: 0px 0 10px;
 }
 .up {
     font-size: 2rem;
@@ -419,7 +424,6 @@ watch(route, () => {
 }
 
 .down {
-    color: #696969;
-    margin-top: -5px;
+    color: #fbff00;
 }
 </style>

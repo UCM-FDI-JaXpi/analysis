@@ -3,7 +3,7 @@
       <div class="card-details">
         <h1>{{ session.sessionName }}</h1>
         <p><strong>Game: </strong>{{ session.gameName }}</p>
-        <p><strong>Group: </strong>{{ groupName }}</p>
+        <p><strong>Class: </strong>{{ groupName }}</p>
         <p><strong>Created On: </strong>{{ new Date(session.createdAt).toLocaleDateString() }}</p>
       </div>
 
@@ -18,19 +18,19 @@
       <div v-if="activeTab === 0" class="tab-content-charts" style="min-height: 407px;">
         <div class="centerItems" v-if="dataTableFormat.length > 0 && !loading">
           <div v-if="dataTableFormat.length > 0" class="centerItems marginBottom90">
-                  <h2>Last Interactions Received</h2>
-                  <p>You can see the latest interactions of students with the game
-                    in the selected session, sorted from the most recent to the oldest.</p>
-                  <form id="search">
-                      Search <input name="query-teacher" v-model="searchQueryTeacher">
-                  </form>
-                  <DataTable
-                      :data="dataTableFormat" 
-                      :columns="tableColumnsTeacher"
-                      :columnTitles="dataTableColumnTitlesTeacher"
-                      :filter-key="searchQueryTeacher"
-                      @student-selected="handleStudentSelected"/>
-                      <p style="color: darkblue;"><strong>Note:</strong> there is no guarantee that all interactions have been received correctly.</p>
+            <h2>Last Interactions Received</h2>
+            <p>You can see the latest interactions of students with the game
+              in the selected session, sorted from the most recent to the oldest.</p>
+            <form id="search">
+                Search <input name="query-teacher" v-model="searchQueryTeacher">
+            </form>
+            <DataTable
+              :data="dataTableFormat" 
+              :columns="tableColumnsTeacher"
+              :columnTitles="dataTableColumnTitlesTeacher"
+              :filter-key="searchQueryTeacher"
+              @student-selected="handleStudentSelected"/>
+              <p style="color: darkblue;"><strong>Note:</strong> there is no guarantee that all interactions have been received correctly.</p>
           </div>
           
           <!-- Primer filtro y chart (LineChart) -->
@@ -45,12 +45,12 @@
               <LineChart
                 :data="dataStatementsByTimestamp"
                 chartId="line-chart1"
-                title="Statements by Timestamp" />
+                title="History of Interactions" />
             </div>
           </div>
 
           <!-- Segundo filtro y gráfico (BarChart) -->
-          <div class="chart-container-barchart marginBottom90">
+          <div class="chart-container-barchart">
             <div class="filter-container" style="max-height: 418px">
               <FilterChartsComponent 
                 :data="arrayStudents"
@@ -76,30 +76,30 @@
             </div>
           </div>
 
-          <div class="marginBottom90 for-pie-student">
-            <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
-                :data="dataPieChartGamesStartedCompleted"
-                chartId="pie-chart1"
-                title="Games Completed and Not Completed" />
-            <div>
-              <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
+          <div class="marginBottom90 for-pie-student" v-if="dataPieChartGamesStartedCompleted.length > 0" >
+            <PieChart
+              :data="dataPieChartGamesStartedCompleted"
+              chartId="pie-chart1"
+              title="Games Completed and Not Completed" />
+            <div v-if="dataPieChartGamesStartedCompleted.length > 0">
+              <p>Total number of games: {{ (dataPieChartGamesStartedCompleted[0].value) + dataPieChartGamesStartedCompleted[1].value }}</p>
               <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
               <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
             </div>
           </div>
 
-          <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements">
-            <StackedBarChart v-if="dataObjectCount.length > 0"
-                  :data="dataObjectCount"
-                  chartId="stacked-bar-chart-interactions-items"
-                  title="Number of Interactions with Items" />
+          <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements && dataObjectCount.length > 0">
+            <StackedBarChart
+              :data="dataObjectCount"
+              chartId="stacked-bar-chart-interactions-items"
+              title="Number of Interactions with Items" />
           </div>
 
-          <div style="align-self: center; width: 900px; margin-bottom: 20px;" v-if="isStatements">
-            <StackedBarChart v-if="dataCompletedLevelsCount.length > 0"
-                  :data="dataCompletedLevelsCount"
-                  chartId="stacked-bar-chart-number-completed-levels"
-                  title="Number of Completed Levels by Student" />
+          <div style="align-self: center; width: 900px; margin-bottom: 20px;" v-if="isStatements && dataCompletedLevelsCount.length > 0">
+            <StackedBarChart
+              :data="dataCompletedLevelsCount"
+              chartId="stacked-bar-chart-number-completed-levels"
+              title="Number of Completed Levels by Student" />
           </div>
         </div>
         <div v-if="dataTableFormat.length === 0 && !loading" class="no-data-charts loading-nodata-container">
@@ -111,37 +111,37 @@
       </div>
 
       <div v-if="activeTab === 1" class="tab-content-charts" style="min-height: 407px;">
-        <div class="centerItems" v-if="dataTableFormat.length > 0">
+        <div class="centerItems" v-if="dataBestCompletionTimePerLevel.length > 0 && dataLevelCompletionTimes.length > 0">
           <div class="marginBottom90">
-            <BarChart v-if="dataBestCompletionTimePerLevel.length > 0"
+            <BarChart
               :data="dataBestCompletionTimePerLevel"
               chartId="bar-chart4"
               title="Best Completion Time per Level" 
               :customTooltip="true"/>
           </div>
           <div style="margin-bottom: 20px;">
-            <BarChart v-if="dataLevelCompletionTimes.length > 0"
+            <BarChart
               :data="dataLevelCompletionTimes"
               chartId="bar-chart2"
               title="Average Completion Time per Level" />
           </div>
         </div>
         <div v-else class="no-data-charts loading-nodata-container">
-            No data for these students.
+          These charts cannot be displayed because there are no levels completed by the students.
         </div>
       </div>
 
       <div v-if="activeTab === 2" class="tab-content-charts" style="min-height: 407px;">
-        <div class="centerItems" v-if="dataTableFormat.length > 0">
+        <div class="centerItems" v-if="dataVerbCount.length > 0" >
           <div style="margin-bottom: 20px;">
-            <BarChart v-if="dataVerbCount.length > 0" 
+            <BarChart
               :data="dataVerbCount"
               chartId="bar-chart-verb-count"
               title="Count of Verbs Used" /> 
           </div>
         </div>
         <div v-else class="no-data-charts loading-nodata-container">
-            No data for these students.
+            No data yet.
         </div>
       </div>
     </div>
@@ -416,7 +416,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   console.log(newValue);
   filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
 
-  loading.value = false;
   // FORMATEAR DATOS PARA CHARTS
   setDataTableFormat();
   setLevelCompletionTimes();
@@ -425,6 +424,10 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
   setBestCompletionTimePerLevel();
   handleFilterNameStudentBarChart(name.value);
   handleFilterNameStudent(dataFirstFilter.value);
+  setTimeout(() => {
+                    loading.value = false;
+        }, 500); 
+
 }, { deep: true });
 
 // FORMATEAR DATOS PARA DATATABLE - LAST STATEMENT
@@ -561,7 +564,10 @@ function setLevelCompletionTimes(){
         }); 
       }
     });
+    res = res.sort((a, b) => a.nameObject.toLowerCase().localeCompare(b.nameObject.toLowerCase()));
     dataCompletedLevelsCount.value = res;
+
+    resInteractions = resInteractions.sort((a, b) => a.nameObject.toLowerCase().localeCompare(b.nameObject.toLowerCase()));
     dataObjectCount.value = resInteractions;
   } else {
       cleanData()
@@ -588,6 +594,7 @@ function setDataVerbCount(){
       }); 
     }
   });
+  dataVerbCount.value = dataVerbCount.value.sort((a, b) => b.value - a.value);
 }
 
 //PARA EL PRIMER PIECHART - GAMES STARTED AND COMPLETED
@@ -628,7 +635,7 @@ function cleanData(){
 function handleStudentSelected(student) { // When you click on a row in the table selecting a student
   groupsStore.setSelectedGroupId(groupId.value);
   studentStore.setSelectedStudent(student.student);
-  router.push({ name: 'StudentDetailsView', params: { name: student.student} })// Go to StudentGameSessionDetailsView using useRouter
+  router.push({ name: 'StudentDetailsView', params: { name: student.student} });
 }
 </script>
 
@@ -645,6 +652,7 @@ function handleStudentSelected(student) { // When you click on a row in the tabl
   gap: 22px;
   display: inline-grid;
   text-align: center;
+  margin-top: 90px;
 }
 
 h2 {

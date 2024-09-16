@@ -9,22 +9,21 @@
       </div>
       
       <div v-if="activeTab === 0" class="tab-content-charts centerItems" style="min-height: 407px;">
-        <div class="centerItems" v-if="(dataPieChartGamesStartedCompleted.length > 0 || dataObjectCount.length > 0) && !loading">
-          <div class="marginBottom90">
+        <div v-if="(dataPieChartGamesStartedCompleted.length > 0 || dataObjectCount.length > 0) && !loading">
+          <div style="text-align: center;">
             <PieChart v-if="dataPieChartGamesStartedCompleted.length > 0" 
               :data="dataPieChartGamesStartedCompleted"
               chartId="pie-chart-completed-game"
-              title="Completed the game" />
-          </div>
-          <div class="marginBottom90">
-            <BarChart v-if="dataObjectCount.length > 0"
-              :data="dataObjectCount"
-              chartId="bar-chart-interactions-items"
-              title="Number of Interactions with Items" />
+              title="Completed the Game" />
+              <div class="chart-details">
+                <p><strong>Users who have played: </strong>{{  activeUsers }}</p>
+                <p><strong>Users who have completed the game: </strong> {{ completedGameUsers }}</p>
+                <p><strong>Last played: </strong> {{ dataLastStatement }}</p>
+              </div>
           </div>
         </div>
         <div v-if="(dataPieChartGamesStartedCompleted.length === 0 || dataObjectCount.length === 0) && !loading" class="no-data-charts">
-          <p>No data available.</p>
+          <p>No data yet.</p>
         </div>
         <div v-if="loading" class="no-data-charts loading-nodata-container">
             Loading...
@@ -32,34 +31,46 @@
       </div>
   
       <div v-if="activeTab === 1" class="tab-content-charts centerItems" style="min-height: 407px;">
-        <div class="centerItems" v-if="dataBestCompletionTimePerLevelPerGroup.length > 0 || dataLevelCompletionTimes.length > 0">
+        <div class="centerItems" v-if="(dataBestCompletionTimePerLevelPerGroup.length > 0 || dataLevelCompletionTimes.length > 0 ) && !loading">
           <div class="marginBottom90">
             <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
               :data="dataBestCompletionTimePerLevelPerGroup"
               chartId="bar-chart4"
-              title="Best completion time per level" />
+              title="Best Completion Time per Level" />
           </div>
-          <div class="marginBottom90">
+          <div style="margin-bottom: 20px;">
             <BarChart v-if="dataLevelCompletionTimes.length > 0"
               :data="dataLevelCompletionTimes"
               chartId="bar-chart2"
-              title="Average Completion time per level"
+              title="Average Completion Time per Level"
               :colorPalette="colorPalettes[1]" />
           </div>
         </div>
-        <div v-else class="no-data-charts">
-          <p>No data available.</p>
+        <div v-if="(dataBestCompletionTimePerLevelPerGroup.length === 0 || dataLevelCompletionTimes.length === 0) && !loading" class="no-data-charts">
+          <p>No data yet.</p>
+        </div>
+        <div v-if="loading" class="no-data-charts loading-nodata-container">
+            Loading...
         </div>
       </div>
       <div v-if="activeTab === 2" class="tab-content-charts centerItems" style="min-height: 407px;">
-        <div v-if="dataVerbCount.length > 0" class="marginBottom90">
+        <div v-if="dataVerbCount.length > 0 && !loading" class="marginBottom90">
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
             chartId="bar-chart-verb-count"
             title="Count of Verbs Used" /> 
         </div>
-        <div v-else class="no-data-charts">
-          <p>No data available.</p>
+        <div v-if="dataObjectCount.length > 0 && !loading" style="margin-bottom: 20px;">
+          <BarChart v-if="dataObjectCount.length > 0"
+            :data="dataObjectCount"
+            chartId="bar-chart-interactions-items"
+            title="Number of Interactions with Items" />
+        </div>
+        <div v-if="dataVerbCount.length === 0 && !loading" class="no-data-charts">
+          <p>No data yet.</p>
+        </div>
+        <div v-if="loading" class="no-data-charts loading-nodata-container">
+            Loading...
         </div>
       </div>
     </div>
@@ -78,7 +89,7 @@ const groupsStore = useGroupsStore();
 const groupId = computed(() => groupsStore.selectedGroupId);
 const arrayLevelsPerStudent = ref([]);
 
-const tabs = ref(["Overview", "Completion Times", "Verb Count"]);
+const tabs = ref(["Overview", "Completion Times", "User Interactions"]);
 const activeTab = ref(0);
 const dataStatementsByTimestamp = ref([]);
 const dataAttemptTimesForStudentLevel  = ref([]);
@@ -98,7 +109,10 @@ const props = defineProps({
   dataBestCompletionTimePerLevelPerGroup: Array,
   dataAttemptTimesForStudentLevel : Array,
   dataObjectCount: Array,
-  loading: Boolean
+  loading: Boolean,
+  activeUsers: Number,
+  completedGameUsers: Number,
+  dataLastStatement: String
 });
 
 watch(() => props.filteredDataByGroupId,(newProps, oldProps) => {
@@ -245,10 +259,21 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
 }
 
 .tab-content {
-    padding: 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 50px;
-    background-color: #79c1fd;
+  padding: 1rem;
+  display: flex; 
+  flex-wrap: wrap;
+  gap: 50px;
+  background-color: #79c1fd;
+}
+
+.chart-details {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #1274b5;
+}
+
+.chart-details p {
+  font-size: 16px;
+  margin: 5px 0;
 }
 </style>

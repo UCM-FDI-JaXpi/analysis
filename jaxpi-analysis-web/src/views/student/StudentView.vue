@@ -125,7 +125,9 @@ const fetchDataFromMongoDB = async () => {
   } catch (error) {
       console.error('Error al obtener los datos de http://localhost:3000/records', error);
   } finally {
-    loading.value = false;
+    setTimeout(() => {
+                    loading.value = false;
+        }, 300);
   }
 };
 
@@ -134,8 +136,6 @@ watch(originalData, (newValue) => { // Actualizo filteredData segun originalData
     filteredDataByGroupId.value = newValue.filter(item => item.groupId === groupId.value);
   else 
     filteredDataByGroupId.value = newValue;
-
-    loading.value = false;
   // FORMATEAR DATOS PARA TABLE
   if (filteredDataByGroupId.value.length > 0) {
     dataTableFormat.value = filteredDataByGroupId.value.flatMap(item => {
