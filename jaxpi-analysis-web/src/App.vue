@@ -235,4 +235,15 @@ form#search {
   align-items: center;
   min-height: inherit;
 }
+
+.chart-details {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #1274b5;
+}
+
+.chart-details p {
+  font-size: 16px;
+  margin: 5px 0;
+}
 </style>

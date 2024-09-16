@@ -18,7 +18,7 @@
             <li><strong>Create a class:</strong> Click the "Create Class" button in your sidebar 
                 and include at least one student.</li>
             <li><strong>Create Game Sessions:</strong> Once your class is created, go to the 
-                class details and click the "Create game session" button.</li>
+                class details and click the "Create Game Session" button.</li>
             <li><strong>Get session keys:</strong> When you create a game session, session keys
                  are generated for each student. These keys allow you to monitor student interactions
                   in that session.</li>

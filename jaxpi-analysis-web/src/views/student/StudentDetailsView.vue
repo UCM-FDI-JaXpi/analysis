@@ -52,10 +52,10 @@
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
             title="Games Completed and Not Completed" />
-            <div>
-              <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
-              <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
-              <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
+            <div class="chart-details">
+              <p><strong>Total number of games:</strong> {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
+              <p><strong>Number of games completed:</strong> {{ dataPieChartGamesStartedCompleted[0].value }}</p>
+              <p><strong>Number of games not completed:</strong> {{ dataPieChartGamesStartedCompleted[1].value }}</p>
             </div>
         </div>
         <div v-else style="margin-top:10px;" class="no-data-charts">

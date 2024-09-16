@@ -45,7 +45,7 @@
               <LineChart
                 :data="dataStatementsByTimestamp"
                 chartId="line-chart1"
-                title="History of Interactions" />
+                title="Interaction History" />
             </div>
           </div>
 
@@ -76,26 +76,26 @@
             </div>
           </div>
 
-          <div class="marginBottom90 for-pie-student" v-if="dataPieChartGamesStartedCompleted.length > 0" >
+          <div class="for-pie-student" v-if="dataPieChartGamesStartedCompleted.length > 0" >
             <PieChart
               :data="dataPieChartGamesStartedCompleted"
               chartId="pie-chart1"
               title="Games Completed and Not Completed" />
-            <div v-if="dataPieChartGamesStartedCompleted.length > 0">
-              <p>Total number of games: {{ (dataPieChartGamesStartedCompleted[0].value) + dataPieChartGamesStartedCompleted[1].value }}</p>
-              <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
-              <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
+            <div v-if="dataPieChartGamesStartedCompleted.length > 0" class="chart-details" style="margin-bottom: 0px;"> 
+              <p><strong>Total number of games:</strong> {{ (dataPieChartGamesStartedCompleted[0].value) + dataPieChartGamesStartedCompleted[1].value }}</p>
+              <p><strong>Number of games completed:</strong> {{ dataPieChartGamesStartedCompleted[0].value }}</p>
+              <p><strong>Number of games not completed:</strong> {{ dataPieChartGamesStartedCompleted[1].value }}</p>
             </div>
           </div>
 
-          <div class="marginBottom90" style="align-self: center; width: 600px;" v-if="isStatements && dataObjectCount.length > 0">
+          <div class="marginBottom90" style="align-self: center; width: 600px; margin-top: 90px;" v-if="isStatements && dataObjectCount.length > 0 && dataObjectCount.find(e => e.interactions.length > 0)">
             <StackedBarChart
               :data="dataObjectCount"
               chartId="stacked-bar-chart-interactions-items"
               title="Number of Interactions with Items" />
           </div>
 
-          <div style="align-self: center; width: 900px; margin-bottom: 20px;" v-if="isStatements && dataCompletedLevelsCount.length > 0">
+          <div style="align-self: center; width: 900px; margin-bottom: 20px;" v-if="isStatements && dataCompletedLevelsCount.length > 0 && dataCompletedLevelsCount.find(e => e.value.length > 0)">
             <StackedBarChart
               :data="dataCompletedLevelsCount"
               chartId="stacked-bar-chart-number-completed-levels"
@@ -324,10 +324,10 @@ const handleFilterNameStudent = async (data) => { //datagroup no esta filtrada p
 
     // Quitar si existe un dia mas que la fecha actual, para que se muestre consistente
     let today = new Date();
-    today = today.getDate();
+    today = today.getTime();
     const [day, month, year] = copyArray[copyArray.length-1].nameObject.split('/').map(Number);
     let date = new Date(year, month - 1, day); // Los meses en js son 0-indexados, por eso restamos 1
-    date = date.getDate();
+    date = date.getTime();
     if (date - today > 0) {
       copyArray.pop();
     }

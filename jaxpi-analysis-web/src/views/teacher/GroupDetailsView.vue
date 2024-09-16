@@ -8,14 +8,14 @@
           <p><strong>Total students: </strong>{{ group.students.length }}</p>
           <p><strong>Active students: </strong>{{ activeUsers }}</p>
           <p><strong>No active students: </strong>{{ group.students.length - activeUsers }}</p>
-          <button @click="navigateToCreateGameSession">Create game session</button>
+          <button @click="navigateToCreateGameSession">Create Game Session</button>
         </div>
         <div v-else class="card-details">
           <h1>{{ group.name }}</h1>
           <p><strong>Total students: </strong>0</p>
           <p><strong>Active students: </strong>0</p>
           <p><strong>No active students: </strong>0</p>
-          <button @click="navigateToCreateGameSession">Create game session</button>
+          <button @click="navigateToCreateGameSession">Create Game Session</button>
         </div>
 
         <div class="tabs-container">

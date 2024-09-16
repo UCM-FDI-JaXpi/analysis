@@ -152,7 +152,7 @@ const drawBarChart = (data, chartId) => {
 }
 
 .widthBarChart{
-    width: 600px;
+    width: 620px;
 }
 
 .custom-tooltip {

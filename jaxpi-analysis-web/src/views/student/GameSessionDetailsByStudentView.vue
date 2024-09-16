@@ -22,35 +22,17 @@
             :data="dataPieChartGamesStartedCompleted"
             chartId="pie-chart1"
             title="Games Completed and Not Completed" />
-            <div>
-              <p>Total number of games: {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
-              <p>Number of games completed: {{ dataPieChartGamesStartedCompleted[0].value }}</p>
-              <p>Number of games not completed: {{ dataPieChartGamesStartedCompleted[1].value }}</p>
+            <div class="chart-details" style="margin-bottom: 0px;">
+              <p><strong>Total number of games:</strong> {{ dataPieChartGamesStartedCompleted[0].value + dataPieChartGamesStartedCompleted[1].value }}</p>
+              <p><strong>Number of games completed:</strong> {{ dataPieChartGamesStartedCompleted[0].value }}</p>
+              <p><strong>Number of games not completed:</strong> {{ dataPieChartGamesStartedCompleted[1].value }}</p>
             </div>
         </div>
-
-        <div class="chart-container-linechart marginBottom90">
-            <LineChart
-              :data="dataStatementsByTimestamp"
-              chartId="line-chart1"
-              title="History of Interactions" />
-        </div>
-
-        <!-- Filter and chart (BarChart) -->
-        <div class="chart-container-barchart marginBottom90">
-          <div v-if="arrayLevelsPerStudent.length > 0" class="filter-container">
-            <FilterChartsComponent 
-              :data="arrayLevelsPerStudent"
-              title="Filter by Level"
-              @selectElem="handleFilterLevel"/>
-          </div>
-          <div>
-            <BarChart
-              :data="dataAttemptTimesForStudentLevel"
-              chartId="bar-chart-time-per-attempt"
-              title="Time per Attempt" />
-            <p style="text-align: center; color: darkblue;"><strong>Note: </strong>This chart shows a maximum of the last 10 attempts.</p>
-          </div>
+        <div class="chart-container-linechart" style="margin-bottom: 20px;">
+          <LineChart
+            :data="dataStatementsByTimestamp"
+            chartId="line-chart1"
+            title="Interaction History" />
         </div>
       </div>
       <!-- Instructions, only if we haven't played yet -->
@@ -65,19 +47,39 @@
 
     <div v-if="activeTab === 1" class="centerItems tab-content-charts" style="min-height: 407px;">
       <div class="centerItems" v-if="isStatements">
-        <div class="marginBottom90">
-          <BarChart v-if="dataBestCompletionTimePerLevelPerGroup.length > 0"
+        <div v-if="dataBestCompletionTimePerLevelPerGroup.length > 0" class="marginBottom90">
+          <BarChart 
             :data="dataBestCompletionTimePerLevelPerGroup"
             chartId="bar-chart4"
             title="Your Best Completion Time per Level" 
             :customTooltip="true"/>
         </div>
-        <div class="marginBottom90" style="align-self: center; width: 600px;">
-          <BarChart v-if="dataLevelCompletionTimes.length > 0"
+        <div v-if="dataLevelCompletionTimes.length > 0" style="align-self: center;" class="marginBottom90">
+          <BarChart
             :data="dataLevelCompletionTimes"
             chartId="bar-chart2"
             title="Average Completion Time per Level" />
         </div>
+        <!-- Filter and chart (BarChart) -->
+        <div class="chart-container-barchart">
+          <div v-if="arrayLevelsPerStudent.length > 0" class="filter-container">
+            <FilterChartsComponent 
+              :data="arrayLevelsPerStudent"
+              title="Filter by Level"
+              @selectElem="handleFilterLevel"/>
+          </div>
+          <div v-if="dataAttemptTimesForStudentLevel.length > 0">
+            <BarChart
+              :data="dataAttemptTimesForStudentLevel"
+              chartId="bar-chart-time-per-attempt"
+              title="Time per Attempt" />
+            <p style="text-align: center; color: darkblue;"><strong>Note: </strong>This chart shows a maximum of the last 10 attempts.</p>
+          </div>
+        </div>
+      </div>
+      <div v-if="isStatements && dataBestCompletionTimePerLevelPerGroup.length === 0 && dataLevelCompletionTimes.length === 0 &&
+           arrayLevelsPerStudent.length === 0 && dataAttemptTimesForStudentLevel.length === 0" class="instructions">
+        <p style="margin:0px; font-size: 1.1rem;">There is not enough data for these charts, please complete levels🎮</p>
       </div>
       <!-- Instructions, only if we haven't played yet -->
       <div v-if="!isStatements" class="instructions">
@@ -87,8 +89,8 @@
     </div>
 
     <div v-if="activeTab === 2" class="centerItems tab-content-charts" style="min-height: 407px;">
-      <div class="centerItems" v-if="isStatements">
-        <div class="marginBottom90" style="align-self: center; width: 600px;">
+      <div class="centerItems" v-if="isStatements" style="margin-bottom: 20px;">
+        <div>
           <BarChart v-if="dataVerbCount.length > 0" 
             :data="dataVerbCount"
             chartId="bar-chart-verb-count"
@@ -361,10 +363,10 @@ function getDataStatementsByTimestamp(studentName) {
 
     // Quitar si existe un dia mas que la fecha actual, para que se muestre consistente
     let today = new Date();
-    today = today.getDate();
+    today = today.getTime();
     const [day, month, year] = copyArray[copyArray.length-1].nameObject.split('/').map(Number);
     let date = new Date(year, month - 1, day); // Los meses en js son 0-indexados, por eso restamos 1
-    date = date.getDate();
+    date = date.getTime();
     if (date - today > 0) {
       copyArray.pop();
     }

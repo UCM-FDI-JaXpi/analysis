@@ -265,15 +265,4 @@ watch(() => groupId.value, (newGroupId, oldGroupId) => {
   gap: 50px;
   background-color: #79c1fd;
 }
-
-.chart-details {
-  margin-top: 10px;
-  margin-bottom: 20px;
-  border: 2px solid #1274b5;
-}
-
-.chart-details p {
-  font-size: 16px;
-  margin: 5px 0;
-}
 </style>

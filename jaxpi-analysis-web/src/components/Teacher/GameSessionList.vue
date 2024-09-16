@@ -4,7 +4,7 @@
         <div class="instructions" v-if="isTeacher && gameSessions.length === 0 && !gameSessionsStore.loading">
             <p><strong style="color: #FF8800;">Remember:</strong> If you want to see your students' analytics you have to create a game session.</p>
             <ol>
-                <li><strong>Create Game Sessions:</strong> Click on the "Create game session" button and create
+                <li><strong>Create Game Sessions:</strong> Click on the "Create Game Session" button and create
                  session keys for your students.</li>
                 <li><strong>Give session keys to your students:</strong> Provide the generated session keys to you students
                     so they can play the game and access the app.</li>
@@ -19,7 +19,7 @@
         <div v-else class="card-container">
             <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">
                 <div class="game-session-info">
-                    <h2>{{ gameSession.sessionName }}</h2>
+                    <h2>Session: {{ gameSession.sessionName }}</h2>
                     <p><strong>Game: </strong>{{ gameSession.gameName }}</p>
                     <p><strong>Created On: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p>
                 </div>
@@ -41,7 +41,7 @@
         <div v-else class="card-container">
             <div v-for="gameSession in gameSessions" :key="gameSession.sessionId" class="card">
                 <div class="game-session-info">
-                    <h2>{{ gameSession.sessionName }}</h2>
+                    <h2>Session: {{ gameSession.sessionName }}</h2>
                     <p><strong>Game: </strong>{{ gameSession.gameName }}</p>
                     <p><strong>Created On: </strong>{{ new Date(gameSession.createdAt).toLocaleDateString() }}</p> <br>
                     <p><strong>Your Key: </strong>{{ gameSession.key }}</p>

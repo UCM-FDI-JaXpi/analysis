@@ -104,6 +104,11 @@ const drawBarChart = (data, chartId) => {
                     format: d => Number.isInteger(d) ? d : null // Format without decimals
                 }
             }
+        },
+        bar: {
+            width: {
+                ratio: (columns[0]?.length === 2) ? 0.2 : 0.5
+            }
         }
     });
 }
