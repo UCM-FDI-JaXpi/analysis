@@ -50,35 +50,25 @@ npm run serve
 En la aplicación web se muestran diferentes tipos de representaciones visuales de las analiticas realizadas en gráficos y tablas. Algunos ejemplos que puedes encontrar:  
 1. **Objetos más utilizados**: se muestra un ranking con los 3 objetos más utilizados.  
 
-   <img src="docs/images/top3.png" alt="Top 3 objetos más utilizados" width="160"/>
-
-
-
+    <img src="docs/images/top3.png" alt="Top 3 objetos más utilizados" width="160"/>  
+    <br>
 2. **Interacciones con objetos/verbos**: utilizamos diagramas de barras para mostrar el número de interacciones que se realizan con los objetos/verbos que presenta el juego.  
 
-   <img src="docs/images/users_interactions.png" alt="Top 3 objetos más utilizados" width="400"/>
-
-
-
+    <img src="docs/images/users_interactions.png" alt="" width="400"/>  
+    <br>
 3. **Partidas empezadas y ganadas**: a través de un gráfico de pastel mostramos el porcentaje de partidas que se han empezado en comparación con las partidas ganadas. Las partidas ganadas hacen referencia a las partidas que han completado el último nivel de juego.  
 
-   <img src="docs/images/completed_game.png" alt="Top 3 objetos más utilizados" width="200"/>
-
-
-
+    <img src="docs/images/completed_game.png" alt="" width="200"/>  
+    <br>
 4. **Tiempo por nivel (medio y mejor)**: dibujamos en el eje x de los gráficos de barras los niveles de juego, y en el eje y, el tiempo en milisegundos o segundos.  
 
-
-
+    <br>
 5. **Histórico de interacciones**: en un gráfico de líneas mostramos la actividad de un estudiante a lo largo del tiempo.  
 
-   <img src="docs/images/history_interactions.png" alt="Top 3 objetos más utilizados" width="450"/>
+    <img src="docs/images/history_interactions.png" alt="" width="450"/>
+    <br>
+7. **Registro de últimas interacciones de los jugadores**: vemos en tablas las últimas trazas recibidas de las jugadas de los estudiantes.
 
-
-
-6. **Registro de últimas interacciones de los jugadores**: vemos en tablas las últimas trazas recibidas de las jugadas de los estudiantes.
-
-
-
-   
+    <img src="docs/images/last_interactions_received.png" alt="" width="450"/>  
+    <br>
 **Nota**: Las representaciones varían según el tipo de usuario que inicie sesión, ya que cada uno tiene unas necesidades diferentes al realizar la analítica de datos.
