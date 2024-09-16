@@ -1,84 +1,72 @@
 # Data Analysis Application - JaXpi
-Esta aplicación web realiza análisis de datos de videojuegos JavaScript, utilizando **Vue 3** y la librería **C3.js** para generar diferentes gráficos. Esta herramienta forma parte del ecosistema JaXpi, y ha sido desarrollada para estudiar las analíticas de aprendizaje en los videojuegos educativos.
+This web application performs data analysis of JavaScript video games, using **Vue 3** and the **C3.js** library to generate different charts. This tool is part of the JaXpi ecosystem, and has been developed to study learning analytics in educational video games.
 
-Permite a desarrolladores, profesores y estudiantes visualizar y analizar datos almacenados en una base de datos ***MongoDB***. Los datos son generados cuando los jugadores interactúan con los videojuegos, enviando trazas que siguen el estándar ***xAPI***, que luego se almacenan en la base de datos para su posterior análisis. De esta manera, los desarrolladores podrán evaluar el rendimiento de sus videojuegos, los profesores ver el rendimiento de sus estudiantes en los videojuegos y los estudiantes revisar sus propias analíticas.
+It allows developers, teachers and students to visualize and analyze data stored in a **MongoDB** database. The data is generated when players interact with the video games, sending traces that follow the ***xAPI*** standard, which are then stored in the database for later analysis. In this way, developers will be able to evaluate the performance of their video games, teachers will be able to see the performance of their students in the video games and students will be able to review their own analytics.
 
-## Prerrequisitos
-- Tener el [servidor JaXpi](https://github.com/UCM-FDI-JaXpi/server) inicializado.  
-- Tener un **videojuego** que envíe trazas con el estándar xAPI a una base de datos a través del servidor.
+## Prerequisites
+- Have the [JaXpi server](https://github.com/UCM-FDI-JaXpi/server) initialized.  
+- Have a **video game** that sends traces with the xAPI standard to a database through the server.
 
-Por ejemplo, para enviar trazas con la demo del videojuego *Prince of JS* ([código del videojuego](https://github.com/UCM-FDI-JaXpi/demos/tree/main/PrinceJS-master)), hemos utilizado la librería JaXpi. Si quieres utilizar esta librería en tus videojuegos, ve a su [manual](https://github.com/UCM-FDI-JaXpi/lib).
-**Recuerda**, para utilizar la librería JaXpi te hará falta el código del videojuego JavaScript que se quiera analizar.
+For example, to send traces using the *Prince of JS demo* ([video game code](https://github.com/UCM-FDI-JaXpi/demos/tree/main/PrinceJS-master)), we used the JaXpi library. If you want to use this library in your video games, refer to its [manual](https://github.com/UCM-FDI-JaXpi/lib). **Note**, to use the JaXpi library you will need the JavaScript code of the video game you want to analyze.
 
-## Guía de uso 
-1. **Clona este repositorio** en tu equipo.
-2. **Instala las dependencias** del proyecto:
+## Guide 
+1. **Clone this repository** on your computer.
+2. **Install the project dependencies**:
 ````bash
 npm install
 ````
 
-4. **Ejecuta la aplicación web**:
+4. **Run the web application**:
 ````bash
 npm run serve
 ````
 
-5. **Accede a la aplicación**: abre en un navegador la aplicación. Verás la pantalla de 'Home' junto a un menú de navegación con diferentes opciones.
+5. **Access the application**: Open the application in a browser. You will see the 'Home' screen along with a navigation menu with different options.
 
-6. **Inicia sesión** según el tipo de usuario que elijas:
+6. **Log in** according to the user type you choose:
 
-    - **Como desarrollador de videojuegos**: podrás ver las analíticas de los videojuegos que añadas en nuestra aplicación. Te ayudará a la hora de ver la funcionalidad de tus videojuegos, pudiendo detectar defectos en cuanto al uso de objetos o verbos, ver los tiempos que tardan en completar los diferentes niveles y cuantos han llegado al último nivel, entre otros muchos. Te permite identificar áreas de mejora en tus videojuegos. Para ello:
-      - Regístrate en la aplicación como 'Developer'.
-      - Inicia sesión con correo y contraseña en *Login*.
-      - Añade los **videojuegos** en los que quieras realizar un análisis de sus datos de juego haciendo click en *Add game*.
-      - Al añadir un videojuego, se te genera un ***Token*** que tendrás que utilizar para poder captar las trazas de juego por los diferentes usuarios. En el manual de la [librería JaXpi](https://github.com/UCM-FDI-JaXpi/lib) podrás ver como utilizarlo.
-      - Ya puedes ver las analíticas de tus videojuegos una vez empiecen a ser jugados.
-        **Importante:** las datos que se tratan son anónimos para respetar la privacidad de los jugadores.
+    - **As a game developer**: You will be able to view the analytics of the video games you add to our application. It will help you to see the functionality of your video games, being able to detect defects in the use of objects or verbs, see the time it takes to complete the different levels and how many have reached the last level, among many others. It allows you to identify areas for improvement in your video games. To do this:
+      - Register in the application as a 'Developer'.
+      - Log in with email and password in *Login*.
+      - Add the **video games** you want to analyze by clicking on *Add game*.
+      - When you add a video game, a ***Token*** is generated that you will have to use to capture traces of the game played by the different users. You can see how to use it in the [JaXpi library](https://github.com/UCM-FDI-JaXpi/lib) manual.
+      - You can now view the analytics of your video games once they start being played.
+        **Important:** the data processed is anonymous to respect players' privacy.
       
-    - **Como profesor**: la aplicación es una herramienta que puedes utilizar para realizar el seguimiento de la participación y el progreso de tus estudiantes en las diferentes sesiones de juego.
-      - Regístrate en la aplicación como 'Teacher'.
-      - Inicia sesión con correo y contraseña en *Login*.
-      - Crea tus **clases** y **alumnos** tanto de forma manual como de forma aleatoria con un número determinado de estudiantes.
-      - Una vez tengas clases creadas, podrás crear en ellas **sesiones de juego** eligiendo un juego que un desarrollador ha registrado previamente.
-      - Al crear una sesión de juego, generamos **claves de sesión** únicas para cada estudiante. Debes proporcionárselas a tus estudiantes para que puedan jugar registrados en el videojuego y acceder a la aplicación para ver sus propias analíticas.
+    - **As a teacher**: The app is a tool you can use to track your students' participation and progress in different game sessions.
+      - Register in the app as a 'Teacher'.
+      - Log in with email and password in *Login*.
+      - Create your **classes** and **students** either manually or randomly with a set number of students.
+      - Once you have created classes, you can create **game sessions** in them by choosing a game that a developer has previously registered.
+      - When creating a gaming session, we generate  unique **session keys** for each student. You must provide these keys to your students so they can play the game logged in and access the application to view their analytics.
     
-    - **Como estudiante**  
-      Para poder utilizar la aplicación y visualizar tus propias analíticas, tu profesor tendrá que darte una clave de sesión por cada sesión de juego que haya creado con la clase a la que perteneces.
-      - Inicia sesión con una de tus claves de sesión en *Login as student*.
-      - Si ya has jugado a los videojuegos con alguna de tus claves, podrás ver en tus analiticas las áreas que te resultan mas difíciles así como las áreas que te resultan más fáciles para tener una visión global de tu rendimiento en los diferentes videojuegos.
+    - **As a student**: To use the application and view your analytics, your teacher will need to give you a session key for each gaming session created for your class.
+      - Log in with one of your session keys in *Login as Student*.
+      - If you have already played a video game with any of your keys, you will be able to see in your analytics the areas that are most difficult for you as well as the areas that are easiest for you to have an overall view of your performance in those video games.
 
-## Representación visual de los datos
-En la aplicación web se muestran diferentes tipos de representaciones visuales de las analiticas realizadas en gráficos y tablas. Algunos ejemplos que puedes encontrar:  
-1. **Objetos más utilizados**: se muestra un ranking con los 3 objetos más utilizados.  
+## Visual Representation of Data
+The web application displays different types of visual representations of the analytics in charts and tables. Some examples you can find: 
+1. **Most Used Objects**: A ranking with the 3 most used objects is shown.
 
-   <img src="docs/images/top3.png" alt="Top 3 objetos más utilizados" width="160"/>
+    <img src="docs/images/top3.png" alt="Top 3 most used objects" width="160"/>  
+    <br>
+2. **Interactions with Objects/Verbs**: We use bar charts to display the number of interactions with the objects/verbs presented in the game.  
 
+    <img src="docs/images/users_interactions.png" alt="Interactions with objects/verbs" width="400"/>  
+    <br>
+3. **Started and Won Games**: A pie chart shows the percentage of games started compared to games won. Won games refer to games that have completed the final level.
 
+    <img src="docs/images/completed_game.png" alt="Started and Won Games" width="200"/>  
+    <br>
+5. **Time per Level (Average and Best)**: Displays the game levels on the x-axis of bar charts and time in milliseconds or seconds on the y-axis.
 
-2. **Interacciones con objetos/verbos**: utilizamos diagramas de barras para mostrar el número de interacciones que se realizan con los objetos/verbos que presenta el juego.  
+    <br>
+6. **Interaction History**: Shows student activity over time in a line chart.
 
-   <img src="docs/images/users_interactions.png" alt="Top 3 objetos más utilizados" width="400"/>
+    <img src="docs/images/history_interactions.png" alt="Interaction History" width="450"/>
+    <br>
+7. **Record of Latest Player Interactions**: We see in tables the last traces received from the students' moves.
 
-
-
-3. **Partidas empezadas y ganadas**: a través de un gráfico de pastel mostramos el porcentaje de partidas que se han empezado en comparación con las partidas ganadas. Las partidas ganadas hacen referencia a las partidas que han completado el último nivel de juego.  
-
-   <img src="docs/images/completed_game.png" alt="Top 3 objetos más utilizados" width="200"/>
-
-
-
-4. **Tiempo por nivel (medio y mejor)**: dibujamos en el eje x de los gráficos de barras los niveles de juego, y en el eje y, el tiempo en milisegundos o segundos.  
-
-
-
-5. **Histórico de interacciones**: en un gráfico de líneas mostramos la actividad de un estudiante a lo largo del tiempo.  
-
-   <img src="docs/images/history_interactions.png" alt="Top 3 objetos más utilizados" width="450"/>
-
-
-
-6. **Registro de últimas interacciones de los jugadores**: vemos en tablas las últimas trazas recibidas de las jugadas de los estudiantes.
-
-
-
-   
-**Nota**: Las representaciones varían según el tipo de usuario que inicie sesión, ya que cada uno tiene unas necesidades diferentes al realizar la analítica de datos.
+    <img src="docs/images/last_interactions_received.png" alt="Record of Latest Player Interactions" width="450"/>  
+    <br>
+**Note**: Representations vary according to the type of user logged in, as each user type has different needs for data analysis.
