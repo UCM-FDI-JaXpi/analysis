@@ -9,7 +9,13 @@
           <div class="game-details" v-if="game">
             <div class="token-container">
               <p><strong  style="background-color: #c6e8ff;">Token:</strong><span class="token-text" style="background-color: #c6e8ff;">{{ game.token }}</span></p>
-              <button @click="copyToken(game.token)" class="copy-button">Copy</button>
+              <button @click="copyToken(game.token)" class="copy-button" title="Copy the token to the clipboard">
+                <img :src=copiarImage alt="Copy icon" class="copy-icon"/>
+              </button>
+              <!-- Notification for copying token -->
+              <div v-if="showNotification" class="notification" style="color: green; margin-left: 10px;">
+                Token copied!
+              </div>
             </div>
             <p><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integration-with-jaxpi-server" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
               <p v-if="game.description"><strong>Description: </strong></p>
@@ -72,6 +78,7 @@
 </template>
 
 <script setup>
+import copiarImage from '@/assets/copiar.png';
 import { ref, computed, onMounted, onUnmounted, watch} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useGamesStore } from '@/stores/gamesStore';
@@ -109,6 +116,7 @@ const activeUsers  = ref(0);
 const completedGameUsers = ref(0);
 const dataObjectCount = ref([]);
 const loading = ref(true);
+const showNotification = ref(false);
 
 const deleteGame = async () => {
     try {
@@ -174,7 +182,11 @@ const fetchDataFromMongoDB = async () => {
 const copyToken = (token) => {
     navigator.clipboard.writeText(token)
         .then(() => {
-            console.log('Token copied');
+            console.log('Token copied to clipboard');
+            showNotification.value = true;
+            setTimeout(() => {
+                showNotification.value = false;
+            }, 1000);
         })
         .catch(err => {
             console.error('Failed to copy token:', err);

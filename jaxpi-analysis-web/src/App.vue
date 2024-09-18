@@ -198,23 +198,27 @@ form#search {
 
 .token-text {
   font-family: monospace;
-  font-size: 1rem;
+  font-size: 0.85rem;
   padding: 0px 5px;
   margin-right: 3px;
 }
 
 .copy-button {
-  background-color: #3498DB;
-  color: white;
-  font-size: 0.975rem;
+  background: none;
   border: none;
-  border-radius: 4px;
-  padding: 5px 7px;
+  padding: 0;
   cursor: pointer;
+  display: inline-block;
 }
 
-.copy-button:hover {
-  background-color: #2980b9;
+.copy-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.copy-button:hover .copy-icon {
+  transform: scale(1.03);
 }
 
 .game-description-content {

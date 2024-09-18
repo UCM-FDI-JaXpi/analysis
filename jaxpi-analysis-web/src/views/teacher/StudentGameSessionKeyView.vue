@@ -213,7 +213,7 @@ const dataFirstFilter  = ref([]);
 
 const arrayLevelsPerStudent = ref([]);// Para el segundo los filtro
 const dataAttemptTimesForStudentLevel  = ref([]);
-const name  = ref([]);
+const name = ref([]);
 const dataBestCompletionTimePerLevel = ref([]);
 const loading = ref(true);
 

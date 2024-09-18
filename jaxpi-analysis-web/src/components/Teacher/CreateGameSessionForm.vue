@@ -1,5 +1,5 @@
 <template>
-    <h2>Create game session</h2>
+    <h2>Create Game Session</h2>
     <form @submit.prevent="addGameSession">
         <label for="gameSessionName">Game Session Name *</label>
         <input type="text" v-model="gameSessionData.gameSessionName" id="gameSessionName" required />
@@ -9,8 +9,10 @@
             <option v-for="game in games" :key="game.id" :value="game.name">{{ game.name }}</option>
         </select>
 
-        <label for="group">Class </label>
-        <input type="text" :value="group.name" id="group" readonly />
+        <div class="class-container">
+            <label for="group">Class:</label>
+            <span>{{ group.name }}</span>
+        </div>
 
         <small>{{ group.students.length }} 
             {{ group.students.length === 1 ? 'student' : 'students' }}</small>
@@ -123,6 +125,7 @@ form button {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 form button:hover {
@@ -146,5 +149,11 @@ input:focus, select:focus {
 
 small {
     color: gray;
+}
+
+.class-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 </style>

@@ -116,7 +116,7 @@ textarea {
 }
 
 form button {
-    padding: 10px;
+    padding: 10px 20px;
     width: 100%;
     background-color: #1976D2;
     color: white;
@@ -124,6 +124,7 @@ form button {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 form button[type="submit"] {

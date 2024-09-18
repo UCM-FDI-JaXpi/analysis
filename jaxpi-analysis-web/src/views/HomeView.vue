@@ -25,12 +25,16 @@ import gameImage from '@/assets/game.png';
 <style scoped>
 .home-container {
   max-width: 1000px;
-  margin: 40px auto;
-  padding: 20px;
+  /* margin: 40px auto; */
+  padding: 58px;
   text-align: center;
   background-color: #6fc8ff35;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .text-section {

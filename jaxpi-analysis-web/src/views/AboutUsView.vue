@@ -6,7 +6,8 @@
           Feel free to contact us if you have any questions or inquiries.
         </p>
         <h3 style="color: #005ebc; margin-bottom: 10px;">Attributions</h3>
-        <a href="https://www.flaticon.es/iconos-gratis/hecho" title="hecho iconos">Checkmark icon created by Octopocto - Flaticon</a>
+        <a href="https://www.flaticon.es/iconos-gratis/hecho" title="hecho iconos">Checkmark icon created by Octopocto - Flaticon</a><br>
+        <a href="https://www.flaticon.es/iconos-gratis/copia-de-contenido" title="copia de contenido iconos">Content copy icon created by Freepik - Flaticon</a>
     </div>
 </template>
 
@@ -35,5 +36,17 @@ h1 {
   color: #003163;
   margin-bottom: 20px;
   line-height: 1.6;
+}
+
+.about-us-container a {
+  display: inline-block;
+  margin-bottom: 7px;
+  text-decoration: none;
+  color: #005ebc;
+}
+
+.about-us-container a:hover {
+  color: #004386;
+  text-decoration: underline;
 }
 </style>

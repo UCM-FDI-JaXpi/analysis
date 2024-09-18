@@ -14,22 +14,29 @@
             <p><strong>Game name:</strong> {{ createdGame.name }}</p>
 
             <div class="token-container">
-              <p><strong>Token:</strong><span class="token-text" style="background-color: #c6e8ff;">{{ createdGame.token }}</span></p>
-              <button @click="copyToken(game.token)" class="copy-button">Copy</button>
+              <p style="margin:0px"><strong>Token:</strong><span class="token-text" style="background-color: #c6e8ff;">{{ createdGame.token }}</span></p>
+              <button @click="copyToken(createdGame.token)" class="copy-button" title="Copy the token to the clipboard">
+                <img :src=copiarImage alt="Copy icon" class="copy-icon"/>
+              </button>
             </div>
             <p><a href="https://github.com/UCM-FDI-JaXpi/lib/blob/main/README.md#4-integration-with-jaxpi-server" target="_blank">How to use the token</a></p> <!-- Instrucciones para el token -->
               
             <p v-if="createdGame.description.length > 0"><strong>Description:</strong></p>
             <div class="game-description-content" v-if="createdGame.description.length > 0">
-                <p>{{ createdGame.description }}</p>
+                <p style="margin: 0px;">{{ createdGame.description }}</p>
             </div>
-            <button @click="redirectToGameDetails">OK</button>
+            <button class="button-ok" @click="redirectToGameDetails">OK</button>
+        </div>
+        <!-- Notification for copying token -->
+        <div v-if="showNotification" class="notification" style="text-align: center; color: green; margin-top:10px;">
+            Token copied!
         </div>
     </div>
 </template>
 
 <script setup>
 import checkImage from '@/assets/check.png';
+import copiarImage from '@/assets/copiar.png';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
@@ -40,6 +47,7 @@ const authStore = useAuthStore();
 
 const showConfirmationCreatedGame = ref(false);
 const createdGame = ref({});
+const showNotification = ref(false);
 
 const handleAddGame = (gameData) => {
     createdGame.value = gameData;
@@ -53,6 +61,20 @@ const redirectToGameDetails = () => {
 
 const handleCancel = () => {
     router.back();
+};
+
+const copyToken = (token) => {
+    navigator.clipboard.writeText(token)
+        .then(() => {
+            console.log('Token copied to clipboard');
+            showNotification.value = true;
+            setTimeout(() => {
+                showNotification.value = false;
+            }, 1000);
+        })
+        .catch(err => {
+            console.error('Failed to copy token:', err);
+        });
 };
 </script>
 
@@ -77,7 +99,7 @@ const handleCancel = () => {
 }
 
 .confirmation {
-    padding: 10px;
+    padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -88,7 +110,7 @@ const handleCancel = () => {
     margin: 0;
 }
 
-.confirmation button {
+.button-ok {
     margin-top: 7px;
     align-self: center;
     padding: 10px 20px; 
@@ -99,7 +121,7 @@ const handleCancel = () => {
     cursor: pointer;
 }
 
-.confirmation button:hover {
+.button-ok:hover {
     background-color: #0056b3;
 }
 

@@ -1,10 +1,10 @@
 <template>
     <h2>Create Class</h2>
     <form @submit.prevent="addGroup">
-        <label for="groupName">Class name *</label>
+        <label for="groupName">Class Name *</label>
         <input type="text" v-model="groupData.groupName" id="groupName" required />
 
-        <label for="generationType">Choose generation method</label>
+        <label for="generationType">Choose Generation Method</label>
         <select v-model="generationType" id="generationType">
             <option value="manual">Manual</option>
             <option value="random">Random</option>
@@ -16,7 +16,7 @@
         </div>
 
         <div v-if="generationType === 'manual'">
-            <label for="students" style="margin-bottom:10px;">Students (one per line) *</label>
+            <label for="students" style="margin-bottom:10px;">Students (One per Line) *</label>
             <textarea v-model="groupData.students" id="students" required @input="adjustHeight"></textarea>
             <small>Maximum 50 students</small>
         </div>
@@ -195,6 +195,7 @@ form button {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 form button:hover {

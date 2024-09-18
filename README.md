@@ -60,6 +60,7 @@ The web application displays different types of visual representations of the an
     <br>
 5. **Time per Level (Average and Best)**: Displays the game levels on the x-axis of bar charts and time in milliseconds or seconds on the y-axis.
 
+    <img src="docs/images/completion_times.png" alt="Completion times" width="400"/>
     <br>
 6. **Interaction History**: Shows student activity over time in a line chart.
 

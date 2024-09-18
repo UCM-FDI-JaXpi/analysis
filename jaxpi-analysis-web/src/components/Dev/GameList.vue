@@ -10,7 +10,9 @@
                     <h2>{{ game.name }}</h2>
                     <div class="token-container">
                         <p><strong>Token:</strong><span class="token-text">{{ game.token }}</span></p>
-                        <button @click.stop="copyToken(game.token)" class="copy-button">Copy</button>
+                        <button @click.stop="copyToken(game.token)" class="copy-button" title="Copy the token to the clipboard">
+                            <img :src=copiarImage alt="Copy icon" class="copy-icon"/>
+                        </button>
                     </div>
                 </div>
                 <div class="card-actions">
@@ -24,6 +26,7 @@
 </template>
 
 <script setup>
+import copiarImage from '@/assets/copiar.png';
 import { computed } from 'vue';
 import { useGamesStore } from '@/stores/gamesStore';
 
